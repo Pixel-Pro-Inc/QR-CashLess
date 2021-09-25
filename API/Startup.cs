@@ -36,6 +36,11 @@ namespace API
         {
             services.AddApplicationServices(_config);
 
+            services.AddDbContext<DataContext>(options =>
+            {
+                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+            });
+
             services.AddControllers();
             services.AddCors();
 
