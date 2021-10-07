@@ -2,6 +2,7 @@
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,10 +25,11 @@ namespace API.Controllers
             _context = context;
         }
 
-        //Authorize so only we can register users
+        [Authorize]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
+            //if(isEngineer)
             if (await UserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
@@ -54,10 +56,10 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            AppUser user = (await GetUser(loginDto.Username));
-
             if (!(await UserTaken(loginDto.Username)))
                 return Unauthorized("Username doesn't exist");
+
+            AppUser user = (await GetUser(loginDto.Username));
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             Byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
