@@ -25,7 +25,6 @@ namespace API.Controllers
             _context = context;
         }
 
-        [Authorize]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
