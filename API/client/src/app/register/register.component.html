@@ -9,6 +9,11 @@
     <input type="password" class="form-control" name="password"
            [(ngModel)]="model.password" placeholder="Password">
   </div>
+  <div class="form-group">
+    <input type="checkbox" name="admin"
+           [(ngModel)]="model.admin">
+    <label class="ml-2">Admin Account</label>
+  </div>
   <div class="form-group text-center">
     <button class="btn btn-success mr-2" type="submit">Register</button>
     <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>

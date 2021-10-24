@@ -16,5 +16,6 @@ namespace API.Data
 
         public DbSet<AppUser> Users { get; set; }
         public DbSet<MenuItem> MenuItems { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
     }
 }

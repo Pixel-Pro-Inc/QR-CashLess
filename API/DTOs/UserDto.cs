@@ -9,6 +9,7 @@ namespace API.DTOs
     {
         public string Username { get; set; }
         public string Token { get; set; }
+        public bool Admin { get; set; }
         //[Required]
         public string Restuarant { get; set; }
     }

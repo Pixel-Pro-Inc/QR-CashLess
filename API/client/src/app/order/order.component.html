@@ -1,0 +1,30 @@
+<div class="container">
+  <ul class="list-group mb-3">
+    <ng-container *ngFor="let order of orderItems">
+      <ng-container *ngIf="order.reference == referenceService.currentreference">
+        <ng-container *ngIf="!order.purchased">
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">{{order.name}}</h6>
+              <small class="text-muted">{{order.description}}</small>
+            </div>
+            <span class="text-muted">BWP {{order.price}}</span>
+          </li>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    {{calculateTotal()}}
+
+    <li class="list-group-item d-flex justify-content-between">
+      <span>Total (BWP)</span>
+      <strong>BWP {{total}}</strong>
+    </li>
+  </ul>
+  <ng-container>
+    <div id="myPaypalButtons" style="width: 100%"></div>
+    <div>
+      <button class="btn btn-primary" (click)="callForBill()" style="width: 100%">Call For Bill</button>
+    </div>
+  </ng-container>  
+</div>

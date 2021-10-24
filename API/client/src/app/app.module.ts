@@ -10,13 +10,35 @@ import { NavComponent } from './nav/nav.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import { MemberListComponent } from './members/member-list/member-list.component';
+import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { ListsComponent } from './lists/lists.component';
+import { MessagesComponent } from './messages/messages.component';
+import { ToastrModule } from 'ngx-toastr';
+import { SharedModule } from './_modules/shared.module';
+import { MenuComponent } from './menu/menu.component';
+import { OrderComponent } from './order/order.component';
+import { AdminComponent } from './admin/admin.component';
+import { PhotouploaderComponent } from './photouploader/photouploader.component';
+import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
+import { ReceiptComponent } from './receipt/receipt.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    MemberListComponent,
+    MemberDetailComponent,
+    ListsComponent,
+    MessagesComponent,
+    MenuComponent,
+    OrderComponent,
+    AdminComponent,
+    PhotouploaderComponent,
+    KitchendashboardComponent,
+    ReceiptComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +46,7 @@ import { RegisterComponent } from './register/register.component';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    BsDropdownModule.forRoot()
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
