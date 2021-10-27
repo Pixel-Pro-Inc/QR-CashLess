@@ -13,13 +13,16 @@ export class MenuitemComponent implements OnInit {
   @Input() cantOrder: boolean;
   @Input() orderView: OrderComponent;
 
+  userInput: number = 0;
+
   constructor() { }
 
   ngOnInit(): void {
+    
   }
 
   clicked(item: MenuItem, quantity: number){
-    this.orderView.updateOrderView(item, quantity);
+    this.orderView.updateOrderView(item, quantity, this.userInput);
   }
 
 }

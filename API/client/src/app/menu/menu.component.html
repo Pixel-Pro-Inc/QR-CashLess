@@ -1,4 +1,4 @@
-<div class="card bg-light shadow">
+<div class="card bg-light">
   <h1 class="text-center">Your Order</h1>
   <app-order class="mt-3" [showPaymentOptions] = "false" #orderWindow></app-order>    
 </div>
@@ -12,9 +12,10 @@
     <ng-container *ngIf="showEditing">
       <button class="btn btn-primary mt-2" (click)="formToggle()">Add New Item</button>
     </ng-container>  
-    <a class="nav-link mt-2 text-info" (click)="categoryMeals()">Meals</a>
-    <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
+    <a class="nav-link mt-2 text-info" (click)="categoryMeats()">Meats</a>
+    <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Sides</a>
     <a class="nav-link mt-2 text-info" (click)="categoryDrinks()">Drinks</a>
+    <a class="nav-link mt-2 text-info" (click)="categoryDrinks()">Desserts</a>
   </div>
 
   <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
@@ -35,7 +36,7 @@
     <div class="form-group">
       <label>Category</label>
       <select class="form-control" name="category" [(ngModel)]="model.category">
-        <option>Meal</option>
+        <option>Meat</option>
         <option>Dessert</option>
         <option>Drink</option>
       </select>
@@ -55,6 +56,12 @@
     </div>
   </form>
 
-  <div>
-    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meal'"></app-menuitem>
-  </div> 
+  <div *ngIf="showMeats">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>
+  </div>
+  <div *ngIf="showDrinks">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Drink'"></app-menuitem>
+  </div>
+  <div *ngIf="showDesserts">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Dessert'"></app-menuitem>
+  </div>

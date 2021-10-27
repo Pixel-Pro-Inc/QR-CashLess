@@ -1,18 +1,19 @@
 <div class="container mb-3">
   <ul class="list-group mb-3">
     <ng-container *ngFor="let order of orderItems">
-      <ng-container *ngIf="order.reference == referenceService.currentreference">
-        <ng-container *ngIf="!order.purchased">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">{{order.name}}</h6>
-              <small class="text-muted">{{order.description}}</small>
-            </div>
-            <span class="text-muted">BWP {{order.price}}</span>
+      <ng-container *ngIf="!order.purchased">
+        <li class="list-group-item d-flex justify-content-between lh-sm">
+          <div class="mr-5">
+            <h6 class="my-0">{{order.name}}</h6>
+            <small class="text-muted">{{order.description}}</small>
+          </div>          
 
-            <span class="fa fa-times-circle-o text-muted" (click)="removeItem(order)"></span>
-          </li>
-        </ng-container>
+          <span class="text-muted mr-5">BWP {{order.price}}</span>
+
+          <span class="text-muted mr-5">{{order.weight}} grams</span>
+
+          <span class="fa fa-times-circle-o text-muted" (click)="removeItem(order)"></span>
+        </li>
       </ng-container>
     </ng-container>
 

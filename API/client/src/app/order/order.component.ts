@@ -6,7 +6,7 @@ import { AccountService } from '../_services/account.service';
 import { render } from 'creditcardpayments/creditCardPayments';
 import { ReferenceService } from '../_services/reference.service';
 import { error } from '@angular/compiler/src/util';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { OrderService } from '../_services/order.service';
 import { MenuItem } from '../_models/menuItem';
 
@@ -29,17 +29,18 @@ export class OrderComponent implements OnInit {
   block = 0;
 
   constructor(private router: Router, private orderService: OrderService, 
-    private referenceService: ReferenceService) { }
+    private referenceService: ReferenceService) 
+    {
+    }
 
   ngOnInit(): void {
     this.orderItems = this.getOrders();
   }
 
-  public updateOrderView(item: MenuItem, quantity: number) {
+  public updateOrderView(item: MenuItem, quantity: number, userInput: number) {
     if(this.getOrders() != null){
       this.tempOrderItems = this.getOrders();//update list to latest values
-    }
-    
+    }    
 
     let orderItem : OrderItem = {
       id: 0,
@@ -50,16 +51,20 @@ export class OrderComponent implements OnInit {
       fufilled: false,
       purchased: false,
       quantity: 0,
-      calledforbill: false
+      calledforbill: false,
+      weight: ''
     };
 
     orderItem.quantity = quantity;
     orderItem.description = item.description;
     orderItem.fufilled = false;
     orderItem.name = item.name;
-    orderItem.price = item.price;
+    orderItem.price = userInput.toString();
     orderItem.purchased = false;
     orderItem.reference = this.referenceService.currentreference;
+
+    let weight = item.rate * userInput;
+    orderItem.weight = weight.toString();
 
     this.tempOrderItems.push(orderItem);
     localStorage.setItem('ordered', JSON.stringify(this.tempOrderItems));
@@ -73,11 +78,12 @@ export class OrderComponent implements OnInit {
 
       if (this.orderItems != null) {
         for (var i = 0; i < this.orderItems.length; i++) {
-          this.total += parseFloat(this.orderItems[i].price);
+          this.total += parseFloat(this.orderItems[i].price); 
         }
       }
 
       this.total = Math.round((this.total + Number.EPSILON) * 100) / 100;
+      console.log(this.orderItems);
       let num = this.total;
       let n = num.toFixed(2);
 

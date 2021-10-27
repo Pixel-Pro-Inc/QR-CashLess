@@ -42,7 +42,10 @@ namespace API.Controllers
                 prepTime = menuItemDto.PrepTime.ToString(),
                 Price = menuItemDto.Price.ToString("f2"),
                 Restuarant = menuItemDto.Restuarant,
-                Category = menuItemDto.Category
+                Category = menuItemDto.Category,
+                Rate = menuItemDto.Rate,
+                MinimumPrice = menuItemDto.MinimumPrice,
+                Availability = menuItemDto.Availability
             };
 
             string path = menuItemDto.ImgUrl;

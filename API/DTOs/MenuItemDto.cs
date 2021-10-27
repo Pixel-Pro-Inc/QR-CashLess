@@ -14,5 +14,8 @@ namespace API.DTOs
         public float PrepTime { get; set; }
         public string Category { get; set; }
         public string ImgUrl { get; set; }
+        public float Rate { get; set; }
+        public float MinimumPrice { get; set; }
+        public bool Availability { get; set; }
     }
 }

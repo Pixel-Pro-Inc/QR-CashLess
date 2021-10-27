@@ -23,7 +23,7 @@ export class MenuComponent implements OnInit {
   authorized: boolean;
   showform = false;
 
-  showMeals = true;
+  showMeats = true;
   showDrinks = false;
   showDesserts = false;
 
@@ -39,7 +39,10 @@ export class MenuComponent implements OnInit {
     category: '',
     price: '',
     imgUrl: '',
-    prepTime: ''
+    prepTime: '',
+    minimumPrice: 0,
+    rate: 0,
+    availability: false
   };
   img: any = {};
 
@@ -55,7 +58,8 @@ export class MenuComponent implements OnInit {
     fufilled: false,
     purchased: false,
     quantity: 0,
-    calledforbill: false
+    calledforbill: false,
+    weight: ''
   };
 
   orderItems: OrderItem[] = [];
@@ -101,18 +105,18 @@ export class MenuComponent implements OnInit {
     })    
   }
 
-  categoryMeals() {
-    this.showMeals = true;
+  categoryMeats() {
+    this.showMeats = true;
     this.showDrinks = false;
     this.showDesserts = false;
   }
   categoryDesserts() {
-    this.showMeals = false;
+    this.showMeats = false;
     this.showDrinks = false;
     this.showDesserts = true;
   }
   categoryDrinks() {
-    this.showMeals = false;
+    this.showMeats = false;
     this.showDrinks = true;
     this.showDesserts = false;
   }

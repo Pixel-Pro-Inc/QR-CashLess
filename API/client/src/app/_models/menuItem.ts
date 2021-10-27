@@ -5,4 +5,7 @@ export interface MenuItem {
   price: string;
   imgUrl: string;
   prepTime: string;
+  minimumPrice: number;
+  rate: number;
+  availability: boolean;
 }

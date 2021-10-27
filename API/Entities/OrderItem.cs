@@ -11,6 +11,7 @@ namespace API.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public float Price { get; set; }
+        public float Weight { get; set; }
         public string Reference { get; set; }
         public bool Fufilled { get; set; }
         public bool Purchased { get; set; }
