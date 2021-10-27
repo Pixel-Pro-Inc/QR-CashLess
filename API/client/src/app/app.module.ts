@@ -22,6 +22,7 @@ import { AdminComponent } from './admin/admin.component';
 import { PhotouploaderComponent } from './photouploader/photouploader.component';
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
 import { ReceiptComponent } from './receipt/receipt.component';
+import { MenuitemComponent } from './menuitem/menuitem.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ReceiptComponent } from './receipt/receipt.component';
     AdminComponent,
     PhotouploaderComponent,
     KitchendashboardComponent,
-    ReceiptComponent
+    ReceiptComponent,
+    MenuitemComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,25 @@
+<ng-container *ngFor="let dish of menuItems">
+    <ng-container *ngIf="dish.category == category">
+        <div class="card-body bg-light mb-5 shadow">
+            <div style="display:flex; flex-direction: row;  
+            justify-content: left; align-items: left;">
+            <img src="{{dish.imgUrl}}" class="m-1" alt="food" style="height: 100px; width: 100px;">
+            <div class="ml-5 mr-5">
+                <h4>{{dish.name}}</h4>
+                <p class="card-text">{{dish.description}}</p>
+                <h6 class="mt1">BWP {{dish.price}}</h6>
+            </div>
+            </div>
+            
+
+            <div style="display:flex; justify-content: right; align-items: right;">
+                <button *ngIf="!cantOrder" 
+            (click)="clicked(dish, 1)" 
+            style="width: fit-content; height: fit-content;" type="button" class="btn btn-primary text-center ">
+            <i class="fa fa-plus"></i></button>
+            </div>
+            
+
+        </div>     
+    </ng-container>
+  </ng-container>

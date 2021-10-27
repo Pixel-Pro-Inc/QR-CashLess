@@ -1,4 +1,7 @@
-div {
+img {
+    border-radius: 10%;
+  }
+  div {
     border-radius: 20px;
   }
 

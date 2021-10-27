@@ -40,7 +40,7 @@ namespace API.Controllers
                 Name = menuItemDto.Name,
                 Description = menuItemDto.Description,
                 prepTime = menuItemDto.PrepTime.ToString(),
-                Price = menuItemDto.Price,
+                Price = menuItemDto.Price.ToString("f2"),
                 Restuarant = menuItemDto.Restuarant,
                 Category = menuItemDto.Category
             };
