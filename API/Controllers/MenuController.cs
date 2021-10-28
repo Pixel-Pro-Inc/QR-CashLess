@@ -33,7 +33,7 @@ namespace API.Controllers
             return await _context.MenuItems.ToListAsync() == null? new List<MenuItem>(): await _context.MenuItems.ToListAsync();
         }
         [HttpPost("createitem")]
-        public async Task<ActionResult<MenuItemDto>> AddPhoto(MenuItemDto menuItemDto)
+        public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto)
         {
             var menuItem = new MenuItem
             {
@@ -45,7 +45,7 @@ namespace API.Controllers
                 Category = menuItemDto.Category,
                 Rate = menuItemDto.Rate,
                 MinimumPrice = menuItemDto.MinimumPrice,
-                Availability = menuItemDto.Availability
+                Availability = true
             };
 
             string path = menuItemDto.ImgUrl;

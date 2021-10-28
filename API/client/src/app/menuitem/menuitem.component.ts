@@ -13,7 +13,7 @@ export class MenuitemComponent implements OnInit {
   @Input() cantOrder: boolean;
   @Input() orderView: OrderComponent;
 
-  userInput: number = 0;
+  userInput: number[] = [];
 
   constructor() { }
 
@@ -21,8 +21,9 @@ export class MenuitemComponent implements OnInit {
     
   }
 
-  clicked(item: MenuItem, quantity: number){
-    this.orderView.updateOrderView(item, quantity, this.userInput);
+  clicked(item: MenuItem, quantity: number, usersInput: number){
+    console.log(item);
+    this.orderView.updateOrderView(item, quantity, usersInput);
   }
 
 }

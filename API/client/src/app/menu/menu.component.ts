@@ -37,7 +37,7 @@ export class MenuComponent implements OnInit {
     name: '',
     description: '',
     category: '',
-    price: '',
+    price: '0',
     imgUrl: '',
     prepTime: '',
     minimumPrice: 0,
@@ -63,6 +63,7 @@ export class MenuComponent implements OnInit {
   };
 
   orderItems: OrderItem[] = [];
+  showSides: boolean;
 
   constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService) { }
 
@@ -107,16 +108,25 @@ export class MenuComponent implements OnInit {
 
   categoryMeats() {
     this.showMeats = true;
+    this.showSides = false;
+    this.showDrinks = false;
+    this.showDesserts = false;
+  }
+  categorySides() {
+    this.showSides = true;
+    this.showMeats = false;
     this.showDrinks = false;
     this.showDesserts = false;
   }
   categoryDesserts() {
     this.showMeats = false;
+    this.showSides = false;
     this.showDrinks = false;
     this.showDesserts = true;
   }
   categoryDrinks() {
     this.showMeats = false;
+    this.showSides = false;
     this.showDrinks = true;
     this.showDesserts = false;
   }

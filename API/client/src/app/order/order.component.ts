@@ -34,7 +34,7 @@ export class OrderComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.orderItems = this.getOrders();
+    this.orderItems = this.getOrders();    
   }
 
   public updateOrderView(item: MenuItem, quantity: number, userInput: number) {
@@ -59,12 +59,24 @@ export class OrderComponent implements OnInit {
     orderItem.description = item.description;
     orderItem.fufilled = false;
     orderItem.name = item.name;
-    orderItem.price = userInput.toString();
+
+    if(item.category == 'Meat'){
+      orderItem.price = userInput.toString();
+    }
+
+    if(item.category != 'Meat'){
+      orderItem.price = item.price;
+    }
+    
     orderItem.purchased = false;
     orderItem.reference = this.referenceService.currentreference;
 
     let weight = item.rate * userInput;
-    orderItem.weight = weight.toString();
+    orderItem.weight = weight.toString() + ' grams';
+
+    if(orderItem.weight == '0 grams'){
+      orderItem.weight = '-';      
+    }
 
     this.tempOrderItems.push(orderItem);
     localStorage.setItem('ordered', JSON.stringify(this.tempOrderItems));
@@ -115,7 +127,11 @@ export class OrderComponent implements OnInit {
   }
 
   reload(){
-    window.location.reload();//look for better reload method
+    //window.location.reload();//look for better reload method
+    this.block = 0;
+    this.total = 0;
+    this.calculateTotal();
+    this.ngOnInit();
   }
 
   successfulPurchase() {
