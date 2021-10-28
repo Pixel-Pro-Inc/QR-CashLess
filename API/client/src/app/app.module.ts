@@ -23,6 +23,7 @@ import { PhotouploaderComponent } from './photouploader/photouploader.component'
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { MenuitemComponent } from './menuitem/menuitem.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MenuitemComponent } from './menuitem/menuitem.component';
     PhotouploaderComponent,
     KitchendashboardComponent,
     ReceiptComponent,
-    MenuitemComponent
+    MenuitemComponent,
+    NotfoundComponent
   ],
   imports: [
     BrowserModule,
