@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using FireSharp.Response;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace API.Controllers
 {
@@ -20,29 +23,46 @@ namespace API.Controllers
     {
         private DataContext _context;
         private IPhotoService _photoService;
+        private readonly FirebaseDataContext _firebaseDataContext;
 
         public MenuController(DataContext context, IPhotoService photoService)
         {
             _context = context;
             _photoService = photoService;
+            _firebaseDataContext = new FirebaseDataContext();
         }
 
         [HttpGet("getmenu")]
-        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu()
+        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchID)
         {
-            return await _context.MenuItems.ToListAsync() == null? new List<MenuItem>(): await _context.MenuItems.ToListAsync();
+            List<MenuItem> items = new List<MenuItem>();
+
+            var response = await _firebaseDataContext.GetData("Menu/" + branchID);
+
+            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+            
+            foreach (var item in data)
+            {
+                MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                items.Add(menuItem);
+            }
+
+            return items;
         }
         [HttpPost("createitem")]
-        public async Task<ActionResult<MenuItemDto>> AddPhoto(MenuItemDto menuItemDto)
+        public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string branchID)
         {
             var menuItem = new MenuItem
             {
                 Name = menuItemDto.Name,
                 Description = menuItemDto.Description,
                 prepTime = menuItemDto.PrepTime.ToString(),
-                Price = menuItemDto.Price,
+                Price = menuItemDto.Price.ToString("f2"),
                 Restuarant = menuItemDto.Restuarant,
-                Category = menuItemDto.Category
+                Category = menuItemDto.Category,
+                Rate = menuItemDto.Rate,
+                MinimumPrice = menuItemDto.MinimumPrice,
+                Availability = true
             };
 
             string path = menuItemDto.ImgUrl;
@@ -64,11 +84,33 @@ namespace API.Controllers
 
                 menuItem.ImgUrl = result.SecureUrl.AbsoluteUri;
                 menuItem.PublicId = result.PublicId;
-            }            
+            }
 
-            _context.MenuItems.Add(menuItem);
-            await _context.SaveChangesAsync();
+            _firebaseDataContext.StoreData("Menu/" + branchID + "/" + GetId(branchID), menuItem);
+
             return menuItemDto;
+        }
+        public async Task<int> GetId(string branchID)
+        {
+            List<MenuItem> items = new List<MenuItem>();
+
+            var response = await _firebaseDataContext.GetData("Menu/" + branchID);
+
+            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+
+            foreach (var item in data)
+            {
+                MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                items.Add(menuItem);
+            }           
+
+            if(items.Count != 0)
+            {
+                return items[items.Count - 1].Id + 1;
+            }
+
+            return 0;
+            
         }
     }
 }

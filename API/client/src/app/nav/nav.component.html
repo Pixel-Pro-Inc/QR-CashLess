@@ -1,43 +1,29 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
     <a class="navbar-brand">Rodizio Express</a>    
-    <ng-container *ngIf="!admin && !kitchenStaff">
-      <div class="dropdown" dropdown>
-        <span class="text-light navbar-toggler-icon" dropdownToggle></span>
-        <ng-container *ngIf="!admin && !kitchenStaff">
-          <div class="dropdown-menu mt-3" *dropdownMenu>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" routerLink="/menu/{{referenceService.currentreference}}" routerLinkActive="active">
-              Menu
-            </a>
-            <a class="dropdown-item" routerLink="/order" routerLinkActive="active">
-              My Order
-            </a>
-          </div>
-        </ng-container>        
-      </div>
-    </ng-container>
     
     <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
       <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.username | titlecase}}</a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
-        <div class="dropdown-divider"></div>
-        <ng-container *ngIf="admin && !kitchenStaff">
-          <a class="dropdown-item" routerLink="/menu/edit" routerLinkActive="active">
-            Menu
+        <ng-container class="mr-5">
+          <div class="dropdown-divider"></div>
+          <ng-container *ngIf="admin && !kitchenStaff">
+            <a class="dropdown-item" routerLink="/menu/edit" routerLinkActive="active">
+              Menu
+            </a>
+            <a class="dropdown-item" routerLink="/kitchen" routerLinkActive="active">
+              Orders
+            </a>
+          </ng-container>
+          <ng-container *ngIf="kitchenStaff && !admin">
+            <a class="dropdown-item" routerLink="/kitchen" routerLinkActive="active">
+              Orders
+            </a>
+          </ng-container>
+          <a class="dropdown-item" (click)="logout()">
+            Logout
           </a>
-          <a class="dropdown-item" routerLink="/kitchen" routerLinkActive="active">
-            Orders
-          </a>
-        </ng-container>
-        <ng-container *ngIf="kitchenStaff && !admin">
-          <a class="dropdown-item" routerLink="/kitchen" routerLinkActive="active">
-            Orders
-          </a>
-        </ng-container>
-        <a class="dropdown-item" (click)="logout()">
-          Logout
-        </a>
+        </ng-container>        
       </div>
     </div>
   </div>

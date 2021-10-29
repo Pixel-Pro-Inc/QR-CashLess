@@ -1,12 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
 import { render } from 'creditcardpayments/creditCardPayments';
 import { ReferenceService } from '../_services/reference.service';
 import { error } from '@angular/compiler/src/util';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { OrderService } from '../_services/order.service';
+import { MenuItem } from '../_models/menuItem';
 
 @Component({
   selector: 'app-order',
@@ -14,60 +16,93 @@ import { Router } from '@angular/router';
   styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
-  total = 0.00;
-  totalUsd = 0.00;
-  block = 0;
-  block1 = 0;
-  orderItems: OrderItem[];
-  baseUrl: string;
+  @Input() showPaymentOptions : boolean;
 
-  activeOrder = false;
-  constructor(private accountService: AccountService, private http: HttpClient, public referenceService: ReferenceService, private router: Router) { }
+  total = 0.00;
+  totalDisplay = '';
+  totalUsd = 0.00;
+
+  
+  orderItems : OrderItem[];
+  tempOrderItems : OrderItem[] = [];
+
+  block = 0;
+
+  constructor(private router: Router, private orderService: OrderService, 
+    private referenceService: ReferenceService) 
+    {
+    }
 
   ngOnInit(): void {
-    this.baseUrl = this.accountService.baseUrl;
-    this.getOrders().subscribe(response => {
-      this.orderItems = response;
-      console.log(response);
-    });
+    this.orderItems = this.getOrders();    
   }
 
-  hasOrdered() {
-    if (this.block1 == 0) {
-      for (var i = 0; i < this.orderItems.length; i++) {
-        if (this.orderItems[i].reference == this.referenceService.currentreference) {
-          if (!this.orderItems[i].purchased) {
-            this.activeOrder = true;
-          }
-        }
-      }
-      this.block1 = 1;
+  public updateOrderView(item: MenuItem, quantity: number, userInput: number) {
+    if(this.getOrders() != null){
+      this.tempOrderItems = this.getOrders();//update list to latest values
     }    
+
+    let orderItem : OrderItem = {
+      id: 0,
+      name: '',
+      description: '',
+      price: '',
+      reference: '',
+      fufilled: false,
+      purchased: false,
+      quantity: 0,
+      calledforbill: false,
+      weight: ''
+    };
+
+    orderItem.quantity = quantity;
+    orderItem.description = item.description;
+    orderItem.fufilled = false;
+    orderItem.name = item.name;
+
+    if(item.category == 'Meat'){
+      orderItem.price = userInput.toString();
+    }
+
+    if(item.category != 'Meat'){
+      orderItem.price = item.price;
+    }
+    
+    orderItem.purchased = false;
+    orderItem.reference = this.referenceService.currentreference;
+
+    let weight = item.rate * userInput;
+    orderItem.weight = weight.toString() + ' grams';
+
+    if(orderItem.weight == '0 grams'){
+      orderItem.weight = '-';      
+    }
+
+    this.tempOrderItems.push(orderItem);
+    localStorage.setItem('ordered', JSON.stringify(this.tempOrderItems));
+
+    this.reload();
   }
 
   calculateTotal() {
-    if (this.block == 0) {
-      this.getOrders().subscribe(response => {
-        this.orderItems = response;
-        console.log(response);
+    if(this.block == 0){
+      this.orderItems = this.getOrders();
 
-        console.log(this.orderItems);
-        if (this.orderItems != null) {
-          for (var i = 0; i < this.orderItems.length; i++) {
-            if (this.orderItems[i].reference == this.referenceService.currentreference) {
-              if (!this.orderItems[i].purchased) {
-                this.total += parseFloat(this.orderItems[i].price);
-              }
-            }
-          }
+      if (this.orderItems != null) {
+        for (var i = 0; i < this.orderItems.length; i++) {
+          this.total += parseFloat(this.orderItems[i].price); 
         }
+      }
 
-        this.total = Math.round((this.total + Number.EPSILON) * 100) / 100;
-        this.totalUsd = this.total * 0.0906750;
-        this.totalUsd = Math.round((this.totalUsd + Number.EPSILON) * 100) / 100;
+      this.total = Math.round((this.total + Number.EPSILON) * 100) / 100;
+      console.log(this.orderItems);
+      let num = this.total;
+      let n = num.toFixed(2);
 
-        console.log(this.totalUsd.toString());
-
+      this.totalDisplay = n;
+      this.totalUsd = this.total * 0.0906750;
+      this.totalUsd = Math.round((this.totalUsd + Number.EPSILON) * 100) / 100;
+      if(this.showPaymentOptions){
         render(
           {
             id: "#myPaypalButtons",
@@ -77,63 +112,41 @@ export class OrderComponent implements OnInit {
               this.successfulPurchase();
             },
           }
-        );
-      });     
-
+        );   
+      }
       this.block = 1;
-    }    
+    }             
+  }
+
+  removeItem(item: OrderItem){
+    this.orderItems = this.getOrders();
+    this.orderItems.splice(this.orderItems.indexOf(item));
+
+    localStorage.setItem('ordered', JSON.stringify(this.orderItems));
+    this.reload();
+  }
+
+  reload(){
+    //window.location.reload();//look for better reload method
+    this.block = 0;
+    this.total = 0;
+    this.calculateTotal();
+    this.ngOnInit();
   }
 
   successfulPurchase() {
-    this.getOrders().subscribe(response => {
-      this.orderItems = response;
-      for (var i = 0; i < this.orderItems.length; i++) {
-        if (this.orderItems[i].reference == this.referenceService.currentreference) {
-          if (!this.orderItems[i].purchased) {
-            this.orderItems[i].purchased = true;
-
-            return this.http.post(this.baseUrl + 'order/editorder', this.orderItems[i]).subscribe(response => {
-              return response;
-            },
-              error => {
-                console.log(error);
-              });
-          }
-        }
-      }
-      alert("Transaction Successfull");
-    });
-    
+    this.orderService.paidOnlineForOrder(this.getOrders());    
   }
 
-  getOrders() {
-    return this.http.get(this.baseUrl + 'order/getorders').pipe(
-      map((response: OrderItem[]) => {
-        return response;
-      })
-    )
+  getOrders() : OrderItem[] {
+    return JSON.parse(localStorage.getItem('ordered'));
   }
 
-  callForBill() {
-    this.getOrders().subscribe(response => {
-      this.orderItems = response;
-      for (var i = 0; i < this.orderItems.length; i++) {
-        if (this.orderItems[i].reference == this.referenceService.currentreference) {
-          if (!this.orderItems[i].purchased) {
-            this.orderItems[i].calledforbill = true;
-
-            return this.http.post(this.baseUrl + 'order/editorder', this.orderItems[i]).subscribe(response => {
-              return response;              
-            },
-              error => {
-                console.log(error);
-              });
-          }
-        }
-      }
-
-      alert('The bill is on the way');
-    });        
+  confirmOrder() {
+    this.orderService.createOrder(this.getOrders());              
   }
 
+  payAtTill(){
+    //Waiting for payment
+  }
 }

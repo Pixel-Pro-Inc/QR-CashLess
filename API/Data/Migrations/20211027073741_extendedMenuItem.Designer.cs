@@ -3,14 +3,16 @@ using System;
 using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20211027073741_extendedMenuItem")]
+    partial class extendedMenuItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,9 +50,6 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Availability")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Category")
                         .HasColumnType("TEXT");
 
@@ -60,9 +59,6 @@ namespace API.Data.Migrations
                     b.Property<string>("ImgUrl")
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("MinimumPrice")
-                        .HasColumnType("REAL");
-
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
@@ -71,9 +67,6 @@ namespace API.Data.Migrations
 
                     b.Property<string>("PublicId")
                         .HasColumnType("TEXT");
-
-                    b.Property<float>("Rate")
-                        .HasColumnType("REAL");
 
                     b.Property<string>("Restuarant")
                         .HasColumnType("TEXT");
@@ -118,9 +111,6 @@ namespace API.Data.Migrations
 
                     b.Property<string>("Reference")
                         .HasColumnType("TEXT");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("REAL");
 
                     b.HasKey("Id");
 

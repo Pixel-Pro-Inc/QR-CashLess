@@ -1,0 +1,48 @@
+<ng-container *ngFor="let dish of menuItems">
+    <ng-container *ngIf="dish.category == category && dish.availability">
+        <div class="card-body bg-light mb-5 shadow">
+            <div style="display:flex; flex-direction: row;  
+            justify-content: left; align-items: left;">
+            <img src="{{dish.imgUrl}}" class="m-1" alt="food" style="height: 100px; width: 100px;">
+            <div class="ml-5 mr-5">
+                <h4>{{dish.name}}</h4>
+                <p class="card-text">{{dish.description}}</p>                
+                
+                <form *ngIf="dish.category == 'Meat'" #orderNumberForm="ngForm" autocomplete="off">
+                    <b class="text-warning">Choose your price </b>
+                    <label class="text-muted">(minimum price BWP {{dish.minimumPrice}})</label>                
+                    <div class="form-group mt-2" style="width: fit-content;">
+                      <input type="number" min="{{dish.minimumPrice}}" step="5"  class="form-control" name="min_price"
+                             [(ngModel)]="userInput[menuItems.indexOf(dish)]">
+                    </div>
+                </form>
+                <ng-container *ngIf="userInput[menuItems.indexOf(dish)] > 0">
+                    <h6 *ngIf="dish.category == 'Meat'" class="mt1">Weight = {{userInput[menuItems.indexOf(dish)] * dish.rate}} grams</h6>
+                </ng-container>                
+
+                <h6 *ngIf="dish.category != 'Meat'" class="mt1">BWP {{dish.price}}</h6>
+            </div>
+            </div>
+            
+
+            <div style="display:flex; justify-content: right; align-items: right;">
+                <button *ngIf="!cantOrder 
+                && dish.category == 'Meat' 
+                && userInput[menuItems.indexOf(dish)] >= dish.minimumPrice" 
+            (click)="clicked(dish, 1, userInput[menuItems.indexOf(dish)])" 
+            style="width: fit-content; height: fit-content;" type="button" class="btn btn-primary text-center ">
+            <i class="fa fa-plus"></i></button>
+            </div>
+
+            <div style="display:flex; justify-content: right; align-items: right;">
+                <button *ngIf="!cantOrder 
+                && dish.category != 'Meat'"
+            (click)="clicked(dish, 1, 0)" 
+            style="width: fit-content; height: fit-content;" type="button" class="btn btn-primary text-center ">
+            <i class="fa fa-plus"></i></button>
+            </div>
+            
+
+        </div>     
+    </ng-container>
+  </ng-container>

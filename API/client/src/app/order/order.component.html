@@ -1,16 +1,19 @@
-<div class="container">
+<div class="container mb-3">
   <ul class="list-group mb-3">
     <ng-container *ngFor="let order of orderItems">
-      <ng-container *ngIf="order.reference == referenceService.currentreference">
-        <ng-container *ngIf="!order.purchased">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">{{order.name}}</h6>
-              <small class="text-muted">{{order.description}}</small>
-            </div>
-            <span class="text-muted">BWP {{order.price}}</span>
-          </li>
-        </ng-container>
+      <ng-container *ngIf="!order.purchased">
+        <li class="list-group-item d-flex justify-content-between lh-sm">
+          <div class="mr-5" style="width: 200px;">
+            <h6 class="my-0">{{order.name}}</h6>
+            <small class="text-muted">{{order.description}}</small>
+          </div>          
+
+          <span class="text-muted mr-5">BWP {{order.price}}</span>
+
+          <span class="text-muted mr-5">{{order.weight}}</span>
+
+          <span class="fa fa-times-circle-o text-muted" (click)="removeItem(order)"></span>
+        </li>
       </ng-container>
     </ng-container>
 
@@ -18,13 +21,18 @@
 
     <li class="list-group-item d-flex justify-content-between">
       <span>Total (BWP)</span>
-      <strong>BWP {{total}}</strong>
+      <strong>BWP {{[(totalDisplay)]}}</strong>
     </li>
   </ul>
-  <ng-container>
+
+  <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
+    <button class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+  </div>
+
+  <ng-container *ngIf="showPaymentOptions">
     <div id="myPaypalButtons" style="width: 100%"></div>
     <div>
-      <button class="btn btn-primary" (click)="callForBill()" style="width: 100%">Call For Bill</button>
+      <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
     </div>
   </ng-container>  
 </div>

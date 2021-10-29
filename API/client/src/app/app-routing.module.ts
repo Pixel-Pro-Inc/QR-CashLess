@@ -8,19 +8,21 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MenuComponent } from './menu/menu.component';
 import { MessagesComponent } from './messages/messages.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 import { OrderComponent } from './order/order.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { RegisterComponent } from './register/register.component';
+import { AdminGuard } from './_guards/admin.guard';
 import { AuthGuard } from './_guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', component: NotfoundComponent },
   { path: 'menu/:id', component: MenuComponent },
-  { path: 'order', component: OrderComponent },
   { path: 'login', component: AdminComponent },
-  { path: 'register', component: RegisterComponent },
+  { path: 'register', component: RegisterComponent, canActivate: [AdminGuard] },
   { path: 'receipt', component: ReceiptComponent },
-  { path: 'kitchen', component: KitchendashboardComponent},
+  { path: 'kitchen', component: KitchendashboardComponent, canActivate: [AuthGuard]},
+  { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
 
 @NgModule({

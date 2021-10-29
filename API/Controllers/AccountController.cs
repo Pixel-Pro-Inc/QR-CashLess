@@ -18,17 +18,18 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
+        private readonly FirebaseDataContext _firebaseDataContext;
 
         public AccountController(DataContext context, ITokenService tokenService)
         {
+            _firebaseDataContext = new FirebaseDataContext();
             _tokenService = tokenService;
             _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
-        {
-            //if(isEngineer)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto, string branchId)
+        {            
             if (await UserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
@@ -41,10 +42,7 @@ namespace API.Controllers
                 Admin = registerDto.Admin
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-
+            //_firebaseDataContext.StoreData("Account/" + branchId + "/" + id, user);
 
             return new UserDto()
             {

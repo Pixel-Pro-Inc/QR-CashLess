@@ -22,6 +22,8 @@ import { AdminComponent } from './admin/admin.component';
 import { PhotouploaderComponent } from './photouploader/photouploader.component';
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
 import { ReceiptComponent } from './receipt/receipt.component';
+import { MenuitemComponent } from './menuitem/menuitem.component';
+import { NotfoundComponent } from './notfound/notfound.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { ReceiptComponent } from './receipt/receipt.component';
     AdminComponent,
     PhotouploaderComponent,
     KitchendashboardComponent,
-    ReceiptComponent
+    ReceiptComponent,
+    MenuitemComponent,
+    NotfoundComponent
   ],
   imports: [
     BrowserModule,

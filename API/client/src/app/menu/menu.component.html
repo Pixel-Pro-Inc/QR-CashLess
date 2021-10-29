@@ -1,329 +1,85 @@
-<app-order></app-order>
-<h1 class="text-center" *ngIf="showEditing">Administration</h1>
-<div class="container" style="display:flex; flex-direction: row;  
-justify-content: center; align-items: center">  
-  <h1 class="mt-2 mr-3">Menu</h1>
-  <ng-container *ngIf="showEditing">
-    <button class="btn btn-primary mt-2" (click)="formToggle()">Add New Item</button>
-  </ng-container>  
-  <a class="nav-link mt-2 text-info" (click)="categoryMeals()">Meals</a>
-  <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
-  <a class="nav-link mt-2 text-info" (click)="categoryDrinks()">Drinks</a>
+<div class="card bg-light">
+  <h1 class="text-center">Your Order</h1>
+  <app-order class="mt-3" [showPaymentOptions] = "false" #orderWindow></app-order>    
 </div>
 
-<form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
-  <h2 class="text-center text-primary">Create a dish</h2>
-  <hr>
-  <div class="form-group">
-    <input type="text" class="form-control" name="name"
-           [(ngModel)]="model.name" placeholder="Name">
+<h1 class="text-center mt-3" *ngIf="showEditing">
+  Administration
+</h1>
+  <div class="container mt-3 mb-2" style="display:flex; flex-direction: row;  
+  justify-content: center; align-items: center">  
+    <h1 class="mt-2 mr-3">Menu</h1>
+    <ng-container *ngIf="showEditing">
+      <button class="btn btn-primary mt-2" (click)="formToggle()">Add New Item</button>
+    </ng-container>  
+    <a class="nav-link mt-2 text-info" (click)="categoryMeats()">Meats</a>
+    <a class="nav-link mt-2 text-info" (click)="categorySides()">Sides</a>
+    <a class="nav-link mt-2 text-info" (click)="categoryDrinks()">Drinks</a>
+    <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
   </div>
-  <div class="form-group">
-    <input type="number" class="form-control" name="price"
-           [(ngModel)]="model.price" placeholder="Price">
-  </div>
-  <div class="form-group">
-    <input type="text" class="form-control" name="description"
-           [(ngModel)]="model.description" placeholder="Descripiton">
-  </div>
-  <div class="form-group">
-    <label>Category</label>
-    <select class="form-control" name="category" [(ngModel)]="model.category">
-      <option>Meal</option>
-      <option>Dessert</option>
-      <option>Drink</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <input type="number" class="form-control" name="prepTime"
-           [(ngModel)]="model.prepTime" placeholder="Preparation Time">
-  </div>
-  <div class="form-group mb-5">
-    <label>Select an image</label>
-    <input type="file" accept="image/*" class="form-control" name="image"
-           [(ngModel)]="img.image" (change)="onFileChange($event)">
-  </div>
-  <div class="form-group text-center">
-    <button class="btn btn-success mr-2" type="submit">Create</button>
-    <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
-  </div>
-</form>
 
-<div class="ml-5 row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-  <div class="col">
-    <div class="container mt5" *ngIf="showMeals">
-      <ng-container *ngFor="let dish of menuItemsCol">
-        <ng-container *ngIf="dish.category == 'Meal'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" (click)="order(dish, 1)" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
+  <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
+    <h2 class="text-center text-primary">Create a dish</h2>
+    <hr>
+    <label>Name</label>
+    <div class="form-group">
+      <input type="text" class="form-control" name="name"
+             [(ngModel)]="model.name" placeholder="Name">
     </div>
-    <div class="container mt5" *ngIf="showDrinks">
-      <ng-container *ngFor="let dish of menuItemsCol">
-        <ng-container *ngIf="dish.category == 'Drink'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
+    <div class="form-group">
+      <label>Category</label>
+      <select class="form-control" name="category" [(ngModel)]="model.category">
+        <option>Meat</option>
+        <option>Side</option>
+        <option>Dessert</option>
+        <option>Drink</option>
+      </select>
+    </div>    
+    <div class="form-group" *ngIf="model.category != 'Meat'">
+      <label>Price</label>
+      <input type="number" class="form-control" name="price"
+             [(ngModel)]="model.price" placeholder="Price">
     </div>
-    <div class="container mt5" *ngIf="showDesserts">
-      <ng-container *ngFor="let dish of menuItemsCol">
-        <ng-container *ngIf="dish.category == 'Dessert'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" class="form-control" name="description"
+             [(ngModel)]="model.description" placeholder="Descripiton">
+    </div>    
+    <div class="form-group" *ngIf="model.category == 'Meat'">
+      <label>Minimum Price</label>
+      <input type="number" class="form-control" name="minPrice"
+             [(ngModel)]="model.minimumPrice" placeholder="Minimum Price">
     </div>
+    <div class="form-group" *ngIf="model.category == 'Meat'">
+      <label>Rate per gram</label>
+      <input type="number" class="form-control" name="rate"
+             [(ngModel)]="model.rate" placeholder="Price/Gram">
+    </div>
+    <div class="form-group">
+      <label>Preparation time</label>
+      <input type="number" class="form-control" name="prepTime"
+             [(ngModel)]="model.prepTime" placeholder="Preparation Time">
+    </div>
+    <div class="form-group mb-5">
+      <label>Select an image</label>
+      <input type="file" accept="image/*" class="form-control" name="image"
+             [(ngModel)]="img.image" (change)="onFileChange($event)">
+    </div>
+    <div class="form-group text-center">
+      <button class="btn btn-success mr-2" type="submit">Create</button>
+      <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
+    </div>
+  </form>
+
+  <div *ngIf="showMeats">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>
   </div>
-  <div class="col">
-    <div class="container mt5" *ngIf="showMeals">
-      <ng-container *ngFor="let dish of menuItemsCol2">
-        <ng-container *ngIf="dish.category == 'Meal'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" (click)="order(dish, 1)" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
-    <div class="container mt5" *ngIf="showDrinks">
-      <ng-container *ngFor="let dish of menuItemsCol2">
-        <ng-container *ngIf="dish.category == 'Drink'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
-    <div class="container mt5" *ngIf="showDesserts">
-      <ng-container *ngFor="let dish of menuItemsCol2">
-        <ng-container *ngIf="dish.category == 'Dessert'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
+  <div *ngIf="showSides">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Side'"></app-menuitem>
   </div>
-  <div class="col">
-    <div class="container mt5" *ngIf="showMeals">
-      <ng-container *ngFor="let dish of menuItemsCol3">
-        <ng-container *ngIf="dish.category == 'Meal'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" (click)="order(dish, 1)" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
-    <div class="container mt5" *ngIf="showDrinks">
-      <ng-container *ngFor="let dish of menuItemsCol3">
-        <ng-container *ngIf="dish.category == 'Drink'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
-    <div class="container mt5" *ngIf="showDesserts">
-      <ng-container *ngFor="let dish of menuItemsCol3">
-        <ng-container *ngIf="dish.category == 'Dessert'">
-          <div class="card shadow-sm mt-5 mr-5">
-            <img *ngIf="dish.imgUrl != null" src="{{dish.imgUrl}}"
-                 alt="food" />
-
-            <div class="card-body">
-              <div>
-                <h4>{{dish.name}}</h4>
-                <h6 class="mt1">(BWP {{dish.price}})</h6>
-              </div>
-
-              <p class="card-text">{{dish.description}}</p>
-
-              <button *ngIf="!cantOrder" style="width: 100%" type="button" class="btn btn-primary text-center">Order</button>
-
-
-              <div class="d-flex justify-content-between align-items-center">
-                <div *ngIf="authorized" class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted mt-2">{{dish.prepTime}} minutes</small>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-      </ng-container>
-    </div>
+  <div *ngIf="showDrinks">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Drink'"></app-menuitem>
   </div>
-</div>
+  <div *ngIf="showDesserts">
+    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Dessert'"></app-menuitem>
+  </div>

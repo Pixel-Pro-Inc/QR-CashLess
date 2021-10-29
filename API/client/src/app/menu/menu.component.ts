@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MenuService } from '../_services/menu.service';
@@ -16,21 +16,16 @@ import { ReferenceService } from '../_services/reference.service';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
+
 export class MenuComponent implements OnInit {
 
   routeSub: Subscription;
   authorized: boolean;
   showform = false;
 
-  showMeals = true;
+  showMeats = true;
   showDrinks = false;
   showDesserts = false;
-
-  firstCol = true;
-  secondCol = false;
-  thirdCol = false;
-
-  count = 0;
 
   showEditing = false;
   cantOrder = false;
@@ -42,16 +37,16 @@ export class MenuComponent implements OnInit {
     name: '',
     description: '',
     category: '',
-    price: '',
+    price: '0',
     imgUrl: '',
-    prepTime: ''
+    prepTime: '',
+    minimumPrice: 0,
+    rate: 0,
+    availability: false
   };
   img: any = {};
 
   menuItems: MenuItem[] = [];
-  menuItemsCol: MenuItem[] = [];
-  menuItemsCol2: MenuItem[] = [];
-  menuItemsCol3: MenuItem[] = [];
   baseUrl: string;
 
   orderItem: OrderItem = {
@@ -63,8 +58,12 @@ export class MenuComponent implements OnInit {
     fufilled: false,
     purchased: false,
     quantity: 0,
-    calledforbill: false
+    calledforbill: false,
+    weight: ''
   };
+
+  orderItems: OrderItem[] = [];
+  showSides: boolean;
 
   constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService) { }
 
@@ -88,26 +87,6 @@ export class MenuComponent implements OnInit {
     this.baseUrl = this.menuService.baseUrl;
 
     this.getMenuItems();
-    this.groupItems();
-  }
-
-  order(item: MenuItem, quantity: number) {
-    this.orderItem.quantity = quantity;
-    this.orderItem.description = item.description;
-    this.orderItem.fufilled = false;
-    this.orderItem.name = item.name;
-    this.orderItem.price = item.price;
-    this.orderItem.purchased = false;
-    this.orderItem.reference = this.referenceService.currentreference;
-
-    console.log(this.orderItem);
-    alert("Your food is on its way");
-
-    return this.http.post(this.baseUrl + 'order/createorder', this.orderItem).subscribe(response => {
-      return response;
-    }, error => {
-      console.log(error);
-    });
   }
   
   getMenuItems() {
@@ -115,66 +94,6 @@ export class MenuComponent implements OnInit {
       this.menuItems = response;
       console.log(response);
     }, error => console.log(error));    
-  }
-
-  groupItems() {
-    this.menuService.getMenuItems('menu/getmenu').subscribe(response => {
-      this.menuItems = response;
-      for (var i = 0; i < this.menuItems.length; i++) {
-        if (this.menuItems[i].category == 'Meal') {
-          if (this.count == 0) {
-            this.menuItemsCol.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 1) {
-            this.menuItemsCol2.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 2) {
-            this.menuItemsCol3.push(this.menuItems[i]);
-            this.count = 0;
-          }
-        }        
-      }
-      this.count = 0;
-      for (var i = 0; i < this.menuItems.length; i++) {
-        if (this.menuItems[i].category == 'Drink') {
-          if (this.count == 0) {
-            this.menuItemsCol.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 1) {
-            this.menuItemsCol2.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 2) {
-            this.menuItemsCol3.push(this.menuItems[i]);
-            this.count = 0;
-          }
-        }
-      }
-      this.count = 0;
-      for (var i = 0; i < this.menuItems.length; i++) {
-        if (this.menuItems[i].category == 'Dessert') {
-          if (this.count == 0) {
-            this.menuItemsCol.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 1) {
-            this.menuItemsCol2.push(this.menuItems[i]);
-            this.count = this.count + 1;
-          }
-          else if (this.count == 2) {
-            this.menuItemsCol3.push(this.menuItems[i]);
-            this.count = 0;
-          }
-        }
-      }
-
-      console.log(this.menuItemsCol, this.menuItemsCol2, this.menuItemsCol3);
-    }, error => console.log(error));
-
-    
   }
 
   createMenuItem() {
@@ -187,18 +106,27 @@ export class MenuComponent implements OnInit {
     })    
   }
 
-  categoryMeals() {
-    this.showMeals = true;
+  categoryMeats() {
+    this.showMeats = true;
+    this.showSides = false;
+    this.showDrinks = false;
+    this.showDesserts = false;
+  }
+  categorySides() {
+    this.showSides = true;
+    this.showMeats = false;
     this.showDrinks = false;
     this.showDesserts = false;
   }
   categoryDesserts() {
-    this.showMeals = false;
+    this.showMeats = false;
+    this.showSides = false;
     this.showDrinks = false;
     this.showDesserts = true;
   }
   categoryDrinks() {
-    this.showMeals = false;
+    this.showMeats = false;
+    this.showSides = false;
     this.showDrinks = true;
     this.showDesserts = false;
   }
