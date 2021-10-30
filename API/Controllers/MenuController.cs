@@ -86,6 +86,8 @@ namespace API.Controllers
                 menuItem.PublicId = result.PublicId;
             }
 
+            branchID = "rd543211";
+
             _firebaseDataContext.StoreData("Menu/" + branchID + "/" + GetId(branchID), menuItem);
 
             return menuItemDto;
@@ -97,6 +99,8 @@ namespace API.Controllers
             var response = await _firebaseDataContext.GetData("Menu/" + branchID);
 
             dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+
+            branchID = "rd543211";
 
             foreach (var item in data)
             {

@@ -81,7 +81,6 @@ namespace API.Controllers
         {
             return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
-
         public async Task<AppUser> GetUser(string username)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());

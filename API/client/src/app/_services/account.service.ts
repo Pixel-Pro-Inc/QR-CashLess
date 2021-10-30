@@ -19,7 +19,8 @@ export class AccountService {
       map((response: User) => {
         const user = response;
         if (user) {
-          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('user', JSON.stringify(user)); //Is this supposed to be set Item or get item?
+          console.log("Is this supposed to be set Item or get item?");
           this.currentUserSource.next(user);
         }
         return response;

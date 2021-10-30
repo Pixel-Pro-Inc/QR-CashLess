@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
+import { BranchesService } from '../_services/branches.service';
 
 @Component({
   selector: 'app-admin',
@@ -14,7 +15,7 @@ export class AdminComponent implements OnInit {
   model: any = {};
   user: User;
 
-  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { }
+  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService, private branchService: BranchesService) { }
 
   ngOnInit(): void {
   }
@@ -37,5 +38,10 @@ export class AdminComponent implements OnInit {
       this.toastr.error(error.error);
     })
   }
-
+  addRestBranch() {
+    this.branchService.addRestBranch(this.model, 'branch/addBranch').subscribe(response => {
+      console.log(response); //I dont know if this will work cause I never made a branch page
+    }
+    );
+  }
 }

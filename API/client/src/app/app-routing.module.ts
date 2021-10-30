@@ -12,6 +12,7 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { OrderComponent } from './order/order.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { RegisterComponent } from './register/register.component';
+import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
 import { AdminGuard } from './_guards/admin.guard';
 import { AuthGuard } from './_guards/auth.guard';
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'login', component: AdminComponent },
   { path: 'register', component: RegisterComponent, canActivate: [AdminGuard] },
   { path: 'receipt', component: ReceiptComponent },
+  {path: 'branches', component: RestaurantBranchComponent},
   { path: 'kitchen', component: KitchendashboardComponent, canActivate: [AuthGuard]},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
