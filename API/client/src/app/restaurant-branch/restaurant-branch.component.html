@@ -13,7 +13,7 @@
           <h3 class="d-flex h-100 text-left "> Please pick a restaurant Branch</h3>
           <main class="px-3">
     <div class="list-group" >
-  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true">
+  <a class="list-group-item list-group-item-action d-flex gap-4 py-4" aria-current="true" >
     <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
     <div *ngIf="branchDictionary.get('Phakalane');then PhakakaneActive else Phakinactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
 <ng-template #PhakakaneActive>
@@ -37,7 +37,7 @@
     </div>
 </ng-template>
   </a>
-  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true">
+  <a class="list-group-item list-group-item-action d-flex gap-4 py-4" aria-current="true">
     <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
     <div *ngIf="branchDictionary.get('Riverwalk');then RiverActive else RIverInactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
 <ng-template #RiverActive>
@@ -61,7 +61,8 @@
     </div>
 </ng-template>
   </a>
-  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true">
+  <a class="list-group-item list-group-item-action d-flex gap-4 py-4" aria-current="true" >
+   <!-- I removed this '*ngIf="branchDictionary.get('Thamaga')"' from above cause there was no point hidding it if we were judt going to say it's unactive -->
     <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
     <div *ngIf="branchDictionary.get('Thamaga');then ThamagaActive else ThamagaInactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
 <ng-template #ThamagaActive>
@@ -79,6 +80,30 @@
     <div class="d-flex gap-2 w-100 justify-content-between">
         <div  >
             <h4 class="mb-0">Thamaga</h4>
+            <p class="mb-0 opacity-75">It seems they arent ready for you yet...</p>
+        </div>
+        <small class="opacity-50 text-nowrap">unavailable</small>
+    </div>
+</ng-template>
+  </a>
+  <a class="list-group-item list-group-item-action d-flex gap-4 py-4" aria-current="true" >
+    <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
+    <div *ngIf="branchDictionary.get('Phakalane');then PhakakaneActive else Phakinactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
+<ng-template #PhakakaneActive>
+    <a routerLink="/menu/client" (click)="remove()">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Phakalane</h4>
+                <p class="mb-0 opacity-75">In the bustling acacia mall near the traffic lights </p>
+            </div>
+            <small class="opacity-50 text-nowrap">active</small>
+        </div>
+    </a>
+</ng-template>
+<ng-template #Phakinactive>
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div  >
+            <h4 class="mb-0">Phakalane</h4>
             <p class="mb-0 opacity-75">It seems they arent ready for you yet...</p>
         </div>
         <small class="opacity-50 text-nowrap">unavailable</small>
