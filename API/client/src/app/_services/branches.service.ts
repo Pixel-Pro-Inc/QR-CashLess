@@ -17,14 +17,4 @@ export class BranchesService {
       })
     )
   }
-  addRestBranch(model: any, dir: string) {
-    return this.http.post(this.baseUrl + dir, model).pipe(
-      map((branch: RestBranch) => {
-        if (branch) {
-          localStorage.setItem('branch', JSON.stringify(branch));
-        }
-        return branch;
-      })
-    )
-  }
 }

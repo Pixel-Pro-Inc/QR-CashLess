@@ -22,7 +22,10 @@ export class MenuService {
 
   createMenuItem(dir: string, model: MenuItem) {
     return this.http.post(this.baseUrl + dir, model).pipe(
-      map((response: MenuItem[]) => {
+      map((response: MenuItem) => {
+        if (response) {
+          localStorage.setItem(response.name, JSON.stringify(response)); //I changed it anyways, you migt not need to do it
+        }
         return response;
       })
     )
@@ -40,4 +43,9 @@ export class MenuService {
   editMenuItem() {
 
   }
+
+  deleteMenuItem() {
+
+  }
+
 }

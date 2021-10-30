@@ -95,7 +95,6 @@ export class MenuComponent implements OnInit {
       console.log(response);
     }, error => console.log(error));    
   }
-
   createMenuItem() {
     this.formToggle();
     this.model.imgUrl = this.imageSrc;
