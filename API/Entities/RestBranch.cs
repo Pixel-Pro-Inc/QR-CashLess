@@ -12,5 +12,6 @@ namespace API.Entities
         string branchName;
         string managerName;
         string location;
+        bool active;
     }
 }

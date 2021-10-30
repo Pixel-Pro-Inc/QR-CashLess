@@ -14,13 +14,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : Controller
     {
-        IFirebaseConfig config = new FirebaseConfig
-        {
-            AuthSecret = "KIxlMLOIsiqVrQmM0V7pppI1Ao67UPZv5jOdU0QJ",
-            BasePath = "https://rodizoapp-default-rtdb.firebaseio.com/",
-
-        };
-        IFirebaseClient firebaseClient;
+       
 
         [HttpGet]
         public IActionResult Index()
@@ -28,7 +22,16 @@ namespace API.Controllers
             return View();
         }
 
-        [HttpPost]
+        /*
+         *  IFirebaseConfig config = new FirebaseConfig
+        {
+            AuthSecret = "KIxlMLOIsiqVrQmM0V7pppI1Ao67UPZv5jOdU0QJ",
+            BasePath = "https://rodizoapp-default-rtdb.firebaseio.com/",
+
+        };
+        IFirebaseClient firebaseClient;
+
+         [HttpPost]
         public IActionResult PostNewData(AppUser user)
         {
             try
@@ -51,9 +54,7 @@ namespace API.Controllers
             PushResponse response = firebaseClient.Push("Info/", user);
             user.UserName = response.Result.name;
             SetResponse setResponse = firebaseClient.Set("Info/" + user.UserName, user);
-         }
-        
-
+         }*/
     }
-   
+
 }

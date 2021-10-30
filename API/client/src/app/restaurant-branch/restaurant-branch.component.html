@@ -1,0 +1,78 @@
+<div >
+    <h1> Please pick a restaurant Branch</h1>
+    <div class="list-group" >
+  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true" ng-init="isPOSactive(Phakalane)">
+    <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
+    <div *ngIf="isActive;then PhakakaneActive else Phakinactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
+<ng-template #PhakakaneActive>
+    <a href="https://localhost:4200/menu/client" (click)="remove()">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Phakalane</h4>
+                <p class="mb-0 opacity-75">In the bustling acacia mall near the traffic lights </p>
+            </div>
+            <small class="opacity-50 text-nowrap">active</small>
+        </div>
+    </a>
+</ng-template>
+<ng-template #Phakinactive>
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div  >
+            <h4 class="mb-0">Phakalane</h4>
+            <p class="mb-0 opacity-75">It seems they arent ready for you yet...</p>
+        </div>
+        <small class="opacity-50 text-nowrap">unavailable</small>
+    </div>
+</ng-template>
+  </a>
+  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true" ng-init="isPOSactive(Riverwalk)">
+    <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
+    <div *ngIf="isActive;then RiverActive else RIverInactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
+<ng-template #RiverActive>
+    <a href="https://localhost:4200/menu/client" (click)="remove()">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Riverwalk </h4>
+                <p class="mb-0 opacity-75">On your way out near homeCorp</p>
+              </div>
+              <small class="opacity-50 text-nowrap">active</small>
+        </div>
+    </a>
+</ng-template>
+<ng-template #RIverInactive>
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div  >
+            <h4 class="mb-0">Riverwalk</h4>
+            <p class="mb-0 opacity-75">It seems they arent ready for you yet...</p>
+        </div>
+        <small class="opacity-50 text-nowrap">unavailable</small>
+    </div>
+</ng-template>
+  </a>
+  <a class="list-group-item list-group-item-action d-flex gap-5 py-5" aria-current="true" ng-init="isPOSactive(Thamaga)">
+    <img src="https://github.com/twbs.png" alt="twbs" width="80" height="80" class="rounded-circle flex-shrink-0">
+    <div *ngIf="isActive;then ThamagaActive else ThamagaInactive" class="d-flex gap-2 w-100 justify-content-between"></div>    
+<ng-template #ThamagaActive>
+    <a href="https://localhost:4200/menu/client" (click)="remove()">
+        <div class="d-flex gap-2 w-100 justify-content-between">
+            <div>
+                <h4 class="mb-0">Thamaga </h4>
+                <p class="mb-0 opacity-75">Coming Soon!</p>
+              </div>
+              <small class="opacity-50 text-nowrap">active</small>
+        </div>
+    </a>
+</ng-template>
+<ng-template #ThamagaInactive>
+    <div class="d-flex gap-2 w-100 justify-content-between">
+        <div  >
+            <h4 class="mb-0">Thamaga</h4>
+            <p class="mb-0 opacity-75">It seems they arent ready for you yet...</p>
+        </div>
+        <small class="opacity-50 text-nowrap">unavailable</small>
+    </div>
+</ng-template>
+  </a>
+</div>
+
+</div>

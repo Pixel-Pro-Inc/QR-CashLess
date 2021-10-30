@@ -13,14 +13,21 @@ export class AppComponent implements OnInit {
   title = 'QR Cashless';
   users: any;
 
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService) { }
+  SelectorMode: boolean;
 
   ngOnInit(){
     this.setCurrentUser();
+    this.SelectorMode = true;
   }
 
   setCurrentUser() {
     const user: User = JSON.parse(localStorage.getItem('user'));
     this.accountService.setCurrentUser(user);
-  }  
+  }
+
+  RemoveSelector(event: boolean) {
+
+    this.SelectorMode = event;
+  }
 }
