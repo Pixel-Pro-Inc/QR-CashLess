@@ -24,7 +24,10 @@ import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.c
 import { ReceiptComponent } from './receipt/receipt.component';
 import { MenuitemComponent } from './menuitem/menuitem.component';
 import { NotfoundComponent } from './notfound/notfound.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { RegisterBranchComponent } from './register-branch/register-branch.component';
 import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch
     ReceiptComponent,
     MenuitemComponent,
     NotfoundComponent,
-    RestaurantBranchComponent
+    CheckoutComponent,
+    RegisterBranchComponent,
+    RestaurantBranchComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

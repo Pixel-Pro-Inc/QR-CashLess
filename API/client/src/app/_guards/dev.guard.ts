@@ -8,15 +8,17 @@ import { AccountService } from '../_services/account.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminGuard implements CanActivate {
+export class DevGuard implements CanActivate {
+
   constructor(private accountService: AccountService, private toastr: ToastrService) {}
 
   canActivate(): Observable<boolean>{
     return this.accountService.currentUser$.pipe(
       map(user => {
         if(user){
-          if (user.admin || user.developer) return true;
+          if (user.developer) return true;
         }   
+        console.log(user);
         this.toastr.error('You are unauthorized!');
     })
     );

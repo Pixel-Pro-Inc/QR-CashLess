@@ -39,6 +39,7 @@ namespace API.Controllers
                 UserName = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key,
+                Developer = registerDto.Developer,
                 Admin = registerDto.Admin
             };
 
@@ -73,6 +74,7 @@ namespace API.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
+                Developer = user.Developer,
                 Admin = user.Admin
             };
         }

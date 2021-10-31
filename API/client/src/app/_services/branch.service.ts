@@ -1,18 +1,30 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { RestBranch } from '../_models/RestBranch';
+import { Branch } from '../_models/branch';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BranchesService {
+export class BranchService {
   baseUrl = 'https://localhost:5001/api/';
+
   constructor(private http: HttpClient) { }
+
+  submission(model: Branch, dir: string){
+    return this.http.post(this.baseUrl + dir, model).subscribe(
+      response =>{
+        return response;
+      },
+      error =>
+      {
+        console.log(error);
+      });
+  }
 
   getRestBranches(dir: string) {
     return this.http.get(this.baseUrl + dir).pipe(
-      map((response: RestBranch[]) => {
+      map((response: Branch[]) => {
         return response;
       })
     )
