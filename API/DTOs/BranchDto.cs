@@ -11,5 +11,7 @@ namespace API.DTOs
         public string Name { get; set; }
         public string Location { get; set; }
         public string Img { get; set; }
+
+        public float LastActive { get; set; }
     }
 }

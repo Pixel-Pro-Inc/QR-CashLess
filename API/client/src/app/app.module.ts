@@ -26,6 +26,8 @@ import { MenuitemComponent } from './menuitem/menuitem.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { RegisterBranchComponent } from './register-branch/register-branch.component';
+import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,11 @@ import { RegisterBranchComponent } from './register-branch/register-branch.compo
     KitchendashboardComponent,
     ReceiptComponent,
     MenuitemComponent,
-    NotfoundComponent
+    NotfoundComponent,
+    CheckoutComponent,
+    RegisterBranchComponent,
+    RestaurantBranchComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

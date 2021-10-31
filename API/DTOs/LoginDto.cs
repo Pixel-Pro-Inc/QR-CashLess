@@ -14,6 +14,7 @@ namespace API.DTOs
         public string Password { get; set; }
         //[Required]
         public string Restuarant { get; set; }
+        public bool Developer { get; set; }
         public bool Admin { get; set; }
     }
 }

@@ -3,4 +3,5 @@ export interface Branch {
     id: string;
     location: string;
     img: string;
+    lastActive: Number;
   }

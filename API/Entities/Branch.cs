@@ -12,5 +12,6 @@ namespace API.Entities
         public string Location { get; set; }
         public string ImgUrl { get; set; }
         public string PublicId { get; set; }
+        public DateTime LastActive { get; set; }
     }
 }

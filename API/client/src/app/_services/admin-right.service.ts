@@ -5,8 +5,6 @@ import { MenuComponent } from '../menu/menu.component';
 import { ReceiptComponent } from '../receipt/receipt.component';
 import { RestaurantBranchComponent } from '../restaurant-branch/restaurant-branch.component';
 import { MenuItem } from '../_models/menuItem';
-import { RestBranch } from '../_models/RestBranch';
-import { BranchesService } from './branches.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,32 +16,8 @@ export class AdminRightService {
   private menuClass: MenuComponent;
   private branchClass: RestaurantBranchComponent;
 
-  constructor(private http: HttpClient, private branchService:BranchesService) { }
-
-  addBranch(model:any, dir:string) {
-    return this.http.post(this.baseUrl + dir, model).pipe(
-      map((branch: RestBranch) => {
-        if (branch) {
-          localStorage.setItem(branch.name, JSON.stringify(branch));
-        }
-        return branch;
-      })
-    );
-  }
-  deleteBranch(model: any, dir: string) {
-    return this.http.post(this.baseUrl + dir, model).pipe(
-      map((branch: RestBranch) => {
-        if (branch) {
-          localStorage.removeItem(branch.name);
-        }
-        return branch;
-      })
-    )
-  }
-  checkBranch(name:string): boolean {
-    this.branchClass.getStatuses();
-    return this.branchClass.branchDictionary.get(name);
-  }
+  constructor(private http: HttpClient) { }
+  
   getbranches = () => this.branchClass.getBranches();
 
   /** I use a component here cause there are just too many variables i'll have to define to get the right results */

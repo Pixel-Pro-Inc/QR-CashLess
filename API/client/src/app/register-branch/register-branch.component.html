@@ -1,23 +1,22 @@
-<form #branchForm="ngForm" (ngSubmit)="register()" autocomplete="off" enctype="multipart/form-data">
-    <h2 class="text-center text-primary">Create a branch</h2>
-    <hr>
-    <label>Name</label>
-    <div class="form-group">
-      <input type="text" class="form-control" name="name"
-             [(ngModel)]="model.name" placeholder="Name">
-    </div>
-    <div class="form-group">
-      <label>Location</label>
-      <input type="text" class="form-control" name="location"
-             [(ngModel)]="model.location" placeholder="Location">
-    </div>
-    <div class="form-group mb-5">
-      <label>Select an image</label>
-      <input type="file" accept="image/*" class="form-control" name="image"
-             [(ngModel)]="img" (change)="onFileChange($event)">
-    </div>
-    <div class="form-group text-center">
-      <button class="btn btn-success mr-2" type="submit">Create</button>
-      <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
-    </div>
-  </form>
+<form #branchForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+  <h2 class="text-center text-primary">Create a branch</h2>
+  <hr>
+  <label>Name</label>
+  <div class="form-group">
+    <input type="text" class="form-control" name="name"
+           [(ngModel)]="model.name" placeholder="Name">
+  </div>
+  <div class="form-group">
+    <label>Location</label>
+    <input type="text" class="form-control" name="location"
+           [(ngModel)]="model.location" placeholder="Location">
+  </div>
+  <div class="form-group mb-5">
+    <label>Select an image</label>
+    <input type="file" accept="image/*" class="form-control" name="image"
+           [(ngModel)]="img" (change)="onFileChange($event)">
+  </div>
+  <button type="submit" class="btn btn-primary">
+    Create
+  </button>
+</form>

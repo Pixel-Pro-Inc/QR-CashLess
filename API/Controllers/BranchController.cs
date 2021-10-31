@@ -28,11 +28,7 @@ namespace API.Controllers
         public async Task<ActionResult<BranchDto>> CreateBranch(BranchDto dto)
         {
             List<Branch> branches = new List<Branch>();
-
-            foreach (var item in await GetBranches2())
-            {
-                branches.Add(item);
-            }
+            branches = await GetBranches2();
 
             for (int i = 0; i < branches.Count; i++)
             {
@@ -80,10 +76,10 @@ namespace API.Controllers
 
             return dto;
         }
-        [HttpGet("get")]
-        public async Task<ActionResult<IEnumerable<Branch>>> GetBranches()
+        [HttpGet("getbranches")]
+        public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches()
         {
-            List<Branch> branches = new List<Branch>();
+            List<BranchDto> branches = new List<BranchDto>();
 
             FirebaseResponse response = await _firebaseDataContext.GetData("Branch");
 
@@ -91,14 +87,27 @@ namespace API.Controllers
 
             foreach (var item in data)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
-                branches.Add(branch);
+                Branch branch = JsonConvert.DeserializeObject<Branch>(((JProperty)item).Value.ToString());
+
+                TimeSpan timeSpan = branch.LastActive - DateTime.Now;
+
+                float x = (float)(timeSpan.TotalMinutes);
+
+                BranchDto branchDto = new BranchDto()
+                {
+                    Id = branch.Id,
+                    Img = branch.ImgUrl,
+                    LastActive = x,
+                    Location = branch.Location,
+                    Name = branch.Name
+                };
+
+                branches.Add(branchDto);
             }
 
             return branches;
         }
-
-        public async Task<IEnumerable<Branch>> GetBranches2()
+        public async Task<List<Branch>> GetBranches2()//returns a list
         {
             List<Branch> branches = new List<Branch>();
 
@@ -106,11 +115,14 @@ namespace API.Controllers
 
             dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
 
-            foreach (var item in data)
+            if (data != null)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
-                branches.Add(branch);
-            }
+                foreach (var item in data)
+                {
+                    Branch branch = JsonConvert.DeserializeObject<Branch>(((JProperty)item).Value.ToString());
+                    branches.Add(branch);
+                }
+            }            
 
             return branches;
         }

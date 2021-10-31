@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
 
+
 @Component({
   selector: 'app-register-branch',
   templateUrl: './register-branch.component.html',
@@ -9,7 +10,13 @@ import { BranchService } from '../_services/branch.service';
 })
 export class RegisterBranchComponent implements OnInit {
 
-  model: Branch;
+  model: Branch = {
+    name: '',
+    id: '',
+    location: '',
+    img: '',
+    lastActive: undefined
+  };
   img: any;
 
   constructor(private branchService: BranchService) { }
@@ -23,6 +30,7 @@ export class RegisterBranchComponent implements OnInit {
     this.model.id = 'rd'+ n;
     
     this.branchService.submission(this.model, 'branch/register');
+    this.ngOnInit;
   }
 
   onFileChange(event) {

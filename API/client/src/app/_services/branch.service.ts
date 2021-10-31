@@ -15,6 +15,18 @@ export class BranchService {
     return this.http.post(this.baseUrl + dir, model).subscribe(
       response =>{
         return response;
+      },
+      error =>
+      {
+        console.log(error);
       });
+  }
+
+  getRestBranches(dir: string) {
+    return this.http.get(this.baseUrl + dir).pipe(
+      map((response: Branch[]) => {
+        return response;
+      })
+    )
   }
 }

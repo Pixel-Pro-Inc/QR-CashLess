@@ -39,13 +39,16 @@ namespace API.Controllers
 
             var response = await _firebaseDataContext.GetData("Menu/" + branchID);
 
-            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
-            
-            foreach (var item in data)
+            if(response != null)
             {
-                MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menuItem);
-            }
+                dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+
+                foreach (var item in data)
+                {
+                    MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                    items.Add(menuItem);
+                }
+            }            
 
             return items;
         }
@@ -86,8 +89,6 @@ namespace API.Controllers
                 menuItem.PublicId = result.PublicId;
             }
 
-            branchID = "rd543211";
-
             _firebaseDataContext.StoreData("Menu/" + branchID + "/" + GetId(branchID), menuItem);
 
             return menuItemDto;
@@ -98,23 +99,23 @@ namespace API.Controllers
 
             var response = await _firebaseDataContext.GetData("Menu/" + branchID);
 
-            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
-
-            branchID = "rd543211";
-
-            foreach (var item in data)
+            if(response != null)
             {
-                MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menuItem);
-            }           
+                dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
 
-            if(items.Count != 0)
-            {
-                return items[items.Count - 1].Id + 1;
-            }
+                foreach (var item in data)
+                {
+                    MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JProperty)item).Value.ToString());
+                    items.Add(menuItem);
+                }
 
-            return 0;
-            
+                if (items.Count != 0)
+                {
+                    return items[items.Count - 1].Id + 1;
+                }
+            }            
+
+            return 0;            
         }
     }
 }
