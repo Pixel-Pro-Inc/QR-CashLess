@@ -19,8 +19,8 @@
   </div>
 
   <div class="p-3 py-4 mb-2 bg-light text-right rounded">
-    <button xlink:href="bootstrap-icons.svg#arrow-left"></button>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <button class="btn" (click)="formToggle()"><i class="fa fa-close"></i></button>
     </div>
   <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
     <h2 class="text-center text-primary">Create a dish</h2>

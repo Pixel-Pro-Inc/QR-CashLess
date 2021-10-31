@@ -39,13 +39,15 @@ export class MenuService {
       }
     )*/
   }
-
-  editMenuItem() {
-
-  }
-
-  deleteMenuItem() {
-
+  editMenuItem(model: any, dir: string) {
+    return this.http.post(this.baseUrl + dir, model).pipe(
+      map((item: MenuItem) => {
+        if (item) {
+          localStorage.setItem(item.name, JSON.stringify(item)); //I'm assuming that since its the same place and name it will just overwrite
+        }
+        return item;
+      })
+    );
   }
 
 }

@@ -104,6 +104,7 @@ export class MenuComponent implements OnInit {
       window.location.reload();
     })    
   }
+  
 
   categoryMeats() {
     this.showMeats = true;
