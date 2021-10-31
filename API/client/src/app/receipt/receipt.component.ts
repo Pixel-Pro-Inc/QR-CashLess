@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Local } from 'protractor/built/driverProviders';
 import { map } from 'rxjs/operators';
+import { AdminComponent } from '../admin/admin.component';
 import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
 import { ReferenceService } from '../_services/reference.service';
@@ -18,6 +19,8 @@ export class ReceiptComponent implements OnInit {
   invoiceNum: number;
   date: any;
   total = 0;
+  private adminComponent: AdminComponent;
+
   constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService) { }
 
   ngOnInit(): void {
@@ -50,6 +53,8 @@ export class ReceiptComponent implements OnInit {
 
       console.log(this.orders, this.orderItems);
     });
+
+    this.adminComponent.pushreceipt(this);
   }
   getOrders() {
     return this.http.get(this.baseUrl + 'order/getorders').pipe(

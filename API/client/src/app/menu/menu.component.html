@@ -18,6 +18,10 @@
     <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
   </div>
 
+  <div class="p-3 py-4 mb-2 bg-light text-right rounded">
+    <button xlink:href="bootstrap-icons.svg#arrow-left"></button>
+    
+    </div>
   <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
     <h2 class="text-center text-primary">Create a dish</h2>
     <hr>
