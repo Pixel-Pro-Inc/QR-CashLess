@@ -40,6 +40,7 @@ namespace API.Controllers
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key,
                 Developer = registerDto.Developer,
+                branchId = branchId,
                 Admin = registerDto.Admin
             };
 
@@ -75,6 +76,7 @@ namespace API.Controllers
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
                 Developer = user.Developer,
+                branchId = user.branchId,
                 Admin = user.Admin
             };
         }

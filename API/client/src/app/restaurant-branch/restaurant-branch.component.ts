@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Branch } from '../_models/branch';
+import { OrderItem } from '../_models/orderItem';
 import { BranchService } from '../_services/branch.service';
 
 @Component({
@@ -24,7 +25,10 @@ export class RestaurantBranchComponent implements OnInit {
 
   onClick(branch: Branch){
     //routerLinkNextPage
-    this.router.navigateByUrl('/menu/' + branch.id + '/client');
+    let emptyOrders: OrderItem[] = [];
+    localStorage.setItem('ordered', JSON.stringify(emptyOrders));
+    
+    this.router.navigateByUrl('/menu/' + branch.id + '_client');
   }
 
   getStatus(branch: Branch): string{

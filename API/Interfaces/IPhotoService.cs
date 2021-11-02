@@ -9,7 +9,7 @@ namespace API.Interfaces
 {
     public interface IPhotoService
     {
-        Task<ImageUploadResult> AddPhotoAsync(IFormFile file);
+        Task<ImageUploadResult> AddPhotoAsync(string path);
         Task<DeletionResult> DeletePhotoAsync(string publicId);
     }
 }

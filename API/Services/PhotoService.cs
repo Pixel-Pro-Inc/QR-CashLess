@@ -27,13 +27,23 @@ namespace API.Services
 
             _cloudinary = new Cloudinary(acc);
         }
-        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
+        public async Task<ImageUploadResult> AddPhotoAsync(string path)
         {
             var uploadResult = new ImageUploadResult();
 
-            if(file.Length > 0)
+            int n = path.IndexOf("base64,");
+
+            path = path.Remove(0, n + 7);
+            var bytes = Convert.FromBase64String(path);
+
+            FormFile file;
+
+            var myStream = new MemoryStream(bytes);
+            file = new FormFile(myStream, 0, myStream.Length, null, "imageName");
+
+            if (file.Length > 0)
             {
-                using var stream = file.OpenReadStream();//System.IO.File.OpenRead(file);
+                using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
                     File = new FileDescription("imageOfFood", stream),

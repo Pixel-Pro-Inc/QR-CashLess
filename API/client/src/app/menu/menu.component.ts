@@ -67,14 +67,9 @@ export class MenuComponent implements OnInit {
 
   constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService) { }
 
-  ngOnInit(): void {
-    this.routeSub = this.route.params.subscribe(
-      params => {
-        this.referenceService.setReference(params['id']);
-      }
-    );
+  ngOnInit(): void {   
 
-    if (this.referenceService.currentreference == 'edit') {
+    if (this.referenceService.currentreference() == 'edit') {
       this.cantOrder = true;
       this.accountService.currentUser$.subscribe(r => {
         this.user = r;
@@ -84,24 +79,38 @@ export class MenuComponent implements OnInit {
       });
     }
 
+    if(this.user == null){
+      this.routeSub = this.route.params.subscribe(
+        params => {
+          this.referenceService.setReference(params['id']);
+        }
+      );
+    }
+
     this.baseUrl = this.menuService.baseUrl;
 
-    this.getMenuItems();
+    this.getMenuItems(this.referenceService.currentBranch());
   }
   
-  getMenuItems() {
-    this.menuService.getMenuItems('menu/getmenu').subscribe(response => {
+  getMenuItems(branchId: string) {
+    this.menuService.getMenuItems('menu/getmenu', branchId).subscribe(response => {
       this.menuItems = response;
       console.log(response);
     }, error => console.log(error));    
   }
   createMenuItem() {
+    let branchId = this.referenceService.currentBranch();
+
+    console.log('branch id ' + branchId);
+    
     this.formToggle();
     this.model.imgUrl = this.imageSrc;
     console.log(this.model);
-    this.menuService.createMenuItem('menu/createitem', this.model).subscribe(response => {
-      console.log(response);
+    this.menuService.createMenuItem('menu/createitem', this.model, branchId).subscribe(response => {      
       window.location.reload();
+    }, 
+    error =>{
+      console.log(error);
     })    
   }
 

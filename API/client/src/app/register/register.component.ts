@@ -1,6 +1,10 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { map } from 'rxjs/operators';
+import { Branch } from '../_models/branch';
+import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
+import { BranchService } from '../_services/branch.service';
 
 @Component({
   selector: 'app-register',
@@ -9,14 +13,36 @@ import { AccountService } from '../_services/account.service';
 })
 export class RegisterComponent implements OnInit {
   @Output() cancelRegister = new EventEmitter();
+  branches: Branch[] = [];
   model: any = {};
+  user: User;
 
-  constructor(public accountService: AccountService, private toastr: ToastrService) { }
+  isDeveloper = false;
+
+  constructor(public accountService: AccountService, private toastr: ToastrService, private branchService: BranchService) { }
 
   ngOnInit(): void {
+    this.accountService.currentUser$.subscribe(
+      r => {
+        this.user = r;
+
+        this.isDeveloper = this.user.developer;
+      }
+    );
+
+    this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
+      this.branches = response;
+    },
+    error => {
+      console.log(error);
+    });
   }
 
   register() {
+    if(this.model.branchId == null){
+      this.model.branchId = this.user.branchId;
+    }
+    
     this.accountService.register(this.model, 'account/register').subscribe(response => {
       console.log(response);
       this.cancel();

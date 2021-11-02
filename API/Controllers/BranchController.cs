@@ -52,19 +52,10 @@ namespace API.Controllers
             };
 
             string path = dto.Img;
-            int n = path.IndexOf("base64,");
 
-            path = path.Remove(0, n + 7);
-            var bytes = Convert.FromBase64String(path);
-
-            if (path != null)
+            if (path != null && path != "")
             {
-                FormFile file;
-
-                var stream = new MemoryStream(bytes);
-                file = new FormFile(stream, 0, stream.Length, null, "foodName");
-
-                var result = await _photoService.AddPhotoAsync(file);
+                var result = await _photoService.AddPhotoAsync(path);
 
                 if (result.Error != null) return BadRequest(result.Error.Message);
 
@@ -81,13 +72,11 @@ namespace API.Controllers
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            FirebaseResponse response = await _firebaseDataContext.GetData("Branch");
+            var response = await _firebaseDataContext.GetData("Branch");
 
-            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
-
-            foreach (var item in data)
+            foreach (var item in response)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JProperty)item).Value.ToString());
+                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
 
                 TimeSpan timeSpan = branch.LastActive - DateTime.Now;
 
@@ -107,22 +96,17 @@ namespace API.Controllers
 
             return branches;
         }
-        public async Task<List<Branch>> GetBranches2()//returns a list
+        public async Task<List<Branch>> GetBranches2()
         {
             List<Branch> branches = new List<Branch>();
 
-            FirebaseResponse response = await _firebaseDataContext.GetData("Branch");
+            var response = await _firebaseDataContext.GetData("Branch");
 
-            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
-
-            if (data != null)
+            foreach (var item in response)
             {
-                foreach (var item in data)
-                {
-                    Branch branch = JsonConvert.DeserializeObject<Branch>(((JProperty)item).Value.ToString());
-                    branches.Add(branch);
-                }
-            }            
+                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
+                branches.Add(branch);
+            }
 
             return branches;
         }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
+import { CheckoutComponent } from './checkout/checkout.component';
 import { HomeComponent } from './home/home.component';
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
 import { ListsComponent } from './lists/lists.component';
@@ -23,10 +24,12 @@ const routes: Routes = [
   { path: '', component: RestaurantBranchComponent },
   { path: 'menu/:id', component: MenuComponent },
   { path: 'login', component: LoginComponent },
-  { path:'register/branch', component: RegisterBranchComponent, canActivate: [DevGuard]},
+  { path: 'register/branch', component: RegisterBranchComponent, canActivate: [DevGuard]},
+  { path: 'register/admin', component: RegisterComponent, canActivate: [DevGuard]},
   { path: 'register/user', component: RegisterComponent, canActivate: [AdminGuard] },
   { path: 'receipt', component: ReceiptComponent },
   { path: 'branches', component: RestaurantBranchComponent},
+  { path: 'checkout', component: CheckoutComponent},
   { path: 'kitchen', component: KitchendashboardComponent, canActivate: [AuthGuard]},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];

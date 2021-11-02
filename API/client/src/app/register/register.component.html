@@ -9,13 +9,21 @@
     <input type="password" class="form-control" name="password"
            [(ngModel)]="model.password" placeholder="Password">
   </div>
-  <div class="form-group">
+  <div *ngIf="isDeveloper" class="form-group">
+    <label>Branch</label>
+    <select class="form-control" name="category" [(ngModel)]="model.branchId">
+      <ng-container *ngFor="let branch of branches">
+        <option>{{branch.id}}</option>
+      </ng-container>     
+    </select>
+  </div>
+  <div *ngIf="isDeveloper" class="form-group">
     <input type="checkbox" name="admin"
            [(ngModel)]="model.admin">
     <label class="ml-2">Admin Account</label>
   </div>
   <div class="form-group text-center">
     <button class="btn btn-success mr-2" type="submit">Register</button>
-    <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
+    <button class="btn btn-default mr-2" routerLink='/' type="button">Cancel</button>
   </div>
 </form>

@@ -19,11 +19,7 @@ export class AdminRightService {
   constructor(private http: HttpClient) { }
   
   getbranches = () => this.branchClass.getBranches();
-
-  /** I use a component here cause there are just too many variables i'll have to define to get the right results */
-  getMenuItems = () => this.menuClass.getMenuItems();
-  createMenuItem = () => this.menuClass.createMenuItem();
-  /**These will be edited only by the admin */
+  
   deleteMenuItem(model: any, dir: string) {
     return this.http.post(this.baseUrl + dir, model).pipe(
       map((item: MenuItem) => {

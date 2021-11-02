@@ -2,6 +2,8 @@
 using FireSharp.Interfaces;
 using FireSharp.Response;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +27,36 @@ namespace API.Data
 
             var response = await client.SetAsync(path, data);
         }
-        public async Task<FirebaseResponse> GetData(string path)
+        public async Task<List<object>> GetData(string path)
         {
+            List<object> objects = new List<object>();
+
             client = new FireSharp.FirebaseClient(config);
 
-            FirebaseResponse d = await client.GetAsync(path);        
+            FirebaseResponse response = await client.GetAsync(path);
 
-            return d;
+            dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+
+            if (data != null)
+            {
+                foreach (var item in data)
+                {
+                    object _object = new object();
+
+                    if (item.GetType() == typeof(JProperty))
+                    {
+                        _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
+                    }
+                    else
+                    {
+                        _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
+                    }                             
+
+                    objects.Add(_object);
+                }
+            }
+
+            return objects;
         }
         public async void EditData(string path, object data)
         {

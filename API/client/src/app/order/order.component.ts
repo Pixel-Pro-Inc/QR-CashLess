@@ -34,7 +34,7 @@ export class OrderComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.orderItems = this.getOrders();    
+    this.orderItems = this.getOrders();   
   }
 
   public updateOrderView(item: MenuItem, quantity: number, userInput: number) {
@@ -52,7 +52,7 @@ export class OrderComponent implements OnInit {
       purchased: false,
       quantity: 0,
       calledforbill: false,
-      weight: ''
+      weight: '',
     };
 
     orderItem.quantity = quantity;
@@ -69,7 +69,7 @@ export class OrderComponent implements OnInit {
     }
     
     orderItem.purchased = false;
-    orderItem.reference = this.referenceService.currentreference;
+    orderItem.reference = this.referenceService.currentreference();
 
     let weight = item.rate * userInput;
     orderItem.weight = weight.toString() + ' grams';
@@ -135,7 +135,7 @@ export class OrderComponent implements OnInit {
   }
 
   successfulPurchase() {
-    this.orderService.paidOnlineForOrder(this.getOrders());    
+    this.orderService.paidOnlineForOrder(this.getOrders());  
   }
 
   getOrders() : OrderItem[] {
@@ -143,10 +143,10 @@ export class OrderComponent implements OnInit {
   }
 
   confirmOrder() {
-    this.orderService.createOrder(this.getOrders());              
+    this.router.navigateByUrl('checkout');          
   }
 
   payAtTill(){
-    //Waiting for payment
+    this.orderService.payAtTill(this.getOrders());
   }
 }

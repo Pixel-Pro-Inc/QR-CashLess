@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
+import { ReferenceService } from '../_services/reference.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent implements OnInit {
   model: any = {};
   user: User;
 
-  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { }
+  constructor(public accountService: AccountService, private referenceService: ReferenceService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -26,6 +27,8 @@ export class LoginComponent implements OnInit {
         this.user = response;
         console.log(this.user);
         if (this.user.admin) {
+          this.referenceService.setBranch(this.user.branchId);
+
           this.router.navigateByUrl('/menu/edit');
         }
         else {

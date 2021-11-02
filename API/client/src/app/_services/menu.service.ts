@@ -12,16 +12,16 @@ export class MenuService {
 
   constructor(private http: HttpClient) { }
 
-  getMenuItems(dir: string) {
-    return this.http.get(this.baseUrl + dir).pipe(
+  getMenuItems(dir: string, branchId: string) {
+    return this.http.get(this.baseUrl + dir +'/' + branchId).pipe(
       map((response: MenuItem[]) => {
         return response;
       })
     )
   }
 
-  createMenuItem(dir: string, model: MenuItem) {
-    return this.http.post(this.baseUrl + dir, model).pipe(
+  createMenuItem(dir: string, menuItemDto: MenuItem, branchId: string) {
+    return this.http.post(this.baseUrl + dir +'/' + branchId, menuItemDto).pipe(
       map((response: MenuItem) => {
         if (response) {
           localStorage.setItem(response.name, JSON.stringify(response)); //I changed it anyways, you migt not need to do it
@@ -29,15 +29,6 @@ export class MenuService {
         return response;
       })
     )
-    /*return this.http.post(this.baseUrl + dir, model).subscribe(
-      response => {
-        return response;
-      },
-      error => {
-        console.log(error);
-        return error;
-      }
-    )*/
   }
 
   editMenuItem() {

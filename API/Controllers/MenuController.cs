@@ -32,29 +32,27 @@ namespace API.Controllers
             _firebaseDataContext = new FirebaseDataContext();
         }
 
-        [HttpGet("getmenu")]
-        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchID)
+        [HttpGet("getmenu/{branchId}")]
+        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
         {
             List<MenuItem> items = new List<MenuItem>();
 
-            var response = await _firebaseDataContext.GetData("Menu/" + branchID);
+            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
 
-            if(response != null)
+            for (int i = 0; i < response.Count; i++)
             {
-                dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
-
-                foreach (var item in data)
-                {
-                    MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                    items.Add(menuItem);
-                }
-            }            
+                MenuItem item = JsonConvert.DeserializeObject<MenuItem>(((JObject)response[i]).ToString());
+                items.Add(item);
+            }
 
             return items;
         }
-        [HttpPost("createitem")]
-        public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string branchID)
+
+        [HttpPost("createitem/{id}")]
+        public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string id)
         {
+            string branchId = id;
+
             var menuItem = new MenuItem
             {
                 Name = menuItemDto.Name,
@@ -69,19 +67,10 @@ namespace API.Controllers
             };
 
             string path = menuItemDto.ImgUrl;
-            int n = path.IndexOf("base64,");
 
-            path = path.Remove(0, n + 7);
-            var bytes = Convert.FromBase64String(path);
-
-            if (path != null)
+            if (path != null && path != "")
             {
-                FormFile file;
-
-                var stream = new MemoryStream(bytes);
-                file = new FormFile(stream, 0, stream.Length, null, "foodName");
-
-                var result = await _photoService.AddPhotoAsync(file);
+                var result = await _photoService.AddPhotoAsync(path);
 
                 if (result.Error != null) return BadRequest(result.Error.Message);
 
@@ -89,31 +78,28 @@ namespace API.Controllers
                 menuItem.PublicId = result.PublicId;
             }
 
-            _firebaseDataContext.StoreData("Menu/" + branchID + "/" + GetId(branchID), menuItem);
+            int n = await GetId(branchId);
+
+            _firebaseDataContext.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
 
             return menuItemDto;
         }
-        public async Task<int> GetId(string branchID)
+        public async Task<int> GetId(string branchId)
         {
             List<MenuItem> items = new List<MenuItem>();
 
-            var response = await _firebaseDataContext.GetData("Menu/" + branchID);
+            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
 
-            if(response != null)
+            foreach (var item in response)
             {
-                dynamic data = JsonConvert.DeserializeObject<dynamic>(response.Body);
+                MenuItem data = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                items.Add(data);
+            }
 
-                foreach (var item in data)
-                {
-                    MenuItem menuItem = JsonConvert.DeserializeObject<MenuItem>(((JProperty)item).Value.ToString());
-                    items.Add(menuItem);
-                }
-
-                if (items.Count != 0)
-                {
-                    return items[items.Count - 1].Id + 1;
-                }
-            }            
+            if (items.Count != 0)
+            {
+                return items[items.Count - 1].Id + 1;
+            }
 
             return 0;            
         }

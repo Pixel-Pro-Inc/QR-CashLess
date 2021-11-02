@@ -28,12 +28,9 @@ export class ReceiptComponent implements OnInit {
 
     this.getOrders().subscribe(response => {
       this.orders = response;
-      if (this.referenceService.currentreference == null) {
-        this.referenceService.currentreference = localStorage.getItem('reference');
-      }
 
       for (var i = 0; i < this.orders.length; i++) {
-        if (this.orders[i].reference == this.referenceService.currentreference) {
+        if (this.orders[i].reference == this.referenceService.currentreference()) {
           if (this.orders[i].purchased) {
             this.orderItems.push(this.orders[i]);
           }          
@@ -41,7 +38,7 @@ export class ReceiptComponent implements OnInit {
       };
 
       for (var i = 0; i < this.orderItems.length; i++) {
-        if (this.orderItems[i].reference == this.referenceService.currentreference) {
+        if (this.orderItems[i].reference == this.referenceService.currentreference()) {
           if (this.orderItems[i].purchased) {
             this.total += parseFloat(this.orderItems[i].price);
           }
