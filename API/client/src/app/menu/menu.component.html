@@ -18,58 +18,65 @@
     <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
   </div>
 
-  <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
-    <h2 class="text-center text-primary">Create a dish</h2>
-    <hr>
-    <label>Name</label>
-    <div class="form-group">
-      <input type="text" class="form-control" name="name"
-             [(ngModel)]="model.name" placeholder="Name">
-    </div>
-    <div class="form-group">
-      <label>Category</label>
-      <select class="form-control" name="category" [(ngModel)]="model.category">
-        <option>Meat</option>
-        <option>Side</option>
-        <option>Dessert</option>
-        <option>Drink</option>
-      </select>
-    </div>    
-    <div class="form-group" *ngIf="model.category != 'Meat'">
-      <label>Price</label>
-      <input type="number" class="form-control" name="price"
-             [(ngModel)]="model.price" placeholder="Price">
-    </div>
-    <div class="form-group">
-      <label>Description</label>
-      <input type="text" class="form-control" name="description"
-             [(ngModel)]="model.description" placeholder="Descripiton">
-    </div>    
-    <div class="form-group" *ngIf="model.category == 'Meat'">
-      <label>Minimum Price</label>
-      <input type="number" class="form-control" name="minPrice"
-             [(ngModel)]="model.minimumPrice" placeholder="Minimum Price">
-    </div>
-    <div class="form-group" *ngIf="model.category == 'Meat'">
-      <label>Rate per gram</label>
-      <input type="number" class="form-control" name="rate"
-             [(ngModel)]="model.rate" placeholder="Price/Gram">
-    </div>
-    <div class="form-group">
-      <label>Preparation time</label>
-      <input type="number" class="form-control" name="prepTime"
-             [(ngModel)]="model.prepTime" placeholder="Preparation Time">
-    </div>
-    <div class="form-group mb-5">
-      <label>Select an image</label>
-      <input type="file" accept="image/*" class="form-control" name="image"
-             [(ngModel)]="img.image" (change)="onFileChange($event)">
-    </div>
-    <div class="form-group text-center">
-      <button class="btn btn-success mr-2" type="submit">Create</button>
-      <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
-    </div>
-  </form>
+  <div *ngIf="showform">
+    <div class=" mb-2 bg-light text-right rounded" >
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <button class="btn text-right" (click)="formToggle()"><i class="fa fa-close"></i></button>
+      </div>
+    <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
+      <h2 class="text-center text-primary">Create a dish</h2>
+      <hr>
+      <label>Name</label>
+      <div class="form-group">
+        <input type="text" class="form-control" name="name"
+               [(ngModel)]="model.name" placeholder="Name">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="category" [(ngModel)]="model.category">
+          <option>Meat</option>
+          <option>Side</option>
+          <option>Dessert</option>
+          <option>Drink</option>
+        </select>
+      </div>    
+      <div class="form-group" *ngIf="model.category != 'Meat'">
+        <label>Price</label>
+        <input type="number" class="form-control" name="price"
+               [(ngModel)]="model.price" placeholder="Price">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" class="form-control" name="description"
+               [(ngModel)]="model.description" placeholder="Descripiton">
+      </div>    
+      <div class="form-group" *ngIf="model.category == 'Meat'">
+        <label>Minimum Price</label>
+        <input type="number" class="form-control" name="minPrice"
+               [(ngModel)]="model.minimumPrice" placeholder="Minimum Price">
+      </div>
+      <div class="form-group" *ngIf="model.category == 'Meat'">
+        <label>Rate per gram</label>
+        <input type="number" class="form-control" name="rate"
+               [(ngModel)]="model.rate" placeholder="Price/Gram">
+      </div>
+      <div class="form-group">
+        <label>Preparation time</label>
+        <input type="number" class="form-control" name="prepTime"
+               [(ngModel)]="model.prepTime" placeholder="Preparation Time">
+      </div>
+      <div class="form-group mb-5">
+        <label>Select an image</label>
+        <input type="file" accept="image/*" class="form-control" name="image"
+               [(ngModel)]="img.image" (change)="onFileChange($event)">
+      </div>
+      <div class="form-group text-center">
+        <button class="btn btn-success mr-2" type="submit">Create</button>
+        <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
+      </div>
+    </form>
+  </div>
+  
 
   <div *ngIf="showMeats">
     <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>

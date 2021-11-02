@@ -113,6 +113,7 @@ export class MenuComponent implements OnInit {
       console.log(error);
     })    
   }
+  
 
   categoryMeats() {
     this.showMeats = true;
