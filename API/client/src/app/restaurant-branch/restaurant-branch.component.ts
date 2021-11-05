@@ -25,7 +25,7 @@ export class RestaurantBranchComponent implements OnInit {
 
   onClick(branch: Branch){
     //routerLinkNextPage
-    this.router.navigateByUrl('/menu/:' + branch.id + '/client');
+    this.router.navigateByUrl('/menu/:' + branch.id );
   }
 
   getStatus(branch: Branch): string{
