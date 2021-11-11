@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef ,ViewChild } from '@angular/core';
 import { Local } from 'protractor/built/driverProviders';
 import { map } from 'rxjs/operators';
 import { AdminComponent } from '../admin/admin.component';
 import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
 import { ReferenceService } from '../_services/reference.service';
+import jspdf from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-receipt',
@@ -16,48 +18,73 @@ export class ReceiptComponent implements OnInit {
   orders: OrderItem[]
   orderItems: OrderItem[] = [];
   baseUrl: string;
-  invoiceNum: number;
+  invoiceNum: string;
   date: any;
   total = 0;
+  title = 'html-to-pdf-angular-application';
   private adminComponent: AdminComponent;
 
   constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService) { }
 
   ngOnInit(): void {
     this.baseUrl = this.accountService.baseUrl;
-    this.invoiceNum = Math.random() * 1000000;
-    this.invoiceNum = Math.round(this.invoiceNum);
-    this.date = Date.now();
+    this.orders = JSON.parse(localStorage.getItem('ordered'));
 
-    this.getOrders().subscribe(response => {
-      this.orders = response;
+    this.invoiceNum = this.orders[0].orderNumber;
 
-      for (var i = 0; i < this.orders.length; i++) {
-        if (this.orders[i].reference == this.referenceService.currentreference()) {
-          if (this.orders[i].purchased) {
-            this.orderItems.push(this.orders[i]);
-          }          
-        }
-      };
 
-      for (var i = 0; i < this.orderItems.length; i++) {
-        if (this.orderItems[i].reference == this.referenceService.currentreference()) {
-          if (this.orderItems[i].purchased) {
-            this.total += parseFloat(this.orderItems[i].price);
-          }
-        }
-      };
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
 
-      console.log(this.orders, this.orderItems);
-    });
+    let _today = mm + '/' + dd + '/' + yyyy;
 
-    this.adminComponent.pushreceipt(this);
+    this.date = _today;
+
+    //Clear Orders List
+    let empty: OrderItem[] = [];
+    localStorage.setItem('ordered', JSON.stringify(empty));
+
+    //this.adminComponent.pushreceipt(this);
   }
-  getOrders() {
-    return this.http.get(this.baseUrl + 'order/getorders').pipe(
-      map((response: OrderItem[]) => {
-        return response;
-      })
-    )
+  Paid(): boolean{
+    if(this.orders[0].purchased){
+      return true;
+    }
+
+    return false;
+  }
+  getOrderNum():string{
+    let x: string = this.orders[0].orderNumber;
+    let indexOfBreak = x.indexOf('_');
+
+    return x.slice(indexOfBreak + 1, x.length);;
+  }
+  getDate(): string{
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    let _today = mm + '/' + dd + '/' + yyyy;
+    return _today;
+  }
+  public convertToPDF()
+  {
+   var data = document.getElementById('contentToConvert');
+   html2canvas(data).then(canvas => {
+   // Few necessary setting options
+   var imgWidth = 208;
+   var pageHeight = 295;
+   var imgHeight = canvas.height * imgWidth / canvas.width;
+   var heightLeft = imgHeight;
+   
+   const contentDataURL = canvas.toDataURL('image/png')
+   let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
+   var position = 0;
+   pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
+   pdf.save('new-file.pdf'); // Generated PDF
+  });
   }
 }

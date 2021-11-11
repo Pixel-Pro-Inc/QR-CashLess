@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable} from '@angular/core';
+import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../_models/orderItem';
 import { ReferenceService } from './reference.service';
@@ -8,69 +9,45 @@ import { ReferenceService } from './reference.service';
   providedIn: 'root'
 })
 export class OrderService {
-  baseUrl = 'https://localhost:5001/api/';
+  //baseUrl = 'https://localhost:5001/api/';
+  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
 
-  constructor(private http: HttpClient, private referenceService: ReferenceService) { }
+  constructor(private http: HttpClient, private router: Router, private referenceService: ReferenceService) { }
 
   createOrder(orderItems: OrderItem[]){
     
-    for (var i = 0; i < orderItems.length; i++) {
-      this.http.post(this.baseUrl + 'order/createorder', orderItems[i]).subscribe(response => {
-        return response;              
-      },
-        error => {
-          console.log(error);
-        });
-    }    
-  }
+    let bId = this.referenceService.currentBranch();
 
-  generateOrderNumber(): string{
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = String(today.getFullYear());
+    this.http.post(this.baseUrl + 'order/createorder/' + bId, orderItems).subscribe(response => {
+      localStorage.setItem('ordered', JSON.stringify(response));
+      console.log(response);
 
-    let _today = dd + '/'+ mm + '/' + yyyy;
-
-    let n = 1000;
-
-    this.http.get(this.baseUrl + 'order/getnumber/' + this.referenceService.currentBranch()).pipe(
-      map((response: number) => {
-        n = response;        
-      })
-    );  
-
-    let orderNum = _today + '_' + String(n);
-    return orderNum;      
+      //Receipt Page
+      this.router.navigateByUrl('/receipt');
+    },
+    error => {
+      console.log(error);
+    });  
   }
 
   paidOnlineForOrder(orderItems: OrderItem[]){
     for (var i = 0; i < orderItems.length; i++) {
       if (!orderItems[i].purchased) {
         orderItems[i].purchased = true;
-        //preparable
-
-        return this.http.post(this.baseUrl + 'order/editorder', orderItems[i]).subscribe(response => {
-          return response;
-        },
-          error => {
-            console.log(error);
-          });
+        orderItems[i].preparable = true;
       }
-    }    
+    }
+
+    this.createOrder(orderItems);
   }
   payAtTill(orderItems: OrderItem[]){
     for (var i = 0; i < orderItems.length; i++) {
       if (!orderItems[i].purchased) {
-        //orderItems[i].; waiting for payment/ preparable
-
-        return this.http.post(this.baseUrl + 'order/editorder', orderItems[i]).subscribe(response => {
-          return response;
-        },
-          error => {
-            console.log(error);
-          });
+        orderItems[i].waitingForPayment = true;
+        orderItems[i].preparable = true;
       }
-    }    
+    }
+    
+    this.createOrder(orderItems);
   }
 }

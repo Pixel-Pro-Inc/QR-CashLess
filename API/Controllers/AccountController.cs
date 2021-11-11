@@ -1,4 +1,4 @@
-﻿using API.Data;
+﻿/*using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
@@ -16,15 +16,13 @@ namespace API.Controllers
 {
     public class AccountController : BaseApiController
     {
-        private readonly DataContext _context;
         private readonly ITokenService _tokenService;
         private readonly FirebaseDataContext _firebaseDataContext;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(ITokenService tokenService)
         {
             _firebaseDataContext = new FirebaseDataContext();
             _tokenService = tokenService;
-            _context = context;
         }
 
         [HttpPost("register")]
@@ -80,7 +78,7 @@ namespace API.Controllers
                 Admin = user.Admin
             };
         }
-
+        
         public async Task<bool> UserTaken(string username)
         {
             return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
@@ -91,4 +89,4 @@ namespace API.Controllers
             return (AppUser)(user);
         }
     }
-}
+}*/

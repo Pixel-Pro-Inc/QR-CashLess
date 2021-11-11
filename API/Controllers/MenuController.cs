@@ -21,13 +21,11 @@ namespace API.Controllers
 {
     public class MenuController : BaseApiController
     {
-        private DataContext _context;
         private IPhotoService _photoService;
         private readonly FirebaseDataContext _firebaseDataContext;
 
-        public MenuController(DataContext context, IPhotoService photoService)
+        public MenuController(IPhotoService photoService)
         {
-            _context = context;
             _photoService = photoService;
             _firebaseDataContext = new FirebaseDataContext();
         }

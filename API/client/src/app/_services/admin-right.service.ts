@@ -10,7 +10,8 @@ import { MenuItem } from '../_models/menuItem';
   providedIn: 'root'
 })
 export class AdminRightService {
-  baseUrl = 'https://localhost:5001/api/';
+  //baseUrl = 'https://localhost:5001/api/';
+  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
 
   //I set these as private cause of security reasons
   private menuClass: MenuComponent;
@@ -62,7 +63,7 @@ export class AdminRightService {
   }
 
   getreceipt = (slipNumber: number) => this.recieptDictionary.get(slipNumber);
-  pushtoReceiptDic = (slip: ReceiptComponent) => this.recieptDictionary.set(slip.invoiceNum, slip);
+  //pushtoReceiptDic = (slip: ReceiptComponent) => this.recieptDictionary.set(slip.invoiceNum, slip);
 
 
 }

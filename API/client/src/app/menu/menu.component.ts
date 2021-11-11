@@ -50,16 +50,17 @@ export class MenuComponent implements OnInit {
   baseUrl: string;
 
   orderItem: OrderItem = {
-    id: 0,
     name: '',
     description: '',
-    price: '',
     reference: '',
+    price: '',
+    weight: '',
     fufilled: false,
     purchased: false,
+    preparable: false,
+    waitingForPayment: false,
     quantity: 0,
-    calledforbill: false,
-    weight: ''
+    orderNumber: ''
   };
 
   orderItems: OrderItem[] = [];

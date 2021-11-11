@@ -34,7 +34,11 @@ export class OrderComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    this.orderItems = this.getOrders();   
+    this.orderItems = this.getOrders();    
+  }
+
+  showOptions(){
+    window.location.reload();
   }
 
   public updateOrderView(item: MenuItem, quantity: number, userInput: number) {
@@ -43,16 +47,17 @@ export class OrderComponent implements OnInit {
     }    
 
     let orderItem : OrderItem = {
-      id: 0,
       name: '',
       description: '',
-      price: '',
       reference: '',
+      price: '',
+      weight: '',
       fufilled: false,
       purchased: false,
+      preparable: false,
+      waitingForPayment: false,
       quantity: 0,
-      calledforbill: false,
-      weight: '',
+      orderNumber: ''
     };
 
     orderItem.quantity = quantity;

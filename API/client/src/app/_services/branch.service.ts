@@ -7,7 +7,8 @@ import { Branch } from '../_models/branch';
   providedIn: 'root'
 })
 export class BranchService {
-  baseUrl = 'https://localhost:5001/api/';
+  //baseUrl = 'https://localhost:5001/api/';
+  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
 
   constructor(private http: HttpClient) { }
 

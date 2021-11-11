@@ -13,54 +13,98 @@ namespace API.Controllers
 {
     public class OrderController : BaseApiController
     {
-        private DataContext _context;
         private readonly FirebaseDataContext _firebaseDataContext;
+        private readonly string dir = "Order/";
 
-        public OrderController(DataContext context)
+        public OrderController()
         {
-            _context = context;
             _firebaseDataContext = new FirebaseDataContext();
         }
 
-        [HttpGet("getorders")]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrder()
+        #region Create Order Item
+
+        [HttpPost("createorder/{branchId}")]
+        public async Task<ActionResult<List<OrderItem>>> CreateOrder(List<OrderItem> orderItems, string branchId)
         {
-            return await _context.OrderItems.ToListAsync() == null ? new List<OrderItem>() : await _context.OrderItems.ToListAsync();
+            int x = await GetOrderNum(branchId);
+
+            string d = DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/"
+                    + DateTime.Now.Year.ToString("0000");
+
+            for (int i = 0; i < orderItems.Count; i++)
+            {
+                var orderItem = orderItems[i];
+
+                orderItem.OrderNumber = d + "_" + x;
+                orderItem.OrderNumber = orderItem.OrderNumber.Replace('/', '-');
+
+                orderItem.Price = orderItem.Price;
+
+                orderItem.Id = i;
+
+                _firebaseDataContext.StoreData(dir + branchId + "/" + orderItem.OrderNumber + "/" + orderItem.Id, orderItem);
+            }
+
+            return orderItems;
         }
-        [HttpGet("getnumber/{branchId}")]
-        public async Task<ActionResult<int>> GetOrderNum(string branchId)
+        public async Task<int> GetOrderNum(string branchId)
         {
-            var response = await _firebaseDataContext.GetData("Order/" + branchId);
+            var response = await _firebaseDataContext.GetData(dir + branchId);
             List<OrderItem> orders = new List<OrderItem>();
 
             foreach (var item in response)
             {
-                OrderItem data = JsonConvert.DeserializeObject<OrderItem>(((JObject)item).ToString());
+                OrderItem[] data = JsonConvert.DeserializeObject<OrderItem[]>(((JArray)item).ToString());
 
-                orders.Add(data);
+                for (int i = 0; i < data.Length; i++)
+                {
+                    orders.Add(data[i]);
+                }                
             }
+
+            int candidateNumber = new Random().Next(1000, 9999);
+
+            //Check Against Other Order Numbers For The Day
+            List<int> orderNums = new List<int>();
 
             for (int i = 0; i < orders.Count; i++)
             {
-                string date = ;
-                string number = ;
+                //Only 4 digit numbers
 
-                string dateToday = 
-                    DateTime.Now.Day.ToString("00") + "/" 
-                    + DateTime.Now.Month.ToString("00") + "/" 
-                    + DateTime.Now.Year.ToString("00");
+                string orderNum = orders[i].OrderNumber;
 
-                if(date == dateToday)
+                int n = orderNum.IndexOf('_');
+
+                string date = orderNum.Remove(n, 5);
+
+                string number = orderNum.Remove(0, n + 1);
+
+                string dateToday =
+                    DateTime.Now.Day.ToString("00") + "-"
+                    + DateTime.Now.Month.ToString("00") + "-"
+                    + DateTime.Now.Year.ToString("0000");
+
+                if (date == dateToday)
+                {
+                    orderNums.Add((Int32.Parse(number)));
+                }
             }
-        }
-        [HttpPost("createorder")]
-        public async Task<ActionResult<OrderItem>> CreateOrder(OrderItem orderItem)
-        {
-            _context.OrderItems.Add(orderItem);
-            await _context.SaveChangesAsync();
 
-            return orderItem;
+            while (orderNums.Contains(candidateNumber))
+            {
+                candidateNumber = new Random().Next(1000, 9999);
+            }
+
+            return candidateNumber;
         }
+        #endregion
+
+        /*
+        [HttpGet("getorders")]
+        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrder()
+        {
+            return await _context.OrderItems.ToListAsync() == null ? new List<OrderItem>() : await _context.OrderItems.ToListAsync();
+        }        
         [HttpPost("editorder")]
         public async Task<ActionResult<OrderItem>> EditOrder(OrderItem orderItem)
         {
@@ -69,5 +113,6 @@ namespace API.Controllers
 
             return orderItem;
         }
+        */
     }
 }

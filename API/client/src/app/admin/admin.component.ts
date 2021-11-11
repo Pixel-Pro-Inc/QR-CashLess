@@ -19,7 +19,7 @@ export class AdminComponent implements OnInit {
 
   pushreceipt(model: any) {
     if (model == typeof (ReceiptComponent)) {
-      this.adminPower.pushtoReceiptDic(model);
+      //this.adminPower.pushtoReceiptDic(model);
     } else {
       console.log('wrong type');
     }

@@ -1,4 +1,4 @@
-﻿using API.Data;
+﻿/*using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -34,4 +34,4 @@ namespace API.Controllers
             return await _context.Users.FindAsync(id);
         }
     }
-}
+}*/
