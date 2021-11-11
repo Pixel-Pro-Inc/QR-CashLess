@@ -25,10 +25,7 @@ export class RestaurantBranchComponent implements OnInit {
 
   onClick(branch: Branch){
     //routerLinkNextPage
-    let emptyOrders: OrderItem[] = [];
-    localStorage.setItem('ordered', JSON.stringify(emptyOrders));
-    
-    this.router.navigateByUrl('/menu/' + branch.id + '_client');
+    this.router.navigateByUrl('/menu/:' + branch.id );
   }
 
   getStatus(branch: Branch): string{

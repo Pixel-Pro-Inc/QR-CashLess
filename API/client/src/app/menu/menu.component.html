@@ -21,7 +21,9 @@
   <div *ngIf="showform">
     <div class=" mb-2 bg-light text-right rounded" >
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      <button class="btn text-right" (click)="formToggle()"><i class="fa fa-close"></i></button>
+      <button class="btn text-right" (click)="formToggle()"><svg xmlns="http://www.w3.org/2000/svg" width="32" 
+        height="32" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd"
+         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"></path></svg></button>
       </div>
     <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
       <h2 class="text-center text-primary">Create a dish</h2>
