@@ -30,7 +30,6 @@ const routes: Routes = [
   { path: 'receipt', component: ReceiptComponent },
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent},
-  { path: 'kitchen', component: KitchendashboardComponent, canActivate: [AuthGuard]},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
 

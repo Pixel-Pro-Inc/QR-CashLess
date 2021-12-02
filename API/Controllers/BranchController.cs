@@ -48,7 +48,8 @@ namespace API.Controllers
             {
                 Id = dto.Id,
                 Location = dto.Location,
-                Name = dto.Name
+                Name = dto.Name,
+                PhoneNumber = Int32.Parse(dto.PhoneNumber)
             };
 
             string path = dto.Img;
@@ -78,7 +79,7 @@ namespace API.Controllers
             {
                 Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
 
-                TimeSpan timeSpan = branch.LastActive - DateTime.Now;
+                TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
 
                 float x = (float)(timeSpan.TotalMinutes);
 

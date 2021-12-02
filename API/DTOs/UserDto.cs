@@ -11,7 +11,7 @@ namespace API.DTOs
         public string Token { get; set; }
         public bool Admin { get; set; }
         public bool Developer { get; set; }
-        public string branchId { get; set; }
+        public List<string> branchId { get; set; }
         //[Required]
         public string Restuarant { get; set; }
     }

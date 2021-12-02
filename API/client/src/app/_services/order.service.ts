@@ -23,7 +23,21 @@ export class OrderService {
       console.log(response);
 
       //Receipt Page
-      this.router.navigateByUrl('/receipt');
+      if(this.referenceService.currentreference() != 'tablet'){
+        this.router.navigateByUrl('/receipt');
+        return;
+      }
+
+      let x: string = '';
+
+      x = this.referenceService.currentBranch() + '_' + this.referenceService.currentreference();
+
+      let empty: OrderItem[] = [];
+      localStorage.setItem('ordered', JSON.stringify(empty));
+
+      localStorage.setItem('userPhoneNumber', JSON.stringify(null));
+      
+      this.router.navigateByUrl('/menu/' + x);
     },
     error => {
       console.log(error);
@@ -34,6 +48,7 @@ export class OrderService {
     for (var i = 0; i < orderItems.length; i++) {
       if (!orderItems[i].purchased) {
         orderItems[i].purchased = true;
+        orderItems[i].paymentMethod = 'online';
         orderItems[i].preparable = true;
       }
     }

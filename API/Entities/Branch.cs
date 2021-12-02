@@ -13,5 +13,6 @@ namespace API.Entities
         public string ImgUrl { get; set; }
         public string PublicId { get; set; }
         public DateTime LastActive { get; set; }
+        public int PhoneNumber { get; set; }
     }
 }

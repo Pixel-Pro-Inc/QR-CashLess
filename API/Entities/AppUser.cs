@@ -12,7 +12,7 @@ namespace API.Entities
         public string UserName { get; set; }
         public bool Developer { get; set; }
         public bool Admin { get; set; }
-        public string branchId { get; set; }
+        public List<string> branchId { get; set; }
         public string Restuarant { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }

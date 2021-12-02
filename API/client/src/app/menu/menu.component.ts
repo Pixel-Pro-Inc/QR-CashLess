@@ -10,6 +10,7 @@ import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
 import { User } from '../_models/user';
 import { ReferenceService } from '../_services/reference.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-menu',
@@ -57,16 +58,18 @@ export class MenuComponent implements OnInit {
     weight: '',
     fufilled: false,
     purchased: false,
+    paymentMethod: '',
     preparable: false,
     waitingForPayment: false,
     quantity: 0,
-    orderNumber: ''
+    orderNumber: '',
+    phoneNumber: ''
   };
 
   orderItems: OrderItem[] = [];
   showSides: boolean;
 
-  constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService) { }
+  constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {   
 
@@ -107,6 +110,9 @@ export class MenuComponent implements OnInit {
     this.formToggle();
     this.model.imgUrl = this.imageSrc;
     console.log(this.model);
+
+    this.toastr.success("Menu item added successfully");
+    
     this.menuService.createMenuItem('menu/createitem', this.model, branchId).subscribe(response => {      
       window.location.reload();
     }, 

@@ -40,6 +40,8 @@ namespace API.Controllers
 
                 orderItem.Price = orderItem.Price;
 
+                string z = orderItem.PhoneNumber;
+
                 orderItem.Id = i;
 
                 _firebaseDataContext.StoreData(dir + branchId + "/" + orderItem.OrderNumber + "/" + orderItem.Id, orderItem);

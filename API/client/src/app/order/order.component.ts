@@ -9,6 +9,8 @@ import { error } from '@angular/compiler/src/util';
 import { NavigationEnd, Router } from '@angular/router';
 import { OrderService } from '../_services/order.service';
 import { MenuItem } from '../_models/menuItem';
+import { Branch } from '../_models/branch';
+import { BranchService } from '../_services/branch.service';
 
 @Component({
   selector: 'app-order',
@@ -26,18 +28,39 @@ export class OrderComponent implements OnInit {
   orderItems : OrderItem[];
   tempOrderItems : OrderItem[] = [];
 
+  model: any = {};
+
   block = 0;
 
-  constructor(private router: Router, private orderService: OrderService, 
-    private referenceService: ReferenceService) 
-    {
-    }
+  onlineOrderAvailable: Boolean;
+  branchPhoneNumber: number;
+
+  constructor(private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
 
   ngOnInit(): void {
+    this.model.phoneNumber = JSON.parse(localStorage.getItem('userPhoneNumber'));
+
     this.orderItems = this.getOrders();    
+    
+    this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
+      let RestBranches: Branch[] = response;
+
+      for (let i = 0; i < RestBranches.length; i++) {
+        if(RestBranches[i].id == this.referenceService.currentBranch()){
+          if(RestBranches[i].lastActive < 30){
+            this.onlineOrderAvailable = true;
+
+            this.branchPhoneNumber = RestBranches[i].phoneNumber;
+          }
+        }
+      }
+      
+    });
   }
 
   showOptions(){
+    localStorage.setItem('userPhoneNumber', this.model.phoneNumber.toString());
+
     window.location.reload();
   }
 
@@ -47,17 +70,19 @@ export class OrderComponent implements OnInit {
     }    
 
     let orderItem : OrderItem = {
-      name: '',
-      description: '',
-      reference: '',
-      price: '',
-      weight: '',
-      fufilled: false,
-      purchased: false,
-      preparable: false,
-      waitingForPayment: false,
-      quantity: 0,
-      orderNumber: ''
+        name: '',
+        description: '',
+        reference: '',
+        price: '',
+        weight: '',
+        fufilled: false,
+        purchased: false,
+        preparable: false,
+        waitingForPayment: false,
+        quantity: 0,
+        orderNumber: '',
+        phoneNumber: '',
+        paymentMethod: ''
     };
 
     orderItem.quantity = quantity;
@@ -77,7 +102,7 @@ export class OrderComponent implements OnInit {
     orderItem.reference = this.referenceService.currentreference();
 
     let weight = item.rate * userInput;
-    orderItem.weight = weight.toString() + ' grams';
+    orderItem.weight = weight.toFixed(2) + ' grams';
 
     if(orderItem.weight == '0 grams'){
       orderItem.weight = '-';      
@@ -140,6 +165,11 @@ export class OrderComponent implements OnInit {
   }
 
   successfulPurchase() {
+    let orders = this.getOrders();
+    for (let i = 0; i < orders.length; i++) {
+      orders[i].phoneNumber = this.model.phoneNumber.toString();  
+    }
+
     this.orderService.paidOnlineForOrder(this.getOrders());  
   }
 
@@ -148,10 +178,37 @@ export class OrderComponent implements OnInit {
   }
 
   confirmOrder() {
+    localStorage.setItem('userPhoneNumber', this.model.phoneNumber.toString());
     this.router.navigateByUrl('checkout');          
   }
 
   payAtTill(){
-    this.orderService.payAtTill(this.getOrders());
+    let orders = this.getOrders();
+
+    for (let i = 0; i < orders.length; i++) {
+      orders[i].phoneNumber = this.model.phoneNumber.toString();  
+    }
+    
+    this.orderService.payAtTill(orders);
   }
+
+  isTablet(): Boolean{
+    if(this.referenceService.currentreference() == 'tablet'){
+      return true;
+    }
+
+    return false;
+  }
+
+  isExternalCustomer(): Boolean{
+    if(this.referenceService.currentreference() == 'clientE'){
+      return true;
+    }
+
+    return false;
+  }
+
+  call(){
+    window.open('tel:' + this.branchPhoneNumber);
+  }  
 }

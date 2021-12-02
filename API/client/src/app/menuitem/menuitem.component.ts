@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { OrderComponent } from '../order/order.component';
 import { MenuItem } from '../_models/menuItem';
 
@@ -15,7 +16,7 @@ export class MenuitemComponent implements OnInit {
 
   userInput: number[] = [];
 
-  constructor() { }
+  constructor(private toastr: ToastrService) { }
 
   ngOnInit(): void {
     
@@ -23,7 +24,9 @@ export class MenuitemComponent implements OnInit {
 
   clicked(item: MenuItem, quantity: number, usersInput: number){
     console.log(item);
-    this.orderView.updateOrderView(item, quantity, usersInput);
+
+    this.toastr.success(item.name + ' was added to your order.');
+    this.orderView.updateOrderView(item, quantity, usersInput);    
   }
 
 }

@@ -25,16 +25,43 @@
   </ul>
 
   <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
-    <button class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+    <form #numberForm="ngForm" (ngSubmit)="showOptions()" autocomplete="off">      
+      <hr>
+      <label>Enter your phone number</label>
+      <div class="form-group">
+        <input type="number" class="form-control" name="pNumber"
+               [(ngModel)]="model.phoneNumber">
+      </div>
+    </form>
+
+    <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
   </div>
 
-  <ng-container *ngIf="showPaymentOptions">
+  <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable">
     <div class="text-center">
-      <div id="myPaypalButtons"></div>
-    <div>
-      <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
-      <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+      <button class="btn btn-primary" (click)="call()" style="width: 100%"><i class="fa fa-phone"></i> Call Us</button>
     </div>
-    </div>    
+  </ng-container>
+
+  <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable">
+    <ng-container *ngIf="isTablet()">
+      <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+    </ng-container>  
+
+    <ng-container *ngIf="isExternalCustomer()">
+      <div class="text-center">
+        <div id="myPaypalButtons"></div>
+      </div>      
+    </ng-container>
+
+    <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
+      <div class="text-center">
+        <div id="myPaypalButtons"></div>
+      <div>
+        <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
+        <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+      </div>
+      </div>    
+    </ng-container>
   </ng-container>  
 </div>

@@ -43,16 +43,19 @@ namespace API.Data
                 {
                     object _object = new object();
 
-                    if (item.GetType() == typeof(JProperty))
+                    if(item != null)
                     {
-                        _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
-                    }
-                    else
-                    {
-                        _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
-                    }                             
+                        if (item.GetType() == typeof(JProperty))
+                        {
+                            _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
+                        }
+                        else
+                        {
+                            _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
+                        }
 
-                    objects.Add(_object);
+                        objects.Add(_object);
+                    }               
                 }
             }
 

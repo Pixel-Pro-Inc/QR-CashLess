@@ -3,5 +3,6 @@ export interface Branch {
     id: string;
     location: string;
     img: string;
-    lastActive: Number;
+    lastActive: number;
+    phoneNumber: number;
   }

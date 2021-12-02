@@ -5,6 +5,7 @@ import { Branch } from '../_models/branch';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
 import { BranchService } from '../_services/branch.service';
+import { ReferenceService } from '../_services/reference.service';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +20,7 @@ export class RegisterComponent implements OnInit {
 
   isDeveloper = false;
 
-  constructor(public accountService: AccountService, private toastr: ToastrService, private branchService: BranchService) { }
+  constructor(public accountService: AccountService, private toastr: ToastrService, private branchService: BranchService, private referenceService: ReferenceService) { }
 
   ngOnInit(): void {
     this.accountService.currentUser$.subscribe(
@@ -39,12 +40,16 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
+    console.log(this.model);
+    
     if(this.model.branchId == null){
-      this.model.branchId = this.user.branchId;
+      let branch: string[] = [this.referenceService.currentBranch()];
+      this.model.branchId = branch;
     }
     
     this.accountService.register(this.model, 'account/register').subscribe(response => {
       console.log(response);
+      this.toastr.success("Your account was registered successfully");
       this.cancel();
     }, error => {
         console.log(error);

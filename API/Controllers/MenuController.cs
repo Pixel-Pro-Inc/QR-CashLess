@@ -39,8 +39,9 @@ namespace API.Controllers
 
             for (int i = 0; i < response.Count; i++)
             {
-                MenuItem item = JsonConvert.DeserializeObject<MenuItem>(((JObject)response[i]).ToString());
-                items.Add(item);
+                var item = response[i];
+                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                items.Add(menu);
             }
 
             return items;
@@ -78,6 +79,8 @@ namespace API.Controllers
 
             int n = await GetId(branchId);
 
+            menuItem.Id = n;
+
             _firebaseDataContext.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
 
             return menuItemDto;
@@ -96,7 +99,22 @@ namespace API.Controllers
 
             if (items.Count != 0)
             {
-                return items[items.Count - 1].Id + 1;
+
+                List<int> contents = new List<int>();
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    contents.Add(items[i].Id);
+                }
+
+                int k = 0;
+
+                while (contents.Contains(k))
+                {
+                    k++;
+                }
+
+                return k;
             }
 
             return 0;            

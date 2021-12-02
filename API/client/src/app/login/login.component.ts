@@ -20,19 +20,19 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  login() {    
+  login() {  
+    
+    console.log(this.model);
 
     this.accountService.login(this.model, 'account/login').subscribe(response => {
       this.accountService.currentUser$.subscribe(response => {
         this.user = response;
         console.log(this.user);
         if (this.user.admin) {
-          this.referenceService.setBranch(this.user.branchId);
-
-          this.router.navigateByUrl('/menu/edit');
+          this.router.navigateByUrl('/');
         }
         else {
-          this.router.navigateByUrl('/kitchen');
+          this.router.navigateByUrl('/');
         }
       });      
     }, error => {

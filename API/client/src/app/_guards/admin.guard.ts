@@ -14,6 +14,8 @@ export class AdminGuard implements CanActivate {
   canActivate(): Observable<boolean>{
     return this.accountService.currentUser$.pipe(
       map(user => {
+        console.log(user);
+        
         if(user){
           if (user.admin || user.developer) return true;
         }   

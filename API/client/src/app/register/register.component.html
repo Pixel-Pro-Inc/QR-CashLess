@@ -1,29 +1,40 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
-  <h2 class="text-center text-primary">Sign up</h2>
-  <hr>
-  <div class="form-group">
-    <input type="text" class="form-control" name="username"
-           [(ngModel)]="model.username" placeholder="Username">
-  </div>
-  <div class="form-group">
-    <input type="password" class="form-control" name="password"
-           [(ngModel)]="model.password" placeholder="Password">
-  </div>
-  <div *ngIf="isDeveloper" class="form-group">
-    <label>Branch</label>
-    <select class="form-control" name="category" [(ngModel)]="model.branchId">
-      <ng-container *ngFor="let branch of branches">
-        <option>{{branch.id}}</option>
-      </ng-container>     
-    </select>
-  </div>
-  <div *ngIf="isDeveloper" class="form-group">
-    <input type="checkbox" name="admin"
-           [(ngModel)]="model.admin">
-    <label class="ml-2">Admin Account</label>
-  </div>
-  <div class="form-group text-center">
-    <button class="btn btn-success mr-2" type="submit">Register</button>
-    <button class="btn btn-default mr-2" routerLink='/' type="button">Cancel</button>
-  </div>
-</form>
+<div class="login-form-2">
+  <div class="text-center">
+    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10" 
+    alt="logo"
+    width="300"
+    class="mt-5"/>
+</div>
+
+  <h3>Register</h3>
+  <form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+    <hr>
+    <div class="form-group">
+      <input type="text" class="form-control" name="username"
+             [(ngModel)]="model.username" placeholder="Username">
+    </div>
+    <div class="form-group">
+      <input type="password" class="form-control" name="password"
+             [(ngModel)]="model.password" placeholder="Password">
+    </div>
+    
+    <div *ngIf="isDeveloper" class="form-group">
+      <label>Select a branch code</label>
+      <select class="form-control" name="branchId" [(ngModel)]="model.branchId" multiple>        
+        <ng-container *ngFor="let branch of branches">
+          <option>{{branch.id}}</option>
+        </ng-container>     
+      </select>
+    </div>
+
+    <div *ngIf="isDeveloper" class="form-group">
+      <input type="checkbox" name="admin"
+             [(ngModel)]="model.admin">
+      <label class="ml-2">Admin Account</label>
+    </div>
+    <div class="form-group text-center">
+      <button class="btn btn-success mr-2" type="submit">Register</button>
+      <button class="btn btn-default mr-2" routerLink='/' type="button">Cancel</button>
+    </div>
+  </form>
+</div>

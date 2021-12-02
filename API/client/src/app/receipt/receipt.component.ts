@@ -84,7 +84,7 @@ export class ReceiptComponent implements OnInit {
    let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
    var position = 0;
    pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-   pdf.save('new-file.pdf'); // Generated PDF
+   pdf.save('rodizio-express-receipt.pdf'); // Generated PDF
   });
   }
 }

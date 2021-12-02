@@ -1,22 +1,36 @@
-<form #branchForm="ngForm" (ngSubmit)="register()" autocomplete="off">
-  <h2 class="text-center text-primary">Create a branch</h2>
-  <hr>
-  <label>Name</label>
-  <div class="form-group">
-    <input type="text" class="form-control" name="name"
-           [(ngModel)]="model.name" placeholder="Name">
+<div class="login-form-2">
+  <div class="text-center">
+    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10" 
+    alt="logo"
+    width="300"
+    class="mt-5"/>
   </div>
-  <div class="form-group">
-    <label>Location</label>
-    <input type="text" class="form-control" name="location"
-           [(ngModel)]="model.location" placeholder="Location">
-  </div>
-  <div class="form-group mb-5">
-    <label>Select an image</label>
-    <input type="file" accept="image/*" class="form-control" name="image"
-           [(ngModel)]="img" (change)="onFileChange($event)">
-  </div>
-  <button type="submit" class="btn btn-primary">
-    Create
-  </button>
-</form>
+
+  <form #branchForm="ngForm" (ngSubmit)="register()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+    <h3>Create Branch</h3>
+    <hr>
+    <label>Name</label>
+    <div class="form-group">
+      <input type="text" class="form-control" name="name"
+             [(ngModel)]="model.name" placeholder="Name">
+    </div>
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" class="form-control" name="location"
+             [(ngModel)]="model.location" placeholder="Location">
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="text" class="form-control" name="num"
+             [(ngModel)]="model.phoneNumber" placeholder="3333333">
+    </div>
+    <div class="form-group mb-5">
+      <label>Select an image</label>
+      <input type="file" accept="image/*" class="form-control" name="image"
+             [(ngModel)]="img" (change)="onFileChange($event)">
+    </div>
+    <button type="submit" class="btn btn-primary">
+      Create
+    </button>
+  </form>
+</div>

@@ -6,8 +6,10 @@ export interface OrderItem {
   weight: string;  
   fufilled: boolean; //received food
   purchased: boolean;
+  paymentMethod: string;
   preparable: boolean;
   waitingForPayment: boolean;
   quantity: number;
   orderNumber: string;
+  phoneNumber: string;
 }

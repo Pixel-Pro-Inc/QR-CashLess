@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
 
@@ -15,7 +16,8 @@ export class RegisterBranchComponent implements OnInit {
     id: '',
     location: '',
     img: '',
-    lastActive: undefined
+    lastActive: undefined,
+    phoneNumber: 0
   };
   img: any;
 
@@ -30,6 +32,7 @@ export class RegisterBranchComponent implements OnInit {
     this.model.id = 'rd'+ n;
     
     this.branchService.submission(this.model, 'branch/register');
+    
     this.ngOnInit;
   }
 

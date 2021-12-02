@@ -15,9 +15,12 @@ namespace API.Entities
         public string Weight { get; set; }
         public bool Fufilled { get; set; }
         public bool Purchased { get; set; }
+        public string PaymentMethod { get; set; }
         public bool Preparable { get; set; }
         public bool WaitingForPayment { get; set; }
         public int Quantity { get; set; }
         public string OrderNumber { get; set; }
+        public bool Collected { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

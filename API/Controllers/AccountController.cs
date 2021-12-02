@@ -1,10 +1,12 @@
-﻿/*using API.Data;
+﻿using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly FirebaseDataContext _firebaseDataContext;
+        private string dir = "Account";
 
         public AccountController(ITokenService tokenService)
         {
@@ -26,8 +29,8 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto, string branchId)
-        {            
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        {
             if (await UserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
@@ -38,11 +41,13 @@ namespace API.Controllers
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key,
                 Developer = registerDto.Developer,
-                branchId = branchId,
+                branchId = registerDto.branchId,
                 Admin = registerDto.Admin
-            };
+            };            
 
-            //_firebaseDataContext.StoreData("Account/" + branchId + "/" + id, user);
+            user.Id = await GetNum();
+
+            _firebaseDataContext.StoreData(dir + "/" + user.Id.ToString(), user);
 
             return new UserDto()
             {
@@ -54,7 +59,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            if (!(await UserTaken(loginDto.Username)))
+            if ((await GetUser(loginDto.Username)) == null)
                 return Unauthorized("Username doesn't exist");
 
             AppUser user = (await GetUser(loginDto.Username));
@@ -81,12 +86,54 @@ namespace API.Controllers
         
         public async Task<bool> UserTaken(string username)
         {
-            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+            var response = await _firebaseDataContext.GetData(dir);
+            List<AppUser> items = new List<AppUser>();
+            for (int i = 0; i < response.Count; i++)
+            {
+                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
+
+                items.Add(item);
+            }
+
+            return items.Any(x => x.UserName == username.ToLower());
         }
         public async Task<AppUser> GetUser(string username)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == username.ToLower());
-            return (AppUser)(user);
+            var response = await _firebaseDataContext.GetData(dir);
+            List<AppUser> items = new List<AppUser>();
+            for (int i = 0; i < response.Count; i++)
+            {
+                var item = response[i];
+
+                AppUser data = JsonConvert.DeserializeObject<AppUser>(((JObject)item).ToString());
+
+                items.Add(data);
+            }
+
+            AppUser user = null;
+
+            user = items.SingleOrDefault(x => x.UserName == username.ToLower());
+            return (user);
+        }
+        public async Task<int> GetNum()
+        {
+            var response = await _firebaseDataContext.GetData(dir);
+            List<AppUser> items = new List<AppUser>();
+            for (int i = 0; i < response.Count; i++)
+            {
+                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
+
+                items.Add(item);
+            }
+
+            int ran = new Random().Next(10000, 99999);
+
+            while (items.Any(x => x.Id == ran))
+            {
+                ran = new Random().Next(10000, 99999);
+            }
+
+            return ran;
         }
     }
-}*/
+}

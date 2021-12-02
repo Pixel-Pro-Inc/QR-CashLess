@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Local } from 'protractor/built/driverProviders';
 import { User } from './_models/user';
 import { AccountService } from './_services/account.service';
+import { ReferenceService } from './_services/reference.service';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +11,10 @@ import { AccountService } from './_services/account.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'QR Cashless';
+  title = 'Rodizio Express';
   users: any;
 
-  constructor(private accountService: AccountService) { }
+  constructor(private accountService: AccountService, public referenceService: ReferenceService) { }
   SelectorMode: boolean;
 
   ngOnInit(){

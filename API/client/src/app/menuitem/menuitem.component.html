@@ -19,7 +19,7 @@
                     </div>
                 </form>
                 <ng-container *ngIf="userInput[menuItems.indexOf(dish)] > 0">
-                    <h6 *ngIf="dish.category == 'Meat'" class="mt1">Weight = {{userInput[menuItems.indexOf(dish)] * dish.rate}} grams</h6>
+                    <h6 *ngIf="dish.category == 'Meat'" class="mt1">Weight = {{(userInput[menuItems.indexOf(dish)] * dish.rate).toFixed(2)}} grams</h6>
                 </ng-container>                
 
                 <h6 *ngIf="dish.category != 'Meat'" class="mt1">BWP {{dish.price}}</h6>

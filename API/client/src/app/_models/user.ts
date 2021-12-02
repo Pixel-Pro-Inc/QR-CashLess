@@ -1,7 +1,7 @@
 export interface User {  
   username: string;
   token: string;
-  branchId: string;
+  branchId: string[];
   developer: boolean;
   admin: boolean;
 }

@@ -15,7 +15,7 @@ namespace API.DTOs
         //[Required]
         public string Restuarant { get; set; }
         public bool Developer { get; set; }
-
+        public List<string> branchId { get; set; }
         public bool Admin { get; set; }
     }
 }

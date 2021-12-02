@@ -14,6 +14,7 @@ import { ReferenceService } from '../_services/reference.service';
 })
 export class NavComponent implements OnInit {
   admin = false;
+  developer = false;
   kitchenStaff = false;
   user: User;
 
@@ -28,7 +29,10 @@ export class NavComponent implements OnInit {
           if (this.user.admin) {
             this.admin = true;
           }
-          else {
+          else if(this.user.developer) {
+            this.developer = true;  
+          }
+          else{
             this.kitchenStaff = true;
           }
         }
