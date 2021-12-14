@@ -15,7 +15,7 @@ namespace API.Entities
         public string Weight { get; set; }
         public bool Fufilled { get; set; }
         public bool Purchased { get; set; }
-        public string PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; } //this would have been better as an enum
         public bool Preparable { get; set; }
         public bool WaitingForPayment { get; set; }
         public int Quantity { get; set; }

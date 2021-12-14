@@ -13,8 +13,8 @@ namespace API.Controllers
 {
     public class OrderController : BaseApiController
     {
-        private readonly FirebaseDataContext _firebaseDataContext;
-        private readonly string dir = "Order/";
+            private readonly FirebaseDataContext _firebaseDataContext;
+            private readonly string dir = "Order/";
 
         public OrderController()
         {
