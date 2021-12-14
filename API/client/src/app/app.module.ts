@@ -56,7 +56,8 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     RestaurantBranchComponent,
     LoginComponent,
     DashboardComponent,
-    RevenuechartComponent,
+    RevenuechartComponent
+    LoginComponent,
     NgxSpinnerModule
   ],
   imports: [
@@ -69,7 +70,7 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     NgxSpinnerModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true }  ],
+    {provide: HTTP_INTERCEPTORS,useClass:LoadingInterceptor, multi:true}  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
