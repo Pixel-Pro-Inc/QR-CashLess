@@ -28,6 +28,8 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { RegisterBranchComponent } from './register-branch/register-branch.component';
 import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
 import { LoginComponent } from './login/login.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { RevenuechartComponent } from './revenuechart/revenuechart.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { LoginComponent } from './login/login.component';
     CheckoutComponent,
     RegisterBranchComponent,
     RestaurantBranchComponent,
-    LoginComponent
+    LoginComponent,
+    DashboardComponent,
+    RevenuechartComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,7 @@ import { LoginComponent } from './login/login.component';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
-    SharedModule
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

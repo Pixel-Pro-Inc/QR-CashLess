@@ -1,0 +1,274 @@
+<body>
+    <div class="d-flex">
+        <span>
+            <aside id="sidebar" class="sidebar" style="height: 650px;">
+        
+                <ul class="sidebar-nav" id="sidebar-nav">
+            
+                  <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" >
+                      <i class="bi bi-menu-button-wide"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                  </li>
+            
+                  <li class="nav-item">
+                    <a class="nav-link collapsed" (click)="showTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
+                      <i class="bi bi-menu-button-wide"></i><span>Generate Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                  </li>
+            
+                  <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                      <i class="bi bi-menu-button-wide"></i><span>Generate Detailed Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                  </li>
+            
+                  <li class="nav-item">
+                    <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                      <i class="bi bi-menu-button-wide"></i><span>Generate Revenue Report</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                  </li>
+            
+                </ul>
+            
+            </aside>
+        </span>
+  
+        <div class="ml-3 mt-3" style="width: 1100px;">
+            <div class="pagetitle">
+                <h1>Dashboard</h1>
+                <nav>
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                  </ol>
+                </nav>
+            </div>
+
+            <div *ngIf="!showingReports">
+              <div class="d-flex ml-5">
+                <div class="card info-card sales-card mr-5">
+                    <div class="card-body">
+                        <h5 class="card-title">Sales <span>| This month</span></h5>             
+
+                      <div class="d-flex align-items-center">
+                        <div class="ps-3">
+                          <h4>145</h4>
+                          <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+    
+                        </div>
+                      </div>
+                    </div>
+    
+                  </div>
+                  <div class="card info-card sales-card mr-5">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenue <span>| This month</span></h5>             
+
+                      <div class="d-flex align-items-center">
+                        <div class="ps-3">
+                          <h4>145</h4>
+                          <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+    
+                        </div>
+                      </div>
+                    </div>
+    
+                  </div>      
+                  <div class="card info-card sales-card mr-5">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenue<span>| This month (All Franchises)</span></h5>             
+
+                      <div class="d-flex align-items-center">
+                        <div class="ps-3">
+                          <h4>145</h4>
+                          <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
+    
+                        </div>
+                      </div>
+                    </div>
+    
+                  </div>
+              </div>
+            </div>
+            
+            <div class="ml-2 mt-4 shadow-sm">
+                <ng-container *ngIf="showTotal">
+                  <form #totalSalesForm="ngForm" (ngSubmit)="generateReport('total')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                    <h4>Select a period for your report</h4>
+                    <hr>
+                    <label>Start date</label>
+                    <div class="form-group">
+                      <input type="date" class="form-control" name="startDate"
+                             [(ngModel)]="totalSalesForm.startDate">
+                    </div>
+                    <label>End date</label>
+                    <div class="form-group">
+                      <input type="date" class="form-control" name="endDate"
+                             [(ngModel)]="totalSalesForm.endDate">
+                    </div>
+                    <div class="form-group text-center">
+                      <button class="btn btn-success mr-2" type="submit">Generate</button>
+                    </div>
+                  </form>
+
+                  <h3 class="ml-2 mt-3 mb-4">Total Sales Report</h3>
+                <div class="list-group ml-2 mr-2 mb-1">
+                  <ng-container>
+                    <a class="mt-1">
+                      <div class="list-group-item d-flex justify-content-between">
+                        <h5>Order Number - 7650</h5>
+                        <b>BWP <span class="text-success">560.65</span></b>
+                      </div>                                               
+                    </a>
+                  </ng-container>                    
+                </div>
+                </ng-container>
+
+                <ng-container>
+                  <h3 class="ml-2 mt-3 mb-4">Submissions Accepted</h3>
+                <div class="list-group ml-2 mr-2 mb-1">
+                  <ng-container>
+                    <a class="list-group-item list-group-item-action" aria-current="true">
+                      <div class="d-flex gap-3 py-3">
+                        <img width="50" height="50"
+                        src="https://firebasestorage.googleapis.com/v0/b/christ-the-king-cathedral.appspot.com/o/avatar.png?alt=media&token=5bf4a22c-7740-48db-a05c-7835809f7039">
+                        <div class="ml-3">
+                          <h6></h6>
+                          <span></span>
+                        </div>                          
+                      </div>
+                      
+                      <div style="margin-left: 10%; margin-right: 10%;">
+                        <div class="d-flex gap-3 py-3">
+                          <div class="mr-5">
+                            <b>Date of birth</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Age</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Fullname</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Omang Number</b>
+                            <p></p>
+                          </div>
+  
+                          <div>
+                            <b>Phone Number</b>
+                            <p></p>
+                          </div>
+                          
+                        </div>
+                        <div class="d-flex gap-3 py-3">
+                          <div class="mr-5">
+                            <b>Education</b>
+                            <ng-container>
+                              <p></p>
+                            </ng-container>                            
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Host Organizations</b>
+                            <ng-container>
+                              <p></p>
+                            </ng-container>                            
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Certificates</b>
+                            <ng-container>
+                              <a class="nav-link"></a>
+                            </ng-container>
+                          </div>
+                          
+                        </div>                                         
+                      </div>
+                                               
+                    </a>
+                  </ng-container>                    
+                </div>
+                </ng-container>
+
+                <ng-container>
+                  <h3 class="ml-2 mt-3 mb-4">Submissions Denied</h3>
+                <div class="list-group ml-2 mr-2 mb-1">
+                  <ng-container>
+                    <a class="list-group-item list-group-item-action" aria-current="true">
+                      <div class="d-flex gap-3 py-3">
+                        <img width="50" height="50"
+                        src="https://firebasestorage.googleapis.com/v0/b/christ-the-king-cathedral.appspot.com/o/avatar.png?alt=media&token=5bf4a22c-7740-48db-a05c-7835809f7039">
+                        <div class="ml-3">
+                          <h6></h6>
+                          <span></span>
+                        </div>                             
+                      </div>
+                      
+                      <div style="margin-left: 10%; margin-right: 10%;">
+                        <div class="d-flex gap-3 py-3">
+                          <div class="mr-5">
+                            <b>Date of birth</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Age</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Fullname</b>
+                            <p></p>
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Omang Number</b>
+                            <p></p>
+                          </div>
+  
+                          <div>
+                            <b>Phone Number</b>
+                            <p></p>
+                          </div>
+                          
+                        </div>
+                        <div class="d-flex gap-3 py-3">
+                          <div class="mr-5">
+                            <b>Education</b>
+                            <ng-container>
+                              <p></p>
+                            </ng-container>                            
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Host Organizations</b>
+                            <ng-container>
+                              <p></p>
+                            </ng-container>                            
+                          </div>
+  
+                          <div class="mr-5">
+                            <b>Certificates</b>
+                            <ng-container>
+                              <a class="nav-link"></a>
+                            </ng-container>
+                          </div>
+                          
+                        </div>                                         
+                      </div>
+                                               
+                    </a>
+                  </ng-container>                    
+                </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+  </body>
