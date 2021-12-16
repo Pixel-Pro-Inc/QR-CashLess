@@ -32,6 +32,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
+import { ThankyouComponent } from './thankyou/thankyou.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     DashboardComponent,
     RevenuechartComponent,
     LoginComponent,
+    ThankyouComponent,
   ],
   imports: [
     BrowserModule,
