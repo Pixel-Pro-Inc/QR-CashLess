@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +30,7 @@ import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
@@ -65,10 +66,11 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     BrowserAnimationsModule,
     FormsModule,
     SharedModule,
-
+    NgxSpinnerModule,
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
-    /** {provide: HTTP_INTERCEPTORS,useClass:LoadingInterceptor, multi:true}  */ ],
+    {provide: HTTP_INTERCEPTORS,useClass:LoadingInterceptor, multi:true}  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
