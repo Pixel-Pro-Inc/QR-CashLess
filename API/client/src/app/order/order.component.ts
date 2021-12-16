@@ -18,7 +18,8 @@ import { BranchService } from '../_services/branch.service';
   styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
-  @Input() showPaymentOptions : boolean;
+  @Input() showPaymentOptions: boolean;
+  @Input() thanks: boolean;
 
   total = 0.00;
   totalDisplay = '';
@@ -170,7 +171,8 @@ export class OrderComponent implements OnInit {
       orders[i].phoneNumber = this.model.phoneNumber.toString();  
     }
 
-    this.orderService.paidOnlineForOrder(this.getOrders());  
+    this.orderService.paidOnlineForOrder(this.getOrders());
+    this.router.navigateByUrl('thankyou');
   }
 
   getOrders() : OrderItem[] {
@@ -210,5 +212,10 @@ export class OrderComponent implements OnInit {
 
   call(){
     window.open('tel:' + this.branchPhoneNumber);
-  }  
+  }
+  leave() {
+    this.thanks = false;
+    this.router.navigateByUrl('order');
+  }
+
 }
