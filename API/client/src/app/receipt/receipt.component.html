@@ -52,7 +52,7 @@
           </div>
 
           <div class="text-95 text-secondary-d3">
-            <ng-container *ngFor="let o of orders">
+            <ng-container *ngFor="let o of orders" {{total}}+={{o.price}}>
               <div class="row mb-2 mb-sm-0 py-25">
                 <div class="col-9 col-sm-5">{{o.name}}</div>
                 <div class="d-none d-sm-block col-2">{{o.quantity}}</div>
@@ -60,6 +60,8 @@
                 <div class="col-2 text-secondary-d2">BWP {{o.price}}</div>
               </div>
             </ng-container>
+            <!-- This is just a poor attempt at the total price expected-->
+            <div class="col-2 text-secondary-d2"> Total: BWP {{total}}</div>
           </div>
 
           <div class="row border-b-2 brc-default-l2"></div>
