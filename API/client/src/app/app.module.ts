@@ -30,7 +30,6 @@ import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
-import { NgxSpinnerModule } from 'ngx-spinner';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 
 @NgModule({
@@ -56,9 +55,8 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     RestaurantBranchComponent,
     LoginComponent,
     DashboardComponent,
-    RevenuechartComponent
+    RevenuechartComponent,
     LoginComponent,
-    NgxSpinnerModule
   ],
   imports: [
     BrowserModule,
@@ -67,10 +65,10 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
     BrowserAnimationsModule,
     FormsModule,
     SharedModule,
-    NgxSpinnerModule
+
   ],
   providers: [
-    {provide: HTTP_INTERCEPTORS,useClass:LoadingInterceptor, multi:true}  ],
+    /** {provide: HTTP_INTERCEPTORS,useClass:LoadingInterceptor, multi:true}  */ ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
