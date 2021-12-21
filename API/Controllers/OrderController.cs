@@ -13,13 +13,9 @@ namespace API.Controllers
 {
     public class OrderController : BaseApiController
     {
-            private readonly FirebaseDataContext _firebaseDataContext;
-            private readonly string dir = "Order/";
+        private readonly string dir = "Order/";
 
-        public OrderController()
-        {
-            _firebaseDataContext = new FirebaseDataContext();
-        }
+        public OrderController():base() { }
 
         #region Create Order Item
 

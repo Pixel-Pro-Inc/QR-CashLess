@@ -17,11 +17,9 @@ namespace API.Controllers
 {
     public class BranchController : BaseApiController
     {
-        private readonly FirebaseDataContext _firebaseDataContext;
         private IPhotoService _photoService;
-        public BranchController(IPhotoService photoService)
+        public BranchController(IPhotoService photoService):base()
         {
-            _firebaseDataContext = new FirebaseDataContext();
             _photoService = photoService;
         }
         [HttpPost("register")]

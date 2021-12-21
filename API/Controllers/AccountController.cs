@@ -19,12 +19,10 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
-        private readonly FirebaseDataContext _firebaseDataContext;
         private string dir = "Account";
 
-        public AccountController(ITokenService tokenService)
+        public AccountController(ITokenService tokenService):base()
         {
-            _firebaseDataContext = new FirebaseDataContext();
             _tokenService = tokenService;
         }
 

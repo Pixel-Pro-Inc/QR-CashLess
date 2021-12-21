@@ -12,13 +12,9 @@ namespace API.Controllers
 {
     public class ReportController : BaseApiController
     {
-        private readonly FirebaseDataContext _firebaseDataContext;
         private readonly string dir = "Order/";
 
-        public ReportController()
-        {
-            _firebaseDataContext = new FirebaseDataContext();
-        }
+        public ReportController():base(){ }
         
         [HttpGet("sales/total")] //this is what is actuallly sent up when dates are given, The Total sales report. It gives all the order numbers and the amount 
         public async Task<ActionResult<SalesDto>> GetTotalSales(ReportDto reportDto)

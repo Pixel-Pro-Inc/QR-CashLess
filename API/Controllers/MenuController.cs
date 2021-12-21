@@ -22,12 +22,10 @@ namespace API.Controllers
     public class MenuController : BaseApiController
     {
         private IPhotoService _photoService;
-        private readonly FirebaseDataContext _firebaseDataContext;
 
-        public MenuController(IPhotoService photoService)
+        public MenuController(IPhotoService photoService):base()
         {
             _photoService = photoService;
-            _firebaseDataContext = new FirebaseDataContext();
         }
 
         [HttpGet("getmenu/{branchId}")]

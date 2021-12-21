@@ -9,7 +9,7 @@ namespace API.Model
     {
         public enum restuarant
         {
-            rhapsodys
+            rodizio
         }
     }
 }

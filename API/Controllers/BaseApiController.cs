@@ -1,4 +1,5 @@
-﻿using API.Entities;
+﻿using API.Data;
+using API.Entities;
 using API.Helpers;
 using FireSharp.Config;
 using FireSharp.Interfaces;
@@ -16,6 +17,13 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : Controller
     {
+        protected readonly FirebaseDataContext _firebaseDataContext;
+        public BaseApiController()
+        {
+            _firebaseDataContext = new FirebaseDataContext();
+        }
+
+
         [HttpGet]
         public IActionResult Index()
         {

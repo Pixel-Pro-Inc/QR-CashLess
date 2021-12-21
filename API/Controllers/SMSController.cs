@@ -14,6 +14,10 @@ namespace API.Controllers
     {
         private static readonly HttpClient client = new HttpClient();
 
+        public SMSController():base()
+        {
+
+        }
         [HttpPost("send/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendSMS(string phoneNumber, string orderNumber)
         {
