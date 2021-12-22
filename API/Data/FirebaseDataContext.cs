@@ -1,7 +1,9 @@
-﻿using FireSharp.Config;
+﻿using API.Helpers;
+using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,10 +15,12 @@ namespace API.Data
 {
     public class FirebaseDataContext
     {
+        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+
         IFirebaseConfig config = new FirebaseConfig
         {
-            AuthSecret = "KIxlMLOIsiqVrQmM0V7pppI1Ao67UPZv5jOdU0QJ",
-            BasePath = "https://rodizoapp-default-rtdb.firebaseio.com/"
+            AuthSecret = Configuration["Firebase:AuthSecret"],
+            BasePath = Configuration["Firebase:BasePath"]
         };
 
         IFirebaseClient client;

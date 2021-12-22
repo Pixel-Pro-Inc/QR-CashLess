@@ -3,6 +3,7 @@ using API.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -16,13 +17,21 @@ namespace API.Services
     public class PhotoService : IPhotoService
     {
         private readonly Cloudinary _cloudinary;
-        public PhotoService(IOptions<CloudinarySettings> config)
+        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+
+        //I removed the parameter and use the config, but like, i left it in the comments cause i am not 100% sure it will work, but im pretty confident it will
+        public PhotoService(/*IOptions<CloudinarySettings> config*/)
         {
             var acc = new Account
                 (
-                config.Value.CloudName,
+                /*
+                 config.Value.CloudName,
                 config.Value.ApiKey,
                 config.Value.ApiSecret
+                 */
+                Configuration["CloudinarySettings:CloudName"],
+                Configuration["CloudinarySettings:ApiKey"],
+                Configuration["CloudinarySettings:ApiSecret"]
                 );
 
             _cloudinary = new Cloudinary(acc);
