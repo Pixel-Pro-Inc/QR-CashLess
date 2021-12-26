@@ -11,7 +11,7 @@ export class DashboardComponent implements OnInit {
   totalSalesModel: any = {};
   showTotal = false;
   showingReports: Boolean;
-
+  path: any = " ";
 
   constructor(private dashService: DashService) { }
 
@@ -28,6 +28,15 @@ export class DashboardComponent implements OnInit {
       this.dashService.totalSales(this.totalSalesModel);
     }
 
+  }
+  exportToExcel() {
+    //path= Window.path
+    this.dashService.exportexceldata();
+  }
+
+  //I havent seen how or why to do this, but I put it here just in case
+  importToExcel(model: any, filename: any) {
+    this.dashService.importexceldata(model, filename);
   }
 
 }

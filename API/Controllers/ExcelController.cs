@@ -7,15 +7,18 @@ using API.Helpers;
 using API.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     public class ExcelController:BaseApiController
     {
+        private readonly string dir = "order/";
         public ExcelController():base() { }
         ConnectionChecker connectionChecker = new ConnectionChecker();
 
-        public void ImportExcelData(string filePath)
+        [HttpPost("importexceldata")]
+        public void ImportExcelData(string filePath) //takes data in local and then updates firebase, hence why you 'post' to firebase
         {
             if (connectionChecker.CheckConnection())
             {
@@ -54,7 +57,7 @@ namespace API.Controllers
                             //orders don't have total
                             }
                         }
-                    _firebaseDataContext.StoreData("order", importData); //its not records, find the correct info
+                    _firebaseDataContext.StoreData(dir, importData); //its not records, find the correct info
                 }
                 excel.Close();
             }
@@ -65,12 +68,14 @@ namespace API.Controllers
             }
         }
 
-        public async void ExportExcelData(string path)
+        [HttpGet("exportexcelData")]// because you are getting info from the controller, which is getting its info from firebase
+        public async Task<ActionResult<Excel>> ExportExcelData(string path)
         {
+            Excel ex = new Excel();
             if (connectionChecker.CheckConnection())
             {
                 #region makes and exports a excel file
-                Excel ex = new Excel();
+                
                 ex.CreateNewFile();
                 string[] fields = new string[8];
                 fields[0] = "invoice";
@@ -116,6 +121,7 @@ namespace API.Controllers
                         di++;
                     }
                     ex.SaveAs(path);
+                    //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
                     Console.WriteLine("export completed");
                 }
                 else
@@ -123,12 +129,13 @@ namespace API.Controllers
                     Console.WriteLine("There is no data to export.");
                 }
                 ex.Close();
+                return ex;
                 #endregion
             }
             else
             {
                 Console.WriteLine("There is no internet.");
-                return;
+                return ex;
             }
         }
 

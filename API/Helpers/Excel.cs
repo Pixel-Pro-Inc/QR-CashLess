@@ -7,7 +7,7 @@ using _Excel = Microsoft.Office.Interop.Excel;
 
 namespace API.Helpers
 {
-    class Excel
+    public class Excel
     {
         string path = "";
         _Application excel = new _Excel.Application();

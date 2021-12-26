@@ -12,7 +12,7 @@ namespace API.Controllers
 {
     public class ReportController : BaseApiController
     {
-        private readonly string dir = "Order/";
+        private readonly string dir = "reports/";
 
         public ReportController():base(){ }
         
