@@ -2,7 +2,7 @@
     <ng-container *ngIf="dish.category == category && dish.availability">
         <div class="card-body bg-light mb-5 shadow">
             <div style="display:flex; flex-direction: row;  
-            justify-content: left; align-items: left;">            
+            justify-content: left; align-items: start;">            
             <div class="d-flex">
                 <img src="{{dish.imgUrl}}" class="mr-3" alt="food" style="height: 100px; width: 100px;">
                 <h4>{{dish.name}}</h4>                
@@ -25,16 +25,14 @@
                 <h6 *ngIf="dish.category != 'Meat'" class="mt1">BWP {{dish.price}}</h6>
             
 
-            <div style="display:flex; justify-content: right; align-items: right;">
-                <button *ngIf="!cantOrder 
-                && dish.category == 'Meat' 
-                && userInput[menuItems.indexOf(dish)] >= dish.minimumPrice" 
+            <div style="display:flex; justify-content: right; align-items: end;">
+                <button *ngIf="!cantOrder && dish.category == 'Meat' && userInput[menuItems.indexOf(dish)] >= dish.minimumPrice" 
             (click)="clicked(dish, 1, userInput[menuItems.indexOf(dish)])" 
             style="width: fit-content; height: fit-content;" type="button" class="btn btn-primary text-center ">
             <i class="fa fa-plus"></i></button>
             </div>
 
-            <div style="display:flex; justify-content: right; align-items: right;">
+            <div style="display:flex; justify-content: right; align-items:end;">
                 <button *ngIf="!cantOrder 
                 && dish.category != 'Meat'"
             (click)="clicked(dish, 1, 0)" 

@@ -17,7 +17,6 @@ export class ReferenceService {
 
   setReference(param: string) {
     let indexOfBreak = param.indexOf('_');
-
     let ref = param.slice(indexOfBreak + 1, param.length);
 
     let branch = param.slice(0, indexOfBreak);

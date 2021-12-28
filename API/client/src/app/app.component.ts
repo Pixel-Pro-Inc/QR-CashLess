@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
   constructor(private accountService: AccountService, public referenceService: ReferenceService) { }
   SelectorMode: boolean;
 
-  ngOnInit(){
+  ngOnInit() {
     this.setCurrentUser();
     this.SelectorMode = true;
   }

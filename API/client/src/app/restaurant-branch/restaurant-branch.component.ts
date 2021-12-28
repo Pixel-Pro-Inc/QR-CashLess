@@ -37,7 +37,7 @@ export class RestaurantBranchComponent implements OnInit {
       return;
     }
 
-    if(user.admin){
+    if(user.admin&&user!=null){
       this.title = 'Choose a branch to manage';
 
       this.getBranches();      

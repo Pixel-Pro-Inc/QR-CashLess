@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BusyService } from '../_services/busy.service';
 import { DashService } from '../_services/dash.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class DashboardComponent implements OnInit {
   showingReports: Boolean;
   path: any = " ";
 
-  constructor(private dashService: DashService) { }
+  constructor(private dashService: DashService, private busyService: BusyService) { }
 
   ngOnInit(): void {
   }
@@ -23,10 +24,12 @@ export class DashboardComponent implements OnInit {
     this.showTotal = true;
   }
 
-  generateReport(type: string){
+  generateReport(type: string) {
+    this.busyService.busy();
     if(type == 'total'){
       this.dashService.totalSales(this.totalSalesModel);
     }
+    this.busyService.idle();
 
   }
   exportToExcel() {
