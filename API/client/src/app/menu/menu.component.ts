@@ -106,7 +106,7 @@ export class MenuComponent implements OnInit {
   createMenuItem() {
     let branchId = this.referenceService.currentBranch();
 
-    console.log('branch id ' + branchId);
+    //console.log('branch id ' + branchId);
     
     this.formToggle();
     this.model.imgUrl = this.imageSrc;
