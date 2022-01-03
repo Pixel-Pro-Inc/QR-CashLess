@@ -97,7 +97,7 @@ export class MenuComponent implements OnInit {
   }
   
   getMenuItems(branchId: string) {
-    console.log(branchId);
+    //console.log(branchId);
     this.menuService.getMenuItems('menu/getmenu', branchId).subscribe(response => {
       this.menuItems = response;
       console.log(response);

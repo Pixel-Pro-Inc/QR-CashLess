@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.setCurrentUser();
+    console.log(this.referenceService.currentreference());
     this.SelectorMode = true;
   }
 

@@ -69,7 +69,7 @@ export class OrderComponent implements OnInit {
     if(this.getOrders() != null){
       this.tempOrderItems = this.getOrders();//update list to latest values
     }    
-
+    //models should add 'origin' for orderItem in POS
     let orderItem : OrderItem = {
         name: '',
         description: '',
