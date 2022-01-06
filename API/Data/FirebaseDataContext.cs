@@ -67,5 +67,11 @@ namespace API.Data
 
             var response = await client.UpdateAsync(path, data);
         }        
+        public async void DeleteData(string fullPath)
+        {
+            client = new FireSharp.FirebaseClient(config);
+
+            await client.DeleteAsync(fullPath);
+        }
     }
 }

@@ -89,7 +89,8 @@ namespace API.Controllers
                     Img = branch.ImgUrl,
                     LastActive = x,
                     Location = branch.Location,
-                    Name = branch.Name
+                    Name = branch.Name,
+                    PhoneNumber = branch.PhoneNumber.ToString()
                 };
 
                 branches.Add(branchDto);

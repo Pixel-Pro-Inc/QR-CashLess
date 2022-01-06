@@ -119,5 +119,87 @@ namespace API.Controllers
 
             return 0;            
         }
+        [HttpPost("edititem/{id}")]
+        public async Task<ActionResult<MenuItemDto>> EditMenuItem(MenuItemDto menuItemDto, string id)
+        {
+            string branchId = id;
+
+            var menuItem = new MenuItem
+            {
+                Id = menuItemDto.Id,
+                Name = menuItemDto.Name,
+                Description = menuItemDto.Description,
+                prepTime = menuItemDto.PrepTime.ToString(),
+                Price = menuItemDto.Price.ToString("f2"),
+                Restuarant = menuItemDto.Restuarant,
+                Category = menuItemDto.Category,
+                Rate = menuItemDto.Rate,
+                MinimumPrice = menuItemDto.MinimumPrice,
+                Availability = true,
+                ImgUrl = menuItemDto.ImgUrl,
+                PublicId = menuItemDto.publicId
+            };
+
+            //Detect change in image
+            List<MenuItem> items = new List<MenuItem>();
+
+            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
+
+            for (int i = 0; i < response.Count; i++)
+            {
+                var item = response[i];
+                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
+                items.Add(menu);
+            }
+
+            var mItem = items.Where(i => i.Id == menuItem.Id);
+
+            MenuItem temp = null;
+
+            foreach (var m in mItem)
+            {
+                temp = m;
+            }
+
+            if(temp.ImgUrl != menuItemDto.ImgUrl)
+            {
+                //STORE NEW IMAGE
+
+                //Delete old image
+                await _photoService.DeletePhotoAsync(menuItem.PublicId);
+
+                //Upload new image
+
+                string path = menuItemDto.ImgUrl;
+
+                if (path != null && path != "")
+                {
+                    var result = await _photoService.AddPhotoAsync(path);
+
+                    if (result.Error != null) return BadRequest(result.Error.Message);
+
+                    menuItem.ImgUrl = result.SecureUrl.AbsoluteUri;
+                    menuItem.PublicId = result.PublicId;
+                }
+            }            
+
+            //Update firebase
+
+            _firebaseDataContext.EditData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
+
+            return menuItemDto;
+        }
+
+        [HttpPost("delete/{branchId}")]
+        public async Task<ActionResult<MenuItemDto>> DeleteMenuItem(MenuItemDto menuItemDto, string branchId)
+        {
+            //Delete Image from Cloudinary
+            await _photoService.DeletePhotoAsync(menuItemDto.publicId);
+
+            //Delete Item from Firebase
+            _firebaseDataContext.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
+
+            return menuItemDto;
+        }
     }
 }

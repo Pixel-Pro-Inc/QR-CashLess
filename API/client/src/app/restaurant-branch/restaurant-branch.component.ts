@@ -14,33 +14,36 @@ import { ReferenceService } from '../_services/reference.service';
 })
 export class RestaurantBranchComponent implements OnInit {
   constructor(private branchService: BranchService, private router: Router, private referenceService: ReferenceService) { }
-  RestBranches: Branch[];
+  RestBranches: Branch[] = [];
 
   title = 'Pick a restaurant branch most convenient to you';
 
   ngOnInit(): void {
     let user: User = JSON.parse(localStorage.getItem('user'));
 
+    let empty: OrderItem[] = [];
+    localStorage.setItem('ordered', JSON.stringify(empty));
+
     if(user == null){
       this.getBranches();
-      let empty: OrderItem[] = [];
-      localStorage.setItem('ordered', JSON.stringify(empty));
+      return;
+    }
 
+    this.title = 'Choose a branch to manage';
+
+    if(user.superUser){
+      this.getBranches();
       return;
     }
     
     if(user.developer){
       this.getBranches();
-      let empty: OrderItem[] = [];
-      localStorage.setItem('ordered', JSON.stringify(empty));
-
       return;
     }
 
     if(user.admin){
-      this.title = 'Choose a branch to manage';
-
-      this.getBranches();      
+      this.getBranches();
+      return;  
     }
     
   }  
@@ -50,18 +53,24 @@ export class RestaurantBranchComponent implements OnInit {
 
     this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
 
-      this.RestBranches = response;
+      console.log(response);
 
-      if(user.admin){
-        console.log(response);
+      let result: Branch[] = response;
 
-        for (let i = 0; i < this.RestBranches.length; i++) {
-          console.log('entered');
-          
-          if(!(user.branchId.includes(this.RestBranches[i].id))){
-            this.RestBranches.splice(i);
-          }
-        }      
+      if(user != null){
+        if(user.admin){  
+          for (let i = 0; i < result.length; i++) {            
+            if(user.branchId.includes(result[i].id)){
+              this.RestBranches.push(result[i]);
+            }
+          }      
+        }
+        else{
+          this.RestBranches = response;
+        }
+      }
+      else{
+        this.RestBranches = response;
       }
     });
   }

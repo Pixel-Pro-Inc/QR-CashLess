@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -12,13 +7,13 @@ namespace API.Controllers
 {
     public class SMSController : BaseApiController
     {
-        private static readonly HttpClient client = new HttpClient();
 
-        [HttpPost("send/{phoneNumber}/{orderNumber}")]
-        public async Task<ActionResult<string>> SendSMS(string phoneNumber, string orderNumber)
+        [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
+        public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)
         {
-            string accountSid = "ACb6bff2fe1dd75e7f0ef7ec2c0d4d7b84";
-            string authToken = "71c2b37eb6e48f1eb985e0bce05861f0";
+            //From rodizio express api key
+            string accountSid = "SK4dfe74260f4947fc4be3c85fe774c21a";
+            string authToken = "IR0mVNFst7gx7f8vQMebM9pGwyx2DJ2l";
 
             TwilioClient.Init(accountSid, authToken);
 
@@ -29,6 +24,27 @@ namespace API.Controllers
                 from: "Rodizio",
                 to: new Twilio.Types.PhoneNumber("+267" + phoneNumber)
             );
+
+            return phoneNumber;
+        }
+
+        [HttpPost("send/cancel/{phoneNumber}/{orderNumber}")]
+        public async Task<ActionResult<string>> SendOrderCancelSMS(string phoneNumber, string orderNumber)
+        {
+            //From rodizio express api key
+            string accountSid = "SK4dfe74260f4947fc4be3c85fe774c21a";
+            string authToken = "IR0mVNFst7gx7f8vQMebM9pGwyx2DJ2l";
+
+            TwilioClient.Init(accountSid, authToken);
+
+            string msgBody = "Rodizio Express. Your order #" + orderNumber + " has been cancelled. Powered by Pixel Pro";
+
+            var message = await MessageResource.CreateAsync(
+                body: msgBody,
+                from: "Rodizio",
+                to: new Twilio.Types.PhoneNumber("+267" + phoneNumber)
+            );
+
             return phoneNumber;
         }
     }

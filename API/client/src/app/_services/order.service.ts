@@ -35,7 +35,9 @@ export class OrderService {
       let empty: OrderItem[] = [];
       localStorage.setItem('ordered', JSON.stringify(empty));
 
-      localStorage.setItem('userPhoneNumber', JSON.stringify(null));
+      if(this.referenceService.currentreference() == "tablet"){
+        localStorage.setItem('userPhoneNumber', JSON.stringify(null));
+      }      
       
       this.router.navigateByUrl('/menu/' + x);
     },

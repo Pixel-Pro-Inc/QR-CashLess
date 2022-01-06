@@ -1,7 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { MenuComponent } from '../menu/menu.component';
 import { OrderComponent } from '../order/order.component';
 import { MenuItem } from '../_models/menuItem';
+import { BranchService } from '../_services/branch.service';
+import { MenuService } from '../_services/menu.service';
+import { ReferenceService } from '../_services/reference.service';
 
 @Component({
   selector: 'app-menuitem',
@@ -13,10 +17,11 @@ export class MenuitemComponent implements OnInit {
   @Input() category : string;
   @Input() cantOrder: boolean;
   @Input() orderView: OrderComponent;
+  @Input() menuView: MenuComponent;
 
   userInput: number[] = [];
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private toastr: ToastrService, private menuService: MenuService, private referenceService: ReferenceService) { }
 
   ngOnInit(): void {
     
@@ -24,9 +29,27 @@ export class MenuitemComponent implements OnInit {
 
   clicked(item: MenuItem, quantity: number, usersInput: number){
     console.log(item);
+    console.log(usersInput);
+    console.log(quantity);
 
     this.toastr.success(item.name + ' was added to your order.');
     this.orderView.updateOrderView(item, quantity, usersInput);    
+  }
+
+  editItem(model: any){
+    this.menuView.showEditForm = true;
+
+    this.menuView.model1 = model;
+  }
+
+  deleteItem(model: any){
+    if(confirm("Are you sure you want to permanently delete " + model.name)) {
+      this.menuService.deleteItem(model, this.referenceService.currentBranch()).subscribe(
+        response => {
+          window.location.reload();
+        }
+      );
+    }
   }
 
 }

@@ -42,7 +42,8 @@ namespace API.Controllers
                 PasswordSalt = hmac.Key,
                 Developer = registerDto.Developer,
                 branchId = registerDto.branchId,
-                Admin = registerDto.Admin
+                Admin = registerDto.Admin,
+                SuperUser = registerDto.SuperUser
             };            
 
             user.Id = await GetNum();
@@ -80,7 +81,8 @@ namespace API.Controllers
                 Token = _tokenService.CreateToken(user),
                 Developer = user.Developer,
                 branchId = user.branchId,
-                Admin = user.Admin
+                Admin = user.Admin,
+                SuperUser = user.SuperUser
             };
         }
         

@@ -1,4 +1,5 @@
 export interface MenuItem {
+  id: number;
   name: string;
   description: string;
   category: string;
@@ -8,4 +9,5 @@ export interface MenuItem {
   minimumPrice: number;
   rate: number;
   availability: boolean;
+  publicId: string;
 }
