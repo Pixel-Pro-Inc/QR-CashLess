@@ -3,16 +3,17 @@ import { Injectable} from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../_models/orderItem';
+import { BaseServiceService } from './-base-service.service';
 import { ReferenceService } from './reference.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class OrderService {
-  //baseUrl = 'https://localhost:5001/api/';
-  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
+export class OrderService extends BaseServiceService {
 
-  constructor(private http: HttpClient, private router: Router, private referenceService: ReferenceService) { }
+  constructor(http: HttpClient, private router: Router, private referenceService: ReferenceService) {
+    super(http);
+  }
 
   createOrder(orderItems: OrderItem[]){
     

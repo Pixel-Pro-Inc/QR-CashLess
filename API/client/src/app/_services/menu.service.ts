@@ -3,15 +3,16 @@ import { error } from '@angular/compiler/src/util';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { MenuItem } from '../_models/menuItem';
+import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MenuService {
-  //baseUrl = 'https://localhost:5001/api/';
-  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
+export class MenuService extends BaseServiceService {
 
-  constructor(private http: HttpClient) { }
+  constructor(http: HttpClient) {
+    super(http);
+  }
 
   getMenuItems(dir: string, branchId: string) {
     return this.http.get(this.baseUrl + dir +'/' + branchId).pipe(

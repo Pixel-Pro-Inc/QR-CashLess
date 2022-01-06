@@ -2,16 +2,16 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { saveAs } from 'file-saver';
+import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class DashService {
+export class DashService extends BaseServiceService{
 
-  baseUrl = 'https://localhost:5001/api/';
-  //baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
-
-  constructor(private http: HttpClient, private toastr: ToastrService) { }
+  constructor(http: HttpClient, private toastr: ToastrService) {
+    super(http);
+  }
 
   totalSales(model: any){
     this.http.get(this.baseUrl + 'reports/sales/total', model).subscribe(

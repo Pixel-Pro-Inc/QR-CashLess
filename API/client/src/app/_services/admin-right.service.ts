@@ -5,20 +5,21 @@ import { MenuComponent } from '../menu/menu.component';
 import { ReceiptComponent } from '../receipt/receipt.component';
 import { RestaurantBranchComponent } from '../restaurant-branch/restaurant-branch.component';
 import { MenuItem } from '../_models/menuItem';
+import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AdminRightService {
-  //baseUrl = 'https://localhost:5001/api/';
-  baseUrl = 'https://rodizioexpress.azurewebsites.net/api/';
+export class AdminRightService extends BaseServiceService {
 
   //I set these as private cause of security reasons
   private menuClass: MenuComponent;
   private branchClass: RestaurantBranchComponent;
   private recieptDictionary: Map<number, ReceiptComponent>;
 
-  constructor(private http: HttpClient) { }
+  constructor(http: HttpClient) {
+    super(http);
+  }
   
   getbranches = () => this.branchClass.getBranches();
   
