@@ -28,6 +28,10 @@ export class AppComponent implements OnInit {
     this.accountService.setCurrentUser(user);
   }
 
+  navigateToSite(link: string){
+    window.open(link);
+  }
+
   RemoveSelector(event: boolean) {
 
     this.SelectorMode = event;

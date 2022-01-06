@@ -3,7 +3,6 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
-import { render } from 'creditcardpayments/creditCardPayments';
 import { ReferenceService } from '../_services/reference.service';
 import { error } from '@angular/compiler/src/util';
 import { NavigationEnd, Router } from '@angular/router';
@@ -44,14 +43,19 @@ export class OrderComponent implements OnInit {
     this.orderItems = this.getOrders();    
     
     this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
+      console.log(response);
+      
       let RestBranches: Branch[] = response;
 
       for (let i = 0; i < RestBranches.length; i++) {
         if(RestBranches[i].id == this.referenceService.currentBranch()){
+
+          console.log(RestBranches[i].phoneNumber);
+          
+          this.branchPhoneNumber = RestBranches[i].phoneNumber;
+
           if(RestBranches[i].lastActive < 30){
             this.onlineOrderAvailable = true;
-
-            this.branchPhoneNumber = RestBranches[i].phoneNumber;
           }
         }
       }
@@ -83,13 +87,15 @@ export class OrderComponent implements OnInit {
         quantity: 0,
         orderNumber: '',
         phoneNumber: '',
-        paymentMethod: ''
+        paymentMethod: '',
+        category: ''
     };
 
     orderItem.quantity = quantity;
     orderItem.description = item.description;
     orderItem.fufilled = false;
     orderItem.name = item.name;
+    orderItem.category = item.category;
 
     if(item.category == 'Meat'){
       orderItem.price = userInput.toString();
@@ -133,18 +139,7 @@ export class OrderComponent implements OnInit {
       this.totalDisplay = n;
       this.totalUsd = this.total * 0.0906750;
       this.totalUsd = Math.round((this.totalUsd + Number.EPSILON) * 100) / 100;
-      if(this.showPaymentOptions){
-        render(
-          {
-            id: "#myPaypalButtons",
-            currency: "USD",
-            value: this.totalUsd.toString(),
-            onApprove: (details) => {              
-              this.successfulPurchase();
-            },
-          }
-        );   
-      }
+      //Stripe Button
       this.block = 1;
     }             
   }
@@ -208,6 +203,10 @@ export class OrderComponent implements OnInit {
     }
 
     return false;
+  }
+
+  formatAmount(amount: string){
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
   }
 
   call(){

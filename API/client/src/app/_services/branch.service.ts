@@ -24,10 +24,10 @@ export class BranchService extends BaseServiceService {
       {
         console.log(error);
       });
-  }
+  }  
 
   getRestBranches(dir: string) {
-        return this.http.get(this.baseUrl + dir).pipe(
+    return this.http.get(this.baseUrl + dir).pipe(
       map((response: Branch[]) => {
         return response;
       })

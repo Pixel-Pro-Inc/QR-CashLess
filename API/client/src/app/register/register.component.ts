@@ -46,6 +46,10 @@ export class RegisterComponent implements OnInit {
       let branch: string[] = [this.referenceService.currentBranch()];
       this.model.branchId = branch;
     }
+
+    if(this.model.superUser){
+      this.resetBranches();
+    }
     
     this.accountService.register(this.model, 'account/register').subscribe(response => {
       console.log(response);
@@ -59,6 +63,10 @@ export class RegisterComponent implements OnInit {
 
   cancel() {
     this.cancelRegister.emit(false);
+  }
+  
+  resetBranches(){
+    this.model.branchId = null;
   }
 
 }

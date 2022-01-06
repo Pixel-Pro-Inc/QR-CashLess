@@ -18,7 +18,7 @@
              [(ngModel)]="model.password" placeholder="Password">
     </div>
     
-    <div *ngIf="isDeveloper" class="form-group">
+    <div *ngIf="isDeveloper && !model.superUser" class="form-group">
       <label>Select a branch code</label>
       <select class="form-control" name="branchId" [(ngModel)]="model.branchId" multiple>        
         <ng-container *ngFor="let branch of branches">
@@ -27,10 +27,16 @@
       </select>
     </div>
 
-    <div *ngIf="isDeveloper" class="form-group">
+    <div *ngIf="isDeveloper && !model.superUser" class="form-group">
       <input type="checkbox" name="admin"
              [(ngModel)]="model.admin">
       <label class="ml-2">Admin Account</label>
+    </div>
+    <div *ngIf="isDeveloper && !model.admin" class="form-group">
+      <input type="checkbox" name="superUser"
+             [(ngModel)]="model.superUser">
+             <ng-container>{{resetBranches()}}</ng-container>
+      <label class="ml-2">Super User Account</label>
     </div>
     <div class="form-group text-center">
       <button class="btn btn-success mr-2" type="submit">Register</button>

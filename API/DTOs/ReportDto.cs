@@ -7,10 +7,13 @@ namespace API.DTOs
 {
     public class ReportDto
     {
-        public DateTime startDate { get; set; }
-        public DateTime endDate { get; set; }
-        public string branchId { get; set; }
-        public string invoice { get; set; }
-        public string paymentMethod { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public string BranchId { get; set; }
+        public string Invoice { get; set; }
+        public string PaymentMethod { get; set; }
+        //Filter
+        public string Category { get; set; }
+        public string Name { get; set; }
     }
 }

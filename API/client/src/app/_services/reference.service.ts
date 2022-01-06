@@ -39,6 +39,10 @@ export class ReferenceService extends BaseServiceService {
     
   }
 
+  setRefExplicit(ref: string){
+    localStorage.setItem('reference', ref);
+  }
+
   setBranch(branch: string){
     localStorage.setItem('branch', branch);
   }

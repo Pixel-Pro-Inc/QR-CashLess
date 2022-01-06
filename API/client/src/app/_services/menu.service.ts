@@ -3,6 +3,7 @@ import { error } from '@angular/compiler/src/util';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { MenuItem } from '../_models/menuItem';
+import { BranchService } from './branch.service';
 import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
@@ -32,12 +33,19 @@ export class MenuService extends BaseServiceService {
       })
     )
   }
-  editMenuItem(model: any, dir: string) {
-    return this.http.post(this.baseUrl + dir, model).pipe(
+  editMenuItem(dir: string, menuItemDto: MenuItem, branchId: string) {
+    return this.http.post(this.baseUrl + dir + '/' + branchId, menuItemDto).pipe(
       map((item: MenuItem) => {
         if (item) {
-          localStorage.setItem(item.name, JSON.stringify(item)); //I'm assuming that since its the same place and name it will just overwrite
+          localStorage.setItem(item.name, JSON.stringify(item));
         }
+        return item;
+      })
+    );
+  }
+  deleteItem(model: any, branchId: string){
+    return this.http.post(this.baseUrl + 'menu/delete/' + branchId, model).pipe(
+      map((item: MenuItem) => {
         return item;
       })
     );

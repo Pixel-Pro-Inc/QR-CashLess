@@ -87,4 +87,22 @@ export class ReceiptComponent implements OnInit {
    pdf.save('rodizio-express-receipt.pdf'); // Generated PDF
   });
   }
+  getTotal(item: any, origin: string){
+    if(origin == "invoice"){
+      let values = item;
+      let total: number = 0;
+      
+      values.forEach(element => {
+        total = total + parseFloat(element.price.split(',').join(''));      
+      });
+
+      let tot = parseFloat(total.toFixed(2));
+
+      return tot.toLocaleString('en-US', {minimumFractionDigits: 2});
+    }
+  }
+
+  formatAmount(amount: string){
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
+  }
 }

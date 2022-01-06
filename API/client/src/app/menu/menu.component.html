@@ -3,30 +3,20 @@
   <app-order class="mt-3" [showPaymentOptions] = "false" #orderWindow></app-order>    
 </div>
 
-<h1 class="text-center mt-3" *ngIf="showEditing">
+<h1 class="text-center mt-3" *ngIf="showEditing || cantOrder">
   Administration
 </h1>
 <h2 class="mt-3 ml-3">Menu</h2>
   <div class="container mb-2" style="display:flex; flex-direction: row;  
   justify-content: center; align-items: center">  
-  <ng-container *ngIf="showEditing">
+  <ng-container *ngIf="showEditing || cantOrder">
     <button class="btn btn-primary" (click)="formToggle()">Add New Item</button>
-  </ng-container>      
-    <a class="nav-link mt-2 text-info" (click)="categoryMeats()">Meats</a>
-    <a class="nav-link mt-2 text-info" (click)="categorySides()">Sides</a>
-    <a class="nav-link mt-2 text-info" (click)="categoryDrinks()">Drinks</a>
-    <a class="nav-link mt-2 text-info" (click)="categoryDesserts()">Desserts</a>
+  </ng-container>   
   </div>
 
   <div *ngIf="showform">
-    <div class=" mb-2 bg-light text-right rounded" >
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-      <button class="btn text-right" (click)="formToggle()"><svg xmlns="http://www.w3.org/2000/svg" width="32" 
-        height="32" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16"><path fill-rule="evenodd"
-         d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"></path></svg></button>
-      </div>
-    <form *ngIf="showform" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
-      <h2 class="text-center text-primary">Create a dish</h2>
+    <form *ngIf="showform" class="ml-5 mr-5" #menuForm="ngForm" (ngSubmit)="createMenuItem()" autocomplete="off" enctype="multipart/form-data">
+      <h2 class="text-center">Create a dish</h2>
       <hr>
       <label>Name</label>
       <div class="form-group">
@@ -77,18 +67,87 @@
         <button class="btn btn-default mr-2" (click)="cancel()" type="button">Cancel</button>
       </div>
     </form>
-  </div>
-  
+  </div>  
+
+  <nav class="navbar navbar-expand-md bg-dark">
+    <b *ngIf="showMeats" class="nav-link mt-2 text-danger" (click)="categoryMeats()">Meats</b>
+    <a *ngIf="!showMeats" class="nav-link mt-2 text-light" (click)="categoryMeats()">Meats</a>
+
+    <b *ngIf="showSides" class="nav-link mt-2 text-danger" (click)="categorySides()">Sides</b>
+    <a *ngIf="!showSides" class="nav-link mt-2 text-light" (click)="categorySides()">Sides</a>
+
+    <b *ngIf="showDrinks" class="nav-link mt-2 text-danger" (click)="categoryDrinks()">Drinks</b>
+    <a *ngIf="!showDrinks" class="nav-link mt-2 text-light" (click)="categoryDrinks()">Drinks</a>
+
+    <b *ngIf="showDesserts" class="nav-link mt-2 text-danger" (click)="categoryDesserts()">Desserts</b>
+    <a *ngIf="!showDesserts" class="nav-link mt-2 text-light" (click)="categoryDesserts()">Desserts</a>
+  </nav> 
 
   <div *ngIf="showMeats">
-    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>
+    <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>
   </div>
   <div *ngIf="showSides">
-    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Side'"></app-menuitem>
+    <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Side'"></app-menuitem>
   </div>
   <div *ngIf="showDrinks">
-    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Drink'"></app-menuitem>
+    <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Drink'"></app-menuitem>
   </div>
   <div *ngIf="showDesserts">
-    <app-menuitem [orderView]="orderWindow" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Dessert'"></app-menuitem>
+    <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Dessert'"></app-menuitem>
+  </div>
+
+  <div *ngIf="showEditForm" class="mb-5">
+    <form *ngIf="showEditForm" class="ml-5 mr-5" #menuEditForm="ngForm" (ngSubmit)="editMenuItem()" autocomplete="off" enctype="multipart/form-data">
+      <h2 class="text-center">Edit {{model1.name}}</h2>
+      <hr>
+      <label>Name</label>
+      <div class="form-group">
+        <input type="text" class="form-control" name="name"
+               [(ngModel)]="model1.name" placeholder="Name">
+      </div>
+      <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="category" [(ngModel)]="model1.category">
+          <option>Meat</option>
+          <option>Side</option>
+          <option>Dessert</option>
+          <option>Drink</option>
+        </select>
+      </div>    
+      <div class="form-group" *ngIf="model1.category != 'Meat'">
+        <label>Price</label>
+        <input type="number" class="form-control" name="price"
+               [(ngModel)]="model1.price" placeholder="Price">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" class="form-control" name="description"
+               [(ngModel)]="model1.description" placeholder="Descripiton">
+      </div>    
+      <div class="form-group" *ngIf="model1.category == 'Meat'">
+        <label>Minimum Price</label>
+        <input type="number" class="form-control" name="minPrice"
+               [(ngModel)]="model1.minimumPrice" placeholder="Minimum Price">
+      </div>
+      <div class="form-group" *ngIf="model1.category == 'Meat'">
+        <label>Rate per gram</label>
+        <input type="number" class="form-control" name="rate"
+               [(ngModel)]="model1.rate" placeholder="Price/Gram">
+      </div>
+      <div class="form-group">
+        <label>Preparation time</label>
+        <input type="number" class="form-control" name="prepTime"
+               [(ngModel)]="model1.prepTime" placeholder="Preparation Time">
+      </div>
+      <div class="form-group mb-5">
+        <label>Select an image <span class="text-warning" *ngIf="img.image == null">(Unchanged)</span></label>
+        <input type="file" accept="image/*" class="form-control" name="image"
+               [(ngModel)]="img.image" (change)="onFileChange($event)">
+      </div>
+      <div class="form-group text-center">
+        <button class="btn btn-success mr-2" type="submit">Save</button>
+        <button class="btn btn-default mr-2" (click)="cancel2()" type="button">Cancel</button>
+      </div>
+    </form>
+    <ng-container>{{toBottom()}}</ng-container>    
   </div>

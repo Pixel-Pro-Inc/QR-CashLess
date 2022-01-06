@@ -17,7 +17,7 @@ export class AdminGuard implements CanActivate {
         console.log(user);
         
         if(user){
-          if (user.admin || user.developer) return true;
+          if (user.admin || user.developer || user.superUser) return true;
         }   
         this.toastr.error('You are unauthorized!');
     })
