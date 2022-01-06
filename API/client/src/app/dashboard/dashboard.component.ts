@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   allSalesRevenue: any = {};
 
 
-  constructor(private dashService: DashService, private referenceService: ReferenceService) { }
+  constructor(private dashService: DashService, private referenceService: ReferenceService,private busyService:BusyService) { }
 
   ngOnInit(): void {
     this.populateDashboard();

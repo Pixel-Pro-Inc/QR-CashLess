@@ -17,10 +17,10 @@ export class RestaurantBranchComponent implements OnInit {
   RestBranches: Branch[] = [];
 
   title = 'Pick a restaurant branch most convenient to you';
-  user: User;
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
+    let user: User;
+    user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
 
     let empty: OrderItem[] = [];
     localStorage.setItem('ordered', JSON.stringify(empty));
@@ -37,7 +37,7 @@ export class RestaurantBranchComponent implements OnInit {
       return;
     }
     
-    if(this.user.developer){
+    if(user.developer){
       this.getBranches();
       return;
     }
@@ -55,6 +55,7 @@ export class RestaurantBranchComponent implements OnInit {
       console.log(response);
 
       let result: Branch[] = response;
+      let user: User;
 
       if(user != null){
         if(user.admin){  
@@ -76,7 +77,8 @@ export class RestaurantBranchComponent implements OnInit {
 
   onClick(branch: Branch){
     //routerLinkNextPage
-    if (this.user != null) {
+    let user: User;
+    if (user != null) {
 
       this.referenceService.setBranch(branch.id);
 

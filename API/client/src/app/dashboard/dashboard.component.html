@@ -37,7 +37,7 @@
 
 
               </ul>
-            
+               <ul>
                   <li class="nav-item">
                     <a class="nav-link collapsed" (click)="showDashboard()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
                       <i class="bi bi-menu-button-wide"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -112,8 +112,8 @@
                           <span *ngIf="!salesRevenue.positive" class="text-danger small pt-1 fw-bold">{{salesRevenue.change}}% change</span>    
                         </div>
                       </div>
-                    </div>
-                  </div>
+               </div>
+            </div>
 
                       <div class="d-flex align-items-center">
                         <div *ngIf="allSalesRevenue.revenue != null" class="ps-3">
@@ -124,8 +124,7 @@
                       </div>
                     </div>
                   </div>
-              </div>
-            </div>
+            
             
             <div class="ml-2 mt-4">
                 <ng-container *ngIf="showTotal">
@@ -383,6 +382,4 @@
               
                
             </div>
-        </div>
-    </div>
   </body>
