@@ -31,14 +31,12 @@ namespace API.Controllers
             for (int i = 0; i < branches.Count; i++)
             {
                 var item = branches[i];
+                dto.Id = item.Id;
 
-                if (item.Id == dto.Id)
+                while (item.Id == dto.Id)
                 {
-                    while (item.Id == dto.Id)
-                    {
-                        dto.Id = "rd" + new Random().Next(100000, 999999);
-                        i = 0;
-                    }
+                    dto.Id = "rd" + new Random().Next(10000, 100000);
+                    i = branches.Count + 1;
                 }
             }
 
