@@ -4,4 +4,5 @@ export interface User {
   branchId: string[];
   developer: boolean;
   admin: boolean;
+  superUser: boolean;
 }

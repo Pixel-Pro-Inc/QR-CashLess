@@ -7,12 +7,11 @@ namespace API.DTOs
 {
     public class SalesDto
     {
-        public List<string> orderNumbers { get; set; }
-        public List<float> orderRevenue { get; set; }
+        public string OrderNumber { get; set; }
+        public string OrderRevenue { get; set; }
         public float SummaryTotal { get; set; }
-        public Dictionary<string,float> paymentMethodList { get; set; } // variables are <PaymentMethod, Price>
-        public List<string> ItemName { get; set; }
-        public List<int> Quantity { get; set; }
+        public string ItemName { get; set; }
+        public int Quantity { get; set; }
 
     }
 }

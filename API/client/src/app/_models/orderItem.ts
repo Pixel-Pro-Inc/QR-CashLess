@@ -12,4 +12,5 @@ export interface OrderItem {
   quantity: number;
   orderNumber: string;
   phoneNumber: string;
+  category: string;
 }

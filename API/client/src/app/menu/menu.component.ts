@@ -43,12 +43,13 @@ export class MenuComponent implements OnInit {
     prepTime: '',
     minimumPrice: 0,
     rate: 0,
-    availability: false
+    availability: false,
+    id: 0,
+    publicId: ''
   };
   img: any = {};
 
   menuItems: MenuItem[] = [];
-  baseUrl: string;
 
   orderItem: OrderItem = {
     name: '',
@@ -63,18 +64,30 @@ export class MenuComponent implements OnInit {
     waitingForPayment: false,
     quantity: 0,
     orderNumber: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    category: ''
   };
 
   orderItems: OrderItem[] = [];
   showSides: boolean;
 
+  showEditForm = false;
+
+  model1: any = {};
+
+  menu: MenuComponent = this;
+
+
   constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
 
-  ngOnInit(): void {   
+  ngOnInit(): void {
+    this.user = JSON.parse(localStorage.getItem('user'));
 
-    if (this.referenceService.currentreference() == 'edit') {
+    if (this.user != null) {
+      this.referenceService.setRefExplicit('edit');
+
       this.cantOrder = true;
+
       this.accountService.currentUser$.subscribe(r => {
         this.user = r;
         if (this.user.admin) {
@@ -91,9 +104,9 @@ export class MenuComponent implements OnInit {
       );
     }
 
-    this.baseUrl = this.menuService.baseUrl;
-
     this.getMenuItems(this.referenceService.currentBranch());
+
+    console.log(this.showEditing);
   }
   
   getMenuItems(branchId: string) {
@@ -115,6 +128,26 @@ export class MenuComponent implements OnInit {
     this.toastr.success("Menu item added successfully");
     
     this.menuService.createMenuItem('menu/createitem', this.model, branchId).subscribe(response => {      
+      window.location.reload();
+    }, 
+    error =>{
+      console.log(error);
+    })    
+  }
+
+  editMenuItem() {
+    let branchId = this.referenceService.currentBranch();
+
+    console.log('branch id ' + branchId);
+    
+    this.formToggle();
+    this.model1.imgUrl = this.img.image == null? this.model1.imgUrl : this.imageSrc;
+
+    console.log(this.model1);
+
+    this.toastr.success("Menu item edited successfully");
+    
+    this.menuService.editMenuItem('menu/edititem', this.model1, branchId).subscribe(response => {      
       window.location.reload();
     }, 
     error =>{
@@ -152,6 +185,10 @@ export class MenuComponent implements OnInit {
     this.formToggle();
   }
 
+  cancel2() {
+    this.showEditForm = false;
+  }
+
   formToggle() {
     this.showform = !this.showform;
   }
@@ -169,6 +206,11 @@ export class MenuComponent implements OnInit {
       };
 
     }
+  }
+
+  toBottom(){
+    console.log('something');
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
 }

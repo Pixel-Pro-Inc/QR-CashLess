@@ -14,34 +14,37 @@ import { ReferenceService } from '../_services/reference.service';
 })
 export class RestaurantBranchComponent implements OnInit {
   constructor(private branchService: BranchService, private router: Router, private referenceService: ReferenceService) { }
-  RestBranches: Branch[];
+  RestBranches: Branch[] = [];
 
   title = 'Pick a restaurant branch most convenient to you';
-  user: User;
 
   ngOnInit(): void {
-    this.user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
+    let user: User;
+    user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
 
-    console.log(this.user);
-    if(this.user == null){
+    let empty: OrderItem[] = [];
+    localStorage.setItem('ordered', JSON.stringify(empty));
+
+    if(user == null){
       this.getBranches();
-      let empty: OrderItem[] = [];
-      localStorage.setItem('ordered', JSON.stringify(empty));
+      return;
+    }
+
+    this.title = 'Choose a branch to manage';
+
+    if(user.superUser){
+      this.getBranches();
       return;
     }
     
-    if(this.user.developer){
+    if(user.developer){
       this.getBranches();
-      let empty: OrderItem[] = [];
-      localStorage.setItem('ordered', JSON.stringify(empty));
-
       return;
     }
 
-    if (this.user.admin && this.user != null/*||this.user.superUser==true*/){
-      this.title = 'Choose a branch to manage';
-
-      this.getBranches();      
+    if(user.admin){
+      this.getBranches();
+      return;  
     }
     
   }  
@@ -49,26 +52,33 @@ export class RestaurantBranchComponent implements OnInit {
   getBranches() {
     this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
 
-      this.RestBranches = response;
-      console.log("Before user was checked to be admin, we found that "+response);
-      if (this.user == null) return; //there was a null reference error showing up and this solves it
-      if(this.user.admin){
-        console.log(response);
+      console.log(response);
 
-        for (let i = 0; i < this.RestBranches.length; i++) {
-          console.log('entered');
-          
-          if(!(this.user.branchId.includes(this.RestBranches[i].id))){
-            this.RestBranches.splice(i);
-          }
-        }      
+      let result: Branch[] = response;
+      let user: User;
+
+      if(user != null){
+        if(user.admin){  
+          for (let i = 0; i < result.length; i++) {            
+            if(user.branchId.includes(result[i].id)){
+              this.RestBranches.push(result[i]);
+            }
+          }      
+        }
+        else{
+          this.RestBranches = response;
+        }
+      }
+      else{
+        this.RestBranches = response;
       }
     });
   }
 
   onClick(branch: Branch){
     //routerLinkNextPage
-    if (this.user != null) {
+    let user: User;
+    if (user != null) {
 
       this.referenceService.setBranch(branch.id);
 

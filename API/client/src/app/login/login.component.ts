@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
       this.accountService.currentUser$.subscribe(response => {
         this.user = response;
         console.log(this.user);
+
         if (this.user.admin) {
           this.router.navigateByUrl('/');
         }
