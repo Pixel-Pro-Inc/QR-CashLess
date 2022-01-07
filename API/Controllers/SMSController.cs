@@ -9,6 +9,7 @@ namespace API.Controllers
     {
         public SMSController() :base() { }
 
+
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)
         {
@@ -38,6 +39,26 @@ namespace API.Controllers
             TwilioClient.Init(accountSid, authToken);
 
             string msgBody = "Rodizio Express. Your order #" + orderNumber + " has been cancelled. Powered by Pixel Pro";
+
+            var message = await MessageResource.CreateAsync(
+                body: msgBody,
+                from: "Rodizio",
+                to: new Twilio.Types.PhoneNumber("+267" + phoneNumber)
+            );
+
+            return phoneNumber;
+        }
+
+        //Make sure the token is made using QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param), it won't make sense if you try to use your own.
+        [HttpPost("send/resetpassword/{phoneNumber}")]
+        public async Task<ActionResult<string>> SendResetPasswordSMS(string phoneNumber, string temporarypasswordtoken)
+        {
+            string accountSid = Configuration["twillosettings:accountSid"];
+            string authToken = Configuration["twillosettings:authToken"];// Do not put this in git hub at all, right now its in the gitignore keep it there
+
+            TwilioClient.Init(accountSid, authToken);
+
+            string msgBody = $"Rodizio Express. Your temporary password token is {temporarypasswordtoken} please change your password withing 2 hours.\n Powered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
