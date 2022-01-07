@@ -3,6 +3,7 @@ using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmailService
 {
@@ -21,6 +22,11 @@ namespace EmailService
             var emailMessage = CreateEmailMessage(message);
             Send(emailMessage);
         }
+        public async Task SendEmailAsync(Message message)
+        {
+            var emailMessage = CreateEmailMessage(message);
+            await SendAsync(emailMessage);
+        }
 
         MimeMessage CreateEmailMessage(Message message)
         {
@@ -32,6 +38,7 @@ namespace EmailService
 
             return emailmessage;
         }
+
         void Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
@@ -52,6 +59,30 @@ namespace EmailService
                 finally
                 {
                     client.Disconnect(true);
+                    client.Dispose();
+                }
+            }
+        }
+        async Task SendAsync(MimeMessage mailMessage)
+        {
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(_emailConfig.SmtpServer, _emailConfig.Port, true);
+                    client.AuthenticationMechanisms.Remove("XOAUTH2");
+                    await client.AuthenticateAsync(_emailConfig.username, _emailConfig.password);
+
+                    await client.SendAsync(mailMessage);
+                }
+                catch
+                {
+
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
                     client.Dispose();
                 }
             }
