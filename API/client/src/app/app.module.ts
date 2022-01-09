@@ -30,7 +30,6 @@ import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch
 import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
-import { NgxSpinnerModule } from "ngx-spinner";
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { ThankyouComponent } from './thankyou/thankyou.component';
 
@@ -68,7 +67,6 @@ import { ThankyouComponent } from './thankyou/thankyou.component';
     BrowserAnimationsModule,
     FormsModule,
     SharedModule,
-    NgxSpinnerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

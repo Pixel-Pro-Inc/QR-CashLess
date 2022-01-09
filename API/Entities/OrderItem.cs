@@ -7,6 +7,7 @@ namespace API.Entities
 {
     public class OrderItem
     {
+        public string OrderNumber { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,8 +19,7 @@ namespace API.Entities
         public string PaymentMethod { get; set; } //this would have been better as an enum
         public bool Preparable { get; set; }
         public bool WaitingForPayment { get; set; }
-        public int Quantity { get; set; }
-        public string OrderNumber { get; set; }
+        public int Quantity { get; set; }        
         public bool Collected { get; set; }
         public string PhoneNumber { get; set; }
         public string Category { get; set; }

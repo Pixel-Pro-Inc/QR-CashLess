@@ -28,7 +28,7 @@ namespace API.Controllers
             _photoService = photoService;
         }
 
-        [HttpGet("menu/getmenu/{branchId}")]
+        [HttpGet("getmenu/{branchId}")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
         {
             List<MenuItem> items = new List<MenuItem>();

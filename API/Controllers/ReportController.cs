@@ -16,7 +16,7 @@ namespace API.Controllers
 {
     public class ReportController : BaseApiController
     {
-        private readonly string dir = "reports/";
+        private readonly string dir = "CompletedOrders/";
 
         public ReportController():base(){ }
         

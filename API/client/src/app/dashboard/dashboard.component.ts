@@ -202,11 +202,6 @@ export class DashboardComponent implements OnInit {
     }
 
   }
-  exportToExcel() {
-    //path= Window.path
-    this.dashService.exportexceldata();
-  }
-
   getTotal(item: any, origin: string){
     if(origin == "total"){
       let values = item;
@@ -277,6 +272,10 @@ export class DashboardComponent implements OnInit {
 
   expandToggle(item: any){
     item.extra = !item.extra;
+  }
+
+  exportToExcel(){    
+    this.dashService.exportToExcel(this.referenceService.currentBranch());
   }
 
 }
