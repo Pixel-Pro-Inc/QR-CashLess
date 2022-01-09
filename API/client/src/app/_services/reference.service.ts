@@ -7,6 +7,8 @@ import { BaseServiceService } from './-base-service.service';
 })
 export class ReferenceService extends BaseServiceService {
   branchId: string;
+  hideNavBar = false;
+  
   constructor(http: HttpClient) {
       super(http);
   }
