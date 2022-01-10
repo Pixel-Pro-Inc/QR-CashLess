@@ -22,6 +22,8 @@ using Microsoft.OpenApi.Models;
 
 namespace API
 {
+    //This is the development Branch. If You see this then you're in the Dev branch. Remeber to always ignore this line in the git push
+    //Development
     public class Startup
     {
         private readonly IConfiguration _config;
