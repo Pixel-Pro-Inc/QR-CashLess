@@ -14,11 +14,13 @@ import { ReferenceService } from '../_services/reference.service';
 })
 export class RestaurantBranchComponent implements OnInit {
   constructor(private branchService: BranchService, private router: Router, private referenceService: ReferenceService) { }
-  RestBranches: Branch[] = [];
+  RestBranches: Branch[] = [];  
 
   title = 'Pick a restaurant branch most convenient to you';
 
   ngOnInit(): void {
+    this.referenceService.hideNavBar = true;
+
     let user: User;
     user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
 
@@ -78,9 +80,11 @@ export class RestaurantBranchComponent implements OnInit {
   onClick(branch: Branch){
     //routerLinkNextPage
     let user: User;
+    user = JSON.parse(localStorage.getItem('user'));
     if (user != null) {
 
       this.referenceService.setBranch(branch.id);
+      this.referenceService.hideNavBar = false;
 
       this.router.navigateByUrl('/menu/edit');
 
@@ -89,8 +93,8 @@ export class RestaurantBranchComponent implements OnInit {
 
     //if (Usertype == 'tablet') return this.router.navigateByUrl('/menu/' + branch.id + "_tablet"); leave this here, cause tablets are never given user values
     //if (Usertype == 'QrCard') return this.router.navigateByUrl('/menu/' + branch.id + "_QrCard");
-    // This here is where a param is attached and where it will be expected to have been done for the other options. Check how yewo did superUser so you can draw inspo for Usertype
-    this.router.navigateByUrl('/menu/' + branch.id + "_clientE"); 
+    //This here is where a param is attached and where it will be expected to have been done for the other options. Check how yewo did superUser so you can draw inspo for Usertype
+    this.router.navigateByUrl('/menu/' + branch.id + "_clientE");
   }
 
   getStatus(branch: Branch): string{
