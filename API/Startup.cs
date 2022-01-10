@@ -22,6 +22,8 @@ using Microsoft.OpenApi.Models;
 
 namespace API
 {
+    //This version of startup is expected to be Production, so this should be free of all errors and problems
+    //Production Version 1.0.0
     public class Startup
     {
         private readonly IConfiguration _config;
