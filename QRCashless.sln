@@ -5,8 +5,6 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{BF6D676A-187C-49B0-9AA4-9B667C29C8C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{7F1C808D-8946-495B-9E71-EFD83A65A3DE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,18 +27,6 @@ Global
 		{BF6D676A-187C-49B0-9AA4-9B667C29C8C7}.Release|x64.Build.0 = Release|Any CPU
 		{BF6D676A-187C-49B0-9AA4-9B667C29C8C7}.Release|x86.ActiveCfg = Release|Any CPU
 		{BF6D676A-187C-49B0-9AA4-9B667C29C8C7}.Release|x86.Build.0 = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|x64.Build.0 = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Debug|x86.Build.0 = Debug|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|x64.ActiveCfg = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|x64.Build.0 = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|x86.ActiveCfg = Release|Any CPU
-		{7F1C808D-8946-495B-9E71-EFD83A65A3DE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

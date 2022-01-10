@@ -36,10 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmailService\EmailService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <TypeScriptCompile Include="client\src\app\_models\menuItem.ts" />
     <TypeScriptCompile Include="client\src\app\_models\user.ts" />
   </ItemGroup>
