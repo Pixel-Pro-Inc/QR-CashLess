@@ -2,8 +2,11 @@
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using EmailService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -20,10 +23,13 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private string dir = "Account";
+        private readonly SMSController smsSender; //I added this here cause I did'nt know any other way to involve the method it contains. we use it in line 166
+        private readonly UserManager<AppUser> _userManager;
 
-        public AccountController(ITokenService tokenService):base()
+        public AccountController(ITokenService tokenService, UserManager<AppUser> userManager) :base()
         {
             _tokenService = tokenService;
+            _userManager= userManager;
         }
 
         [HttpPost("register")]
@@ -135,5 +141,32 @@ namespace API.Controllers
 
             return ran;
         }
+
+        //When you have set up the Identity roles thing then you can remove the below line to get access to the code
+
+       
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var user = await GetUser(forgotPasswordDto.Username);
+            if (user == null)
+                return BadRequest("Invalid Request");
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+                 {"token", token },
+                 {"SMS", forgotPasswordDto.phoneNumber }
+            };
+            
+            var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
+            //await smsSender.SendResetPasswordSMS(user.number, callback); //Where is the user number stored
+
+            return Ok();
+        }
+
     }
 }
