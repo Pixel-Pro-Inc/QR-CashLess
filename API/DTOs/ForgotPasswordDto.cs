@@ -9,9 +9,9 @@ namespace API.DTOs
     public class ForgotPasswordDto
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
+        public string Username { get; set; }
+        [Required]
+        public string phoneNumber { get; set; }
         [Required]
         public string ClientURI { get; set; }
     }

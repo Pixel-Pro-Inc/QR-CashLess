@@ -4,6 +4,7 @@ using API.Entities;
 using API.Interfaces;
 using EmailService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -22,16 +23,13 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private string dir = "Account";
-        private readonly IEmailSender _emailSender;
-        private readonly SMSController smsSender; //I added this here cause I did'nt know any other way to involve the method it contains. we use it in line 159
+        private readonly SMSController smsSender; //I added this here cause I did'nt know any other way to involve the method it contains. we use it in line 166
+        private readonly UserManager<AppUser> _userManager;
 
-        //private readonly IdentityManager _userManager; // This here should have it's type replaced with whatever you make for ID role management
-
-        public AccountController(ITokenService tokenService, IEmailSender emailSender/*, IdentityManager userManager*/) :base()
+        public AccountController(ITokenService tokenService, UserManager<AppUser> userManager) :base()
         {
             _tokenService = tokenService;
-            _emailSender = emailSender;
-            //_userManager= userManager;
+            _userManager= userManager;
         }
 
         [HttpPost("register")]
@@ -145,7 +143,7 @@ namespace API.Controllers
         }
 
         //When you have set up the Identity roles thing then you can remove the below line to get access to the code
-#if IdentityroleManagerisNotReady==true
+
        
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
@@ -153,7 +151,7 @@ namespace API.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var user = await _userManager.FindByEmailAsync(forgotPasswordDto.Email); //We will have to get these from our Identity role management logic
+            var user = await GetUser(forgotPasswordDto.Username);
             if (user == null)
                 return BadRequest("Invalid Request");
 
@@ -161,18 +159,14 @@ namespace API.Controllers
             var param = new Dictionary<string, string>
             {
                  {"token", token },
-                 {"email", forgotPasswordDto.Email }
+                 {"SMS", forgotPasswordDto.phoneNumber }
             };
-            await smsSender.SendResetPasswordSMS(user.number, token);
+            
             var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
-
-            var message = new Message(new string[] { user.Email }, "Reset password token", callback);
-            await _emailSender.SendEmailAsync(message); //I don't expect this to work cause an SmptServer account hasn't been created. Im tempted just to comment anything that 
-            // has to do with email in this method.
+            //await smsSender.SendResetPasswordSMS(user.number, callback); //Where is the user number stored
 
             return Ok();
         }
-#endif
 
     }
 }

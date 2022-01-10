@@ -58,7 +58,7 @@ namespace API.Controllers
 
             TwilioClient.Init(accountSid, authToken);
 
-            string msgBody = $"Rodizio Express. Your temporary password token is {temporarypasswordtoken} please change your password withing 2 hours.\n Powered by Pixel Pro";
+            string msgBody = $"Rodizio Express. Please click this {temporarypasswordtoken} link to get your temporary password token. Please change your password withing 2 hours.\n Powered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
