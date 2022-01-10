@@ -1,385 +1,367 @@
-<body>
-    <div class="d-flex">
-        <span>
-            <aside id="sidebar" class="sidebar" style="height: 650px;">
-        
+<body class="bg-light">
+  <div class="d-flex">
+      <span>
+          <aside id="sidebar" class="sidebar" style="height: 650px;">
+      
               <ul class="sidebar-nav" id="sidebar-nav">
-
+          
                 <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                  <a class="nav-link collapsed" (click)="showDashboard()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
                     <i class="bi bi-menu-button-wide"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
                 </li>
-
+          
                 <li class="nav-item">
-                  <a class="nav-link collapsed" (click)="showTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                  <a class="nav-link collapsed" (click)="showTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
                     <i class="bi bi-menu-button-wide"></i><span>Generate Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
                 </li>
-
+          
                 <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                  <a class="nav-link collapsed" (click)="showDetailedTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
                     <i class="bi bi-menu-button-wide"></i><span>Generate Detailed Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
                 </li>
-
+          
                 <li class="nav-item">
-                  <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                  <a class="nav-link collapsed" (click)="showRevenueReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
                     <i class="bi bi-menu-button-wide"></i><span>Generate Revenue Report</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
                 </li>
 
                 <li class="nav-item">
-                  <a class="nav-link collapsed" (click)="exportToExcel()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                    <i class="bi bi-menu-button-wide"></i><span>Export results To Excel</span><i class="bi bi-chevron-down ms-auto"></i>
+                  <a class="nav-link collapsed" (click)="showPaymentReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                    <i class="bi bi-menu-button-wide"></i><span>Generate Payments Summary</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
                 </li>
 
+                <li class="nav-item">
+                  <a class="nav-link collapsed" (click)="showInvoiceReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                    <i class="bi bi-menu-button-wide"></i><span>Find By Invoice</span><i class="bi bi-chevron-down ms-auto"></i>
+                  </a>
+                </li>
 
+                <li class="nav-item">
+                  <a class="nav-link collapsed" (click)="exportToExcel()" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                    <i class="fa fa-file text-success"></i><span class="text-success">Export To Excel</span>
+                  </a>
+                </li>
               </ul>
-               <ul>
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showDashboard()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
-                      <i class="bi bi-menu-button-wide"></i><span>Dashboard</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
-            
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse" >
-                      <i class="bi bi-menu-button-wide"></i><span>Generate Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
-            
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showDetailedTotalReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                      <i class="bi bi-menu-button-wide"></i><span>Generate Detailed Total Sales Report</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
-            
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showRevenueReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                      <i class="bi bi-menu-button-wide"></i><span>Generate Revenue Report</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
+          
+          </aside>
+      </span>
 
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showPaymentReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                      <i class="bi bi-menu-button-wide"></i><span>Generate Payments Summary</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
+      <div class="ml-3 mt-3" style="width: 1100px;">
+          <div class="pagetitle">
+              <h1>Dashboard</h1>
+              <nav>
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+                  <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+              </nav>
+          </div>
 
-                  <li class="nav-item">
-                    <a class="nav-link collapsed" (click)="showInvoiceReport()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                      <i class="bi bi-menu-button-wide"></i><span>Find By Invoice</span><i class="bi bi-chevron-down ms-auto"></i>
-                    </a>
-                  </li>
-                </ul>
-            
-            </aside>
-        </span>
+          <div *ngIf="!showingReports">
+            <div class="d-flex ml-5">
+              <div class="card info-card sales-card mr-5">
+                  <div class="card-body">
+                      <h5 class="card-title">Sales <span>| This month</span></h5>             
+
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="salesVolume.sales != null" class="ps-3">
+                        <h4>{{salesVolume.sales}}</h4>
+                        <span *ngIf="salesVolume.positive" class="text-success small pt-1 fw-bold">+ {{salesVolume.change}}% change</span>
+                        <span *ngIf="!salesVolume.positive" class="text-danger small pt-1 fw-bold">{{salesVolume.change}}% change</span>    
+                      </div>
+                    </div>
+                  </div>
   
-        <div class="ml-3 mt-3" style="width: 1100px;">
-            <div class="pagetitle">
-                <h1>Dashboard</h1>
-                <nav>
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-                    <li class="breadcrumb-item active">Dashboard</li>
-                  </ol>
-                </nav>
-            </div>
-
-            <div *ngIf="!showingReports">
-              <div class="d-flex ml-5">
+                </div>
                 <div class="card info-card sales-card mr-5">
                   <div class="card-body">
-                    <h5 class="card-title">Sales <span>| This month</span></h5>
+                      <h5 class="card-title">Revenue <span>| This month</span></h5>             
 
-                      <div class="d-flex align-items-center">
-                        <div *ngIf="salesVolume.sales != null" class="ps-3">
-                          <h4>{{salesVolume.sales}}</h4>
-                          <span *ngIf="salesVolume.positive" class="text-success small pt-1 fw-bold">+ {{salesVolume.change}}% change</span>
-                          <span *ngIf="!salesVolume.positive" class="text-danger small pt-1 fw-bold">{{salesVolume.change}}% change</span>    
-                        </div>
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="salesRevenue.revenue != null" class="ps-3">
+                        <h4>BWP <span class="text-success">{{salesRevenue.revenue}}</span></h4>
+                        <span *ngIf="salesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{salesRevenue.change}}% change</span>
+                        <span *ngIf="!salesRevenue.positive" class="text-danger small pt-1 fw-bold">{{salesRevenue.change}}% change</span>    
                       </div>
                     </div>
                   </div>
+  
+                </div>      
+                <div class="card info-card sales-card mr-5">
+                  <div class="card-body">
+                      <h5 class="card-title">Revenue<span>| This month (All Franchises)</span></h5>             
 
-                      <div class="d-flex align-items-center">
-                        <div *ngIf="salesRevenue.revenue != null" class="ps-3">
-                          <h4>BWP <span class="text-success">{{salesRevenue.revenue}}</span></h4>
-                          <span *ngIf="salesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{salesRevenue.change}}% change</span>
-                          <span *ngIf="!salesRevenue.positive" class="text-danger small pt-1 fw-bold">{{salesRevenue.change}}% change</span>    
-                        </div>
-                      </div>
-               </div>
-            </div>
-
-                      <div class="d-flex align-items-center">
-                        <div *ngIf="allSalesRevenue.revenue != null" class="ps-3">
-                          <h4>BWP <span class="text-success">{{allSalesRevenue.revenue}}</span></h4>
-                          <span *ngIf="allSalesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{allSalesRevenue.change}}% change</span>
-                          <span *ngIf="!allSalesRevenue.positive" class="text-danger small pt-1 fw-bold">{{allSalesRevenue.change}}% change</span>    
-                        </div>
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="allSalesRevenue.revenue != null" class="ps-3">
+                        <h4>BWP <span class="text-success">{{allSalesRevenue.revenue}}</span></h4>
+                        <span *ngIf="allSalesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{allSalesRevenue.change}}% change</span>
+                        <span *ngIf="!allSalesRevenue.positive" class="text-danger small pt-1 fw-bold">{{allSalesRevenue.change}}% change</span>    
                       </div>
                     </div>
                   </div>
-            
-            
-            <div class="ml-2 mt-4">
-                <ng-container *ngIf="showTotal">
-                  <form #totalSalesForm="ngForm" (ngSubmit)="generateReport('total')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-                    <h4>Select a period for your report</h4>
-                    <hr>
-                    <label>Start date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="startDate"
-                             [(ngModel)]="model.startDate">
-                    </div>
-                    <label>End date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="endDate"
-                             [(ngModel)]="model.endDate">
-                    </div>
-                    <div class="form-group text-center">
-                      <button class="btn btn-success mr-2" type="submit">Generate</button>
-                    </div>
-                  </form>
-
-                  <h3 class="ml-2 mt-3 mb-4">Total Sales Report ({{totalSales.length}} orders)</h3>
-                  <h4 *ngIf="model.searched && model.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
-                  
-                <div *ngIf="!model.empty" class="list-group ml-2 mr-2 mb-5">
-                  <div class="list-group-item d-flex justify-content-between">
-                    <h5>Order Number</h5>
-                    <b>Amount (BWP)</b>
-                  </div>
-                  <ng-container *ngFor="let x of totalSales">
-                    <div class="list-group-item d-flex justify-content-between">
-                      <h5>Order Number - {{x.orderNumber}}</h5>
-                      <b style="width: 200px;" class="text-success" style="text-align: left;">{{x.orderRevenue}}</b>
-                    </div>                                               
-                  </ng-container>       
-                  <div class="list-group-item d-flex justify-content-between">
-                    <h5>Total</h5>
-                    <b>BWP <span class="text-success" style="width: 200px;">{{getTotal(totalSales, 'total')}}</span></b>
-                  </div>  
+  
                 </div>
-                </ng-container>
+            </div>
+          </div>
+          
+          <div class="ml-2 mt-4">
+              <ng-container *ngIf="showTotal">
+                <form #totalSalesForm="ngForm" (ngSubmit)="generateReport('total')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                  <h4>Select a period for your report</h4>
+                  <hr>
+                  <label>Start date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="startDate"
+                           [(ngModel)]="model.startDate">
+                  </div>
+                  <label>End date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="endDate"
+                           [(ngModel)]="model.endDate">
+                  </div>
+                  <div class="form-group text-center">
+                    <button class="btn btn-success mr-2" type="submit">Generate</button>
+                  </div>
+                </form>
 
-                <ng-container *ngIf="showDetailedTotal">
-                  <form #totalDetailedSalesForm="ngForm" (ngSubmit)="generateReport('detailedtotal')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-                    <h4>Select a period for your report</h4>
-                    <hr>
-                    <label>Start date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="startDate1"
-                             [(ngModel)]="model1.startDate">
-                    </div>
-                    <label>End date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="endDate1"
-                             [(ngModel)]="model1.endDate">
-                    </div>
-                    <h4>Filters (optional)</h4>
-                    <div class="form-group">
-                      <label>Select a category</label>
-                      <select class="form-control" name="category" [(ngModel)]="model1.category">   
-                        <option>None</option>    
-                        <option>Meat</option>
-                        <option>Drink</option>
-                        <option>Side</option>
-                        <option>Dessert</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label>Choose Item Name</label>
-                      <input type="text" class="form-control" name="name"
-                             [(ngModel)]="model1.name">
-                    </div>
-                    <div class="form-group text-center">
-                      <button class="btn btn-success mr-2" type="submit">Generate</button>
-                    </div>
-                  </form>
+                <h3 class="ml-2 mt-3 mb-4">Total Sales Report ({{totalSales.length}} orders)</h3>
+                <h4 *ngIf="model.searched && model.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
+                
+              <div *ngIf="!model.empty" class="list-group ml-2 mr-2 mb-5">
+                <div class="list-group-item d-flex justify-content-between">
+                  <h5>Order Number</h5>
+                  <b>Amount (BWP)</b>
+                </div>
+                <ng-container *ngFor="let x of totalSales">
+                  <div class="list-group-item d-flex justify-content-between">
+                    <h5>Order Number - {{x.orderNumber}}</h5>
+                    <b style="width: 200px;" class="text-success" style="text-align: left;">{{x.orderRevenue}}</b>
+                  </div>                                               
+                </ng-container>       
+                <div class="list-group-item d-flex justify-content-between">
+                  <h5>Total</h5>
+                  <b>BWP <span class="text-success" style="width: 200px;">{{getTotal(totalSales, 'total')}}</span></b>
+                </div>  
+              </div>
+              </ng-container>
 
-                  <h3 class="ml-2 mt-3 mb-4">Total Detailed Sales Report</h3>
-                  <h4 *ngIf="model1.searched && model1.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
-                  <table *ngIf="!model1.empty" class="table mb-5">
-                    <thead>
+              <ng-container *ngIf="showDetailedTotal">
+                <form #totalDetailedSalesForm="ngForm" (ngSubmit)="generateReport('detailedtotal')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                  <h4>Select a period for your report</h4>
+                  <hr>
+                  <label>Start date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="startDate1"
+                           [(ngModel)]="model1.startDate">
+                  </div>
+                  <label>End date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="endDate1"
+                           [(ngModel)]="model1.endDate">
+                  </div>
+                  <h4>Filters (optional)</h4>
+                  <div class="form-group">
+                    <label>Select a category</label>
+                    <select class="form-control" name="category" [(ngModel)]="model1.category">   
+                      <option>None</option>    
+                      <option>Meat</option>
+                      <option>Drink</option>
+                      <option>Side</option>
+                      <option>Dessert</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Choose Item Name</label>
+                    <input type="text" class="form-control" name="name"
+                           [(ngModel)]="model1.name">
+                  </div>
+                  <div class="form-group text-center">
+                    <button class="btn btn-success mr-2" type="submit">Generate</button>
+                  </div>
+                </form>
+
+                <h3 class="ml-2 mt-3 mb-4">Total Detailed Sales Report</h3>
+                <h4 *ngIf="model1.searched && model1.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
+                <table *ngIf="!model1.empty" class="table mb-5">
+                  <thead>
+                    <tr>
+                      <th scope="col">Order Number</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Quantity</th>
+                      <th scope="col" style="text-align: right;">Weight (Grams)</th>
+                      <th scope="col" style="text-align: right;">Amount (BWP)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let x of detailedtotalSales">
                       <tr>
-                        <th scope="col">Order Number</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col" style="text-align: right;">Weight (Grams)</th>
-                        <th scope="col" style="text-align: right;">Amount (BWP)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <ng-container *ngFor="let x of detailedtotalSales">
-                        <tr>
-                          <th scope="row">Order Number - {{x.orderNumber}}</th>
-                          <td>{{x.itemName}}</td>
-                          <td>{{x.quantity}}</td>
-                          <td style="text-align: right;">{{x.weight}}</td>
-                          <th style="text-align: right;" class="text-success">{{x.orderRevenue}}</th>
-                        </tr>                                   
-                      </ng-container>      
-                      
-                      <tr>
-                        <th>Total</th>
-                        <th>-</th>
-                        <th>{{getTotal(detailedtotalSales, 'dtotal')[0]}}</th>
-                        <th style="text-align: right;">{{getTotal(detailedtotalSales, 'dtotal')[1]}} Grams</th>
-                        <th style="text-align: right;">BWP <span class="text-success" style="width: 200px;">{{getTotal(detailedtotalSales, 'dtotal')[2]}}</span></th>
+                        <th scope="row">Order Number - {{x.orderNumber}}</th>
+                        <td>{{x.itemName}}</td>
+                        <td>{{x.quantity}}</td>
+                        <td style="text-align: right;">{{x.weight}}</td>
+                        <th style="text-align: right;" class="text-success">{{x.orderRevenue}}</th>
                       </tr>                                   
-                    </tbody>
-                  </table>
-                </ng-container>
+                    </ng-container>      
+                    
+                    <tr>
+                      <th>Total</th>
+                      <th>-</th>
+                      <th>{{getTotal(detailedtotalSales, 'dtotal')[0]}}</th>
+                      <th style="text-align: right;">{{getTotal(detailedtotalSales, 'dtotal')[1]}} Grams</th>
+                      <th style="text-align: right;">BWP <span class="text-success" style="width: 200px;">{{getTotal(detailedtotalSales, 'dtotal')[2]}}</span></th>
+                    </tr>                                   
+                  </tbody>
+                </table>
+              </ng-container>
 
-                <ng-container *ngIf="showRevenue">
-                  <form #revenueForm="ngForm" (ngSubmit)="generateReport('revenue')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-                    <h4>Select a period for your report</h4>
-                    <hr>
-                    <label>Start date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="startDate2"
-                             [(ngModel)]="model2.startDate">
-                    </div>
-                    <label>End date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="endDate2"
-                             [(ngModel)]="model2.endDate">
-                    </div>
-                    <div class="form-group text-center">
-                      <button class="btn btn-success mr-2" type="submit">Generate</button>
-                    </div>
-                  </form>
+              <ng-container *ngIf="showRevenue">
+                <form #revenueForm="ngForm" (ngSubmit)="generateReport('revenue')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                  <h4>Select a period for your report</h4>
+                  <hr>
+                  <label>Start date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="startDate2"
+                           [(ngModel)]="model2.startDate">
+                  </div>
+                  <label>End date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="endDate2"
+                           [(ngModel)]="model2.endDate">
+                  </div>
+                  <div class="form-group text-center">
+                    <button class="btn btn-success mr-2" type="submit">Generate</button>
+                  </div>
+                </form>
 
-                  <h3 class="ml-2 mt-3 mb-4">Revenue Report</h3>
-                  
-                <div class="list-group ml-2 mr-2 mb-5">
-                  <ng-container>
-                    <div class="mb-5 d-flex justify-content-between">
-                      <h5>Revenue from all orders <span class="text-warning">({{model2.startDate}} - {{model2.endDate}})</span></h5>
-                      <b>BWP <span class="text-success">{{revenue}}</span></b>
-                    </div>                                               
-                  </ng-container>                    
-                </div>
-                </ng-container>
+                <h3 class="ml-2 mt-3 mb-4">Revenue Report</h3>
+                
+              <div class="list-group ml-2 mr-2 mb-5">
+                <ng-container>
+                  <div class="mb-5 d-flex justify-content-between">
+                    <h5>Revenue from all orders <span class="text-warning">({{model2.startDate}} - {{model2.endDate}})</span></h5>
+                    <b>BWP <span class="text-success">{{revenue}}</span></b>
+                  </div>                                               
+                </ng-container>                    
+              </div>
+              </ng-container>
 
-                <ng-container *ngIf="showPayment">
-                  <form #paymentsForm="ngForm" (ngSubmit)="generateReport('payment')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-                    <h4>Select a period for your report</h4>
-                    <hr>
-                    <label>Start date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="startDate3"
-                             [(ngModel)]="model3.startDate">
-                    </div>
-                    <label>End date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="endDate3"
-                             [(ngModel)]="model3.endDate">
-                    </div>
-                    <div class="form-group text-center">
-                      <button class="btn btn-success mr-2" type="submit">Generate</button>
-                    </div>
-                  </form>
+              <ng-container *ngIf="showPayment">
+                <form #paymentsForm="ngForm" (ngSubmit)="generateReport('payment')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                  <h4>Select a period for your report</h4>
+                  <hr>
+                  <label>Start date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="startDate3"
+                           [(ngModel)]="model3.startDate">
+                  </div>
+                  <label>End date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="endDate3"
+                           [(ngModel)]="model3.endDate">
+                  </div>
+                  <div class="form-group text-center">
+                    <button class="btn btn-success mr-2" type="submit">Generate</button>
+                  </div>
+                </form>
 
-                  <h3 class="ml-2 mt-3 mb-4">Payment Report</h3>
+                <h3 class="ml-2 mt-3 mb-4">Payment Report</h3>
 
-                <div class="list-group ml-2 mr-2 mb-5">
+              <div class="list-group ml-2 mr-2 mb-5">
+                <div class="list-group-item d-flex justify-content-between">
+                  <h5>Method</h5>
+                  <b>Amount (BWP)</b>
+                </div>                                  
+                <ng-container *ngFor="let x of payments">
                   <div class="list-group-item d-flex justify-content-between">
-                    <h5>Method</h5>
-                    <b>Amount (BWP)</b>
-                  </div>                                  
-                  <ng-container *ngFor="let x of payments">
-                    <div class="list-group-item d-flex justify-content-between">
-                      <h5>{{x.method}}</h5>
+                    <h5>{{x.method}}</h5>
 
-                      <b class="text-success">{{x.amount}}</b>
-                    </div>                                               
-                  </ng-container>   
-                  <div class="list-group-item d-flex justify-content-between">
-                    <h5>Total</h5>
+                    <b class="text-success">{{x.amount}}</b>
+                  </div>                                               
+                </ng-container>   
+                <div class="list-group-item d-flex justify-content-between">
+                  <h5>Total</h5>
 
-                    <b>BWP <span class="text-success">{{getTotal(payments, 'payment')}}</span></b>
-                  </div>                                  
-                </div>
-                </ng-container>
-                <ng-container *ngIf="showInvoice">
-                  <form #invoiceForm="ngForm" (ngSubmit)="generateReport('invoice')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-                    <h4>Select a period</h4>
-                    <hr>
-                    <label>Start date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="startDate4"
-                             [(ngModel)]="model4.startDate">
+                  <b>BWP <span class="text-success">{{getTotal(payments, 'payment')}}</span></b>
+                </div>                                  
+              </div>
+              </ng-container>
+              <ng-container *ngIf="showInvoice">
+                <form #invoiceForm="ngForm" (ngSubmit)="generateReport('invoice')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
+                  <h4>Select a period</h4>
+                  <hr>
+                  <label>Start date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="startDate4"
+                           [(ngModel)]="model4.startDate">
+                  </div>
+                  <label>End date</label>
+                  <div class="form-group">
+                    <input type="date" class="form-control" name="endDate4"
+                           [(ngModel)]="model4.endDate">
+                  </div>
+                  <label>Enter order number (optional)</label>
+                  <div class="form-group">
+                    <input type="text" class="form-control" name="invoice"
+                           [(ngModel)]="model4.invoice">
+                  </div>
+                  <div class="form-group text-center">
+                    <button class="btn btn-success mr-2" type="submit">Generate</button>
+                  </div>
+                </form>
+
+                <h3 class="ml-2 mt-3 mb-4">Find Invoice (click order to expand)</h3>
+                <h4 *ngIf="model4.searched && model4.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
+                
+              <div *ngIf="!model4.empty" class="list-group ml-2 mr-2 mb-5">
+                <div class="list-group-item d-flex justify-content-between">
+                  <h5>Order Number</h5>
+                  <b>Date</b>
+                </div>                                  
+                <ng-container *ngFor="let x of invoices">
+                  <a class="list-group-item list-group-item-action" aria-current="true" (click)="expandToggle(x)">
+                    <div class="d-flex justify-content-between">
+                      <h5>Order Number - {{x[0].orderNumber}}</h5>
+
+                      <h5 class="text-success">({{x[0].description}})</h5>
                     </div>
-                    <label>End date</label>
-                    <div class="form-group">
-                      <input type="date" class="form-control" name="endDate4"
-                             [(ngModel)]="model4.endDate">
-                    </div>
-                    <label>Enter order number (optional)</label>
-                    <div class="form-group">
-                      <input type="text" class="form-control" name="invoice"
-                             [(ngModel)]="model4.invoice">
-                    </div>
-                    <div class="form-group text-center">
-                      <button class="btn btn-success mr-2" type="submit">Generate</button>
-                    </div>
-                  </form>
 
-                  <h3 class="ml-2 mt-3 mb-4">Find Invoice (click order to expand)</h3>
-                  <h4 *ngIf="model4.searched && model4.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
-                  
-                <div *ngIf="!model4.empty" class="list-group ml-2 mr-2 mb-5">
-                  <div class="list-group-item d-flex justify-content-between">
-                    <h5>Order Number</h5>
-                    <b>Date</b>
-                  </div>                                  
-                  <ng-container *ngFor="let x of invoices">
-                    <a class="list-group-item list-group-item-action" aria-current="true" (click)="expandToggle(x)">
-                      <div class="d-flex justify-content-between">
-                        <h5>Order Number - {{x[0].orderNumber}}</h5>
-
-                        <h5 class="text-success">({{x[0].description}})</h5>
-                      </div>
-
-                      <table *ngIf="x.extra" class="table mb-5">
-                        <thead>
+                    <table *ngIf="x.extra" class="table mb-5">
+                      <thead>
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Quantity</th>
+                          <th scope="col" style="text-align: right;">Weight (Grams)</th>
+                          <th scope="col" style="text-align: right;">Amount (BWP)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let s of x">
                           <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col" style="text-align: right;">Weight (Grams)</th>
-                            <th scope="col" style="text-align: right;">Amount (BWP)</th>
+                            <td>{{s.name}}</td>
+                            <td>{{s.quantity}}</td>
+                            <td style="text-align: right;">{{s.weight}}</td>
+                            <th style="text-align: right;" class="text-success">{{s.price}}</th>
                           </tr>
-                        </thead>
-                        <tbody>
-                          <ng-container *ngFor="let s of x">
-                            <tr>
-                              <td>{{s.name}}</td>
-                              <td>{{s.quantity}}</td>
-                              <td style="text-align: right;">{{s.weight}}</td>
-                              <th style="text-align: right;" class="text-success">{{s.price}}</th>
-                            </tr>
-                          </ng-container>                            
-                        </tbody>
-                      </table>
+                        </ng-container>                            
+                      </tbody>
+                    </table>
 
-                      <div class="d-flex justify-content-between">
-                        <h5>Total</h5>
-    
-                        <b>BWP <span class="text-success">{{getTotal(x, 'invoice')}}</span></b>
-                      </div>
-                      
-                    </a>
-                  </ng-container>                 
-                </div>
-                </ng-container>
-
-              
-               
-            </div>
-  </body>
+                    <div class="d-flex justify-content-between">
+                      <h5>Total</h5>
+  
+                      <b>BWP <span class="text-success">{{getTotal(x, 'invoice')}}</span></b>
+                    </div>
+                    
+                  </a>
+                </ng-container>                 
+              </div>
+              </ng-container>
+          </div>
+      </div>
+  </div>
+</body>

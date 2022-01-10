@@ -16,7 +16,7 @@ export class BranchService extends BaseServiceService {
 
   submission(model: Branch, dir: string){
     return this.http.post(this.baseUrl + dir, model).subscribe(
-      response =>{
+      response =>{        
         this.toastr.success('Branch registered successfully');
         return response;
       },

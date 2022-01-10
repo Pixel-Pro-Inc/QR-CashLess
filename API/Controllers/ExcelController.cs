@@ -8,136 +8,187 @@ using API.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc;
+using API.Extensions;
+using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Hosting;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace API.Controllers
 {
-    public class ExcelController:BaseApiController
+    public class ExcelController: BaseApiController
     {
-        private readonly string dir = "order/";
-        public ExcelController():base() { }
-        ConnectionChecker connectionChecker = new ConnectionChecker();
-
-        [HttpPost("importexceldata")]
-        public void ImportExcelData(string filePath) //takes data in local and then updates firebase, hence why you 'post' to firebase
+        private readonly string _rootPath;
+        public ExcelController(IWebHostEnvironment env) 
         {
-            if (connectionChecker.CheckConnection())
+            _rootPath = env.WebRootPath;
+        }
+
+        [HttpGet("export/{branchId}")]//This is used as reference for http calls that is api/excel/export will call the ExportData() method
+        public async /*Task<HttpResponseMessage>*/ Task<IActionResult> ExportData(string branchId)
+        {
+            //Remove previously stored files if any
+            if (Directory.Exists(savePath("Rodizio Express Data_Export")))
             {
-                Excel excel = new Excel(filePath, 1);
-                if ((excel.ReadCell(1, 0)).Trim() == null || (excel.ReadCell(1, 0)).Trim() == "")
-                {
-                    Console.WriteLine("Use a valid excel file.");
-                }
-                else
-                {
-                    int kh = 0;
-                    int ghd = 1;
-                    while (kh == 0)
-                    {
-                        if ((excel.ReadCell(ghd, 0)).Trim() == "")
-                        {
-                            kh = 1;
-                        }
-                        if (kh == 0)
-                        {
-                            ghd++;
-                        }
-                    }
-                    List<OrderItem> importData = new List<OrderItem>();
-                    foreach (var newline in importData)
-                    {
-                        for (int i = 1; i < ghd; i++)
-                        {
-                            newline.OrderNumber = ((excel.ReadCell(i, 0)).Trim()).Trim();
-                            //orders don't have branchid
-                            newline.PaymentMethod = ((excel.ReadCell(i, 2)).Trim()).Trim();
-                            newline.Name = ((excel.ReadCell(i, 3)).Trim()).Trim();
-                            newline.Quantity = Int32.Parse(((excel.ReadCell(i, 4)).Trim()).Trim());
-                            newline.Price = ((excel.ReadCell(i, 5)).Trim()).Trim();
-                            newline.Weight = ((excel.ReadCell(i, 6)).Trim()).Trim();
-                            //orders don't have total
-                            }
-                        }
-                    _firebaseDataContext.StoreData(dir, importData); //its not records, find the correct info
-                }
-                excel.Close();
+                Directory.Delete(savePath("Rodizio Express Data_Export"), true);
             }
-            else
+
+            Excel ex = new Excel();//Creates new instance of Excel class
+
+            ex.CreateNewFile();//Creates a new excel file
+
+            string[] worksheetNames = { "CompletedOrders", "CancelledOrders", "UnCompletedOrders" };
+
+            int emptyCount = 0;
+            for (int i = 0; i < worksheetNames.Length; i++)
             {
-                Console.WriteLine("There is no internet.");
-                return;
+                //Gets Orders from the Database
+                string dir = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
+                List<List<OrderItem>> orderItems = await GetOrders(dir + "/", branchId);
+
+                if (orderItems.Count <= 0) //Checks to see if the result from the database actually has data
+                {
+                    emptyCount++;
+                    continue;
+                }
+
+                if (emptyCount == worksheetNames.Length)
+                    return BadRequest("There is no data to export");
+
+                CreateWorkSheet(ex, worksheetNames[i], orderItems);
+            }            
+            
+            string folderName = "Rodizio Express Data_Export";//Generates folder name
+
+            string fileName = "Rodizio Express Data_Export/Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx";//Generates file name
+
+            Directory.CreateDirectory(savePath(folderName));//Creates directory
+
+            System.IO.File.SetAttributes(savePath(folderName), FileAttributes.Normal);//Removes special priveledges for folder
+
+            ex.SaveAs(savePath(fileName));//Saves file to local storage
+
+            System.IO.File.SetAttributes(savePath(fileName), FileAttributes.Normal);//Removes special priveledges for file
+
+            var filePath = savePath(fileName);
+
+            var memory = new MemoryStream();//Creates new Memory stream
+
+            await using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);//copies the file at that location to memory stream
+            }
+
+            memory.Position = 0;
+
+            /*var reportStream = memory;
+            var result = new HttpResponseMessage(HttpStatusCode.OK);
+
+            result.Content = new StreamContent(reportStream);
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "Schedule Report.xlsx"
+            };
+
+            return result;*/
+
+            return File(memory, GetContentType(filePath), "Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
+        }
+
+        private void CreateWorkSheet(Excel ex, string worksheetName, List<List<OrderItem>> orderItems)
+        {
+            ex.CreateWorkSheet(worksheetName);//Creates a new work sheet
+
+            //I used an extension method I got from stackoverflow to convert a class into keyValuePairs
+            IDictionary<string, object> keyValuePairs = new OrderItem().AsDictionary();
+
+            //This is a list of all the fields in the excel file displayed on the top row
+            List<string> fields = new List<string>();
+
+            //Loop through the dictionary to use all the keys as fields (this is better than using a hard coded list incase changes are made to the object) 
+            foreach (KeyValuePair<string, object> entry in keyValuePairs)
+            {
+                fields.Add(entry.Key);
+            }
+
+            //Writes the fields to the excel sheet
+            for (int i = 0; i < fields.Count; i++)
+            {
+                string field = fields[i];
+
+                if(fields[i] == "Weight")
+                {
+                    field = "Weight (grams)";
+                }
+                else if(fields[i] == "Price")
+                {
+                    field = "Price (BWP)";
+                }
+
+                ex.WriteToCell(0, i, field, worksheetName); // writes data to excel cell using row and column as reference (row, column, data)
+            }
+
+            int rowCount = 1;//used to keep track of rows
+
+            for (int i = 0; i < orderItems.Count; i++)//Loop through all orders
+            {
+                var order = orderItems[i]; //Stores individual order temporarily
+
+                foreach (var orderItem in order)//For each order item 
+                {
+                    for (int x = 0; x < fields.Count; x++)//Loops through all fields
+                    {
+                        keyValuePairs = orderItem.AsDictionary();//We store it as a dictionary
+
+                        var data = keyValuePairs.Where(d => d.Key == fields[x]).ToArray()[0];//Returns every key value pair where the key is equal to the current field since its a single orderItem only 1 so we get the first index and use that 
+
+                        if (data.Key == "Weight")
+                        {
+                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString().Replace("grams", ""), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                            continue;
+                        }                           
+
+                        ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                    }
+
+                    rowCount++;
+                }               
             }
         }
 
-        [HttpGet("exportexcelData")]// because you are getting info from the controller, which is getting its info from firebase
-        public async Task<ActionResult<Excel>> ExportExcelData(string path)
+        private string GetContentType(string path)//Gets the type of the file at that directory
         {
-            Excel ex = new Excel();
-            if (connectionChecker.CheckConnection())
+            var provider = new FileExtensionContentTypeProvider();
+
+            string contentType;
+
+            if (!provider.TryGetContentType(path, out contentType))
             {
-                #region makes and exports a excel file
-                
-                ex.CreateNewFile();
-                string[] fields = new string[8];
-                fields[0] = "invoice";
-                fields[1] = "branchId";
-                fields[2] = "paymentMethod";
-                fields[3] = "ItemName";
-                fields[4] = "Quantity";
-                fields[5] = "Price";
-                fields[6] = "weight";
-                fields[7] = "Total";
-
-                var getTaskResultrd = await _firebaseDataContext.GetData("order"); //its not records, find the correct info
-
-                List<OrderItem> temp = new List<OrderItem>();
-
-                foreach (var item in getTaskResultrd)
-                {
-                    temp = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-                }
-                int memCount = 0;
-                foreach (var item in temp)
-                {
-                    if (item.OrderNumber != null && item.Id != 0) memCount++;
-                }          
-                if (memCount != 0)
-                {
-                    for (int i = 0; i < fields.Length; i++)
-                    {
-                        ex.WriteToCell(0, i, fields[i]); // This is to fill in the column tiles
-                    }
-
-                    int di = 1;
-                    foreach (var cell in temp)
-                    {
-                        ex.WriteToCell(di, 0, cell.OrderNumber.ToString());
-                        ex.WriteToCell(di, 1, cell.OrderNumber.ToString());
-                        ex.WriteToCell(di, 2, cell.PaymentMethod.ToString());
-                        ex.WriteToCell(di, 3, cell.Name.ToString());
-                        ex.WriteToCell(di, 4, cell.Quantity.ToString());
-                        ex.WriteToCell(di, 5, cell.Price.ToString());
-                        ex.WriteToCell(di, 6, cell.Weight.ToString());
-                        ex.WriteToCell(di, 7, cell.OrderNumber.ToString());
-                        di++;
-                    }
-                    ex.SaveAs(path);
-                    //SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-                    Console.WriteLine("export completed");
-                }
-                else
-                {
-                    Console.WriteLine("There is no data to export.");
-                }
-                ex.Close();
-                return ex;
-                #endregion
+                contentType = "application/octet-stream";
             }
-            else
-            {
-                Console.WriteLine("There is no internet.");
-                return ex;
-            }
+
+            return contentType;
         }
 
+        string savePath(string fileName) { return Path.Combine(_rootPath, fileName); }
+
+        private async Task<List<List<OrderItem>>> GetOrders(string path, string branchId) 
+        {
+            var result = await _firebaseDataContext.GetData(path + branchId);
+
+            List<List<OrderItem>> temp = new List<List<OrderItem>>();
+
+            foreach (var item in result)
+            {
+                List<OrderItem> data = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
+
+                temp.Add(data);
+            }
+
+            return temp;
+        }
     }
 }

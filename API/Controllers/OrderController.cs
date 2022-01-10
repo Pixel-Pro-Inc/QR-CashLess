@@ -34,6 +34,8 @@ namespace API.Controllers
                 orderItem.OrderNumber = d + "_" + x;
                 orderItem.OrderNumber = orderItem.OrderNumber.Replace('/', '-');
 
+                orderItem.OrderDateTime = DateTime.UtcNow;
+
                 orderItem.Price = orderItem.Price;
 
                 string z = orderItem.PhoneNumber;
@@ -96,21 +98,5 @@ namespace API.Controllers
             return candidateNumber;
         }
         #endregion
-
-        /*
-        [HttpGet("getorders")]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrder()
-        {
-            return await _context.OrderItems.ToListAsync() == null ? new List<OrderItem>() : await _context.OrderItems.ToListAsync();
-        }        
-        [HttpPost("editorder")]
-        public async Task<ActionResult<OrderItem>> EditOrder(OrderItem orderItem)
-        {
-            _context.Entry(orderItem).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return orderItem;
-        }
-        */
     }
 }
