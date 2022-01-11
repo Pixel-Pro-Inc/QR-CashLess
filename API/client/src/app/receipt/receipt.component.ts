@@ -8,6 +8,7 @@ import { AccountService } from '../_services/account.service';
 import { ReferenceService } from '../_services/reference.service';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-receipt',
@@ -24,7 +25,7 @@ export class ReceiptComponent implements OnInit {
   title = 'html-to-pdf-angular-application';
   private adminComponent: AdminComponent;
 
-  constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService) { }
+  constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService, private router: Router) { }
 
   ngOnInit(): void {
     this.baseUrl = this.accountService.baseUrl;
@@ -101,8 +102,10 @@ export class ReceiptComponent implements OnInit {
       return tot.toLocaleString('en-US', {minimumFractionDigits: 2});
     }
   }
-
+  makeNewOrder(){
+    this.router.navigateByUrl('/menu/' + this.referenceService.currentBranch() + '_' + this.referenceService.currentreference());
+  }
   formatAmount(amount: string){
-    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});
   }
 }

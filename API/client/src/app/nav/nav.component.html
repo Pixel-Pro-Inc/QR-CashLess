@@ -38,6 +38,8 @@
           </ng-container>        
         </div>
       </div>
-    </ng-container>    
+    </ng-container>   
+    
+    <button *ngIf="!(accountService.currentUser$ | async) as user" class="btn btn-warning text-light" routerLink="/login">Login</button>
   </div>
 </nav>

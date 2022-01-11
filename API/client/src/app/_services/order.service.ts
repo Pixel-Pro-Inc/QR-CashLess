@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { OrderItem } from '../_models/orderItem';
 import { BaseServiceService } from './-base-service.service';
+import { BusyService } from './busy.service';
 import { ReferenceService } from './reference.service';
 
 @Injectable({
@@ -11,11 +12,12 @@ import { ReferenceService } from './reference.service';
 })
 export class OrderService extends BaseServiceService {
 
-  constructor(http: HttpClient, private router: Router, private referenceService: ReferenceService) {
+  constructor(http: HttpClient, private router: Router, private referenceService: ReferenceService, private busyService: BusyService) {
     super(http);
   }
 
   createOrder(orderItems: OrderItem[]){
+    this.busyService.busy();
     
     let bId = this.referenceService.currentBranch();
 
@@ -39,6 +41,8 @@ export class OrderService extends BaseServiceService {
       if(this.referenceService.currentreference() == "tablet"){
         localStorage.setItem('userPhoneNumber', JSON.stringify(null));
       }      
+
+      this.busyService.idle();
       
       this.router.navigateByUrl('/menu/' + x);
     },

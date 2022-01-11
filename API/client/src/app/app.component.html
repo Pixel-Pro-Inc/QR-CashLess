@@ -1,12 +1,12 @@
+<ngx-spinner>
+</ngx-spinner>
+
 <header>
   <app-nav></app-nav>
 </header>
 
 <body class="mb-5">
   <router-outlet class="mb-5"></router-outlet>
-  <ngx-spinner>
-    <h4> Loading...</h4>
-  </ngx-spinner> 
 </body>
 
 <ng-container *ngIf="this.referenceService.currentreference() != 'tablet'">

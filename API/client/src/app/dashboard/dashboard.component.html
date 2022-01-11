@@ -1,7 +1,7 @@
 <body class="bg-light">
   <div class="d-flex">
       <span>
-          <aside id="sidebar" class="sidebar" style="height: 650px;">
+          <aside id="sidebar" class="sidebar" style="min-height: 100vh;">
       
               <ul class="sidebar-nav" id="sidebar-nav">
           
@@ -43,7 +43,7 @@
 
                 <li class="nav-item">
                   <a class="nav-link collapsed" (click)="exportToExcel()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                    <i class="fa fa-file text-success"></i><span class="text-success">Export To Excel</span>
+                    <i class="fa fa-file-excel-o text-success"></i><span class="text-success">Export To Excel</span>
                   </a>
                 </li>
               </ul>
@@ -66,8 +66,8 @@
             <div class="d-flex ml-5">
               <div class="card info-card sales-card mr-5">
                   <div class="card-body">
-                      <h5 class="card-title">Sales <span>| This month</span></h5>             
-
+                    <i class="fa fa-shopping-cart fa-2x text-success"></i>
+                      <h5 class="card-title">Sales <span>| This month</span></h5>
                     <div class="d-flex align-items-center">
                       <div *ngIf="salesVolume.sales != null" class="ps-3">
                         <h4>{{salesVolume.sales}}</h4>
@@ -80,6 +80,7 @@
                 </div>
                 <div class="card info-card sales-card mr-5">
                   <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
                       <h5 class="card-title">Revenue <span>| This month</span></h5>             
 
                     <div class="d-flex align-items-center">
@@ -94,6 +95,9 @@
                 </div>      
                 <div class="card info-card sales-card mr-5">
                   <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
                       <h5 class="card-title">Revenue<span>| This month (All Franchises)</span></h5>             
 
                     <div class="d-flex align-items-center">

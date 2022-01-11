@@ -2,7 +2,6 @@
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +25,10 @@ namespace API.Controllers
         private readonly SMSController smsSender; //I added this here cause I did'nt know any other way to involve the method it contains. we use it in line 166
         private readonly UserManager<AppUser> _userManager;
 
-        public AccountController(ITokenService tokenService, UserManager<AppUser> userManager) :base()
+        public AccountController(ITokenService tokenService)//, UserManager<AppUser> userManager) :base()
         {
             _tokenService = tokenService;
-            _userManager= userManager;
+            //_userManager= userManager;
         }
 
         [HttpPost("register")]

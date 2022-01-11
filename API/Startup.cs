@@ -7,7 +7,6 @@ using API.Data;
 using API.Extensions;
 using API.Interfaces;
 using API.Services;
-using EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,13 +49,13 @@ namespace API
             });
             //This is supposed to configure the email service we have in the Email service project but remeber we haven't set up the email server yet.
             //I am hoping I can replace this with twillo so that I don't have to sent up this Smpt server item.
-            var emailConfig = _config
+            /*(var emailConfig = _config
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
             services.AddSingleton(emailConfig);
 
             //Now we need to add the email service to the startup
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailSender, EmailSender>();*/
 
         }
 

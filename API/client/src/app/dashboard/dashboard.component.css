@@ -8,6 +8,7 @@ html, body {
   # Sidebar
   --------------------------------------------------------------*/
   .sidebar {
+    height: 100%;
     top: 60px;
     left: 0;
     bottom: 0;
