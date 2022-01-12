@@ -2,7 +2,6 @@
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using EmailService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -142,10 +141,7 @@ namespace API.Controllers
             return ran;
         }
 
-        //When you have set up the Identity roles thing then you can remove the below line to get access to the code
-
-       
-        [HttpPost("ForgotPassword")]
+        [HttpPost("/accounts/forgotpassword")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
             if (!ModelState.IsValid)
@@ -163,8 +159,7 @@ namespace API.Controllers
             };
             
             var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
-            //await smsSender.SendResetPasswordSMS(user.number, callback); //Where is the user number stored
-            //
+            await smsSender.SendResetPasswordSMS(forgotPasswordDto.phoneNumber, callback); 
             return Ok();
         }
 
