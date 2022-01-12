@@ -47,4 +47,7 @@ export class AccountService extends BaseServiceService{
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
   }
+  public forgotPassword = (dir: string, model: any) => {
+    return this.http.post(this.baseUrl + dir, model);
+  }
 }
