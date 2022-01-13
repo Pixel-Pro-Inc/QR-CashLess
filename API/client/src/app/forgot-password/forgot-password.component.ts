@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { forgotPassword } from '../_models/forgotPassword';
 import { AccountService } from '../_services/account.service';
@@ -8,6 +8,7 @@ import { AccountService } from '../_services/account.service';
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css']
 })
+
 export class ForgotPasswordComponent implements OnInit {
 
   public forgotPasswordForm: FormGroup
@@ -19,13 +20,14 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(private accountService: AccountService) { }
 
   ngOnInit(): void {
-    this.forgotPasswordForm = new FormGroup({
-      phoneNumber: new FormControl("", [Validators.required])
-    })
+     this.forgotPasswordForm = new FormGroup({
+       phoneNumber: new FormControl("", [Validators.required]),
+       username: new FormControl("", [Validators.required])
+    }) 
+   
   }
   public validateControl = (controlName: string) => {
     return this.forgotPasswordForm.controls[controlName].invalid && this.forgotPasswordForm.controls[controlName].touched
-    //I don't know how they validate this, yet
   }
   public hasError = (controlName: string, errorName: string) => {
     return this.forgotPasswordForm.controls[controlName].hasError(errorName)
@@ -38,7 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
       phoneNumber: forgotPass.phoneNumber,
       clientURI: 'http://localhost:4200/resetpassword'
     }
-    this.accountService.forgotPassword('/accounts/forgotpassword', forgotPassDto)
+    this.accountService.forgotPassword('accounts/forgotpassword', forgotPassDto)
       .subscribe(_ => {
         this.showSuccess = true;
         this.successMessage = 'The link has been sent, please check your SMS to reset your password.'

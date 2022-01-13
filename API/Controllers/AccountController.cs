@@ -141,11 +141,11 @@ namespace API.Controllers
             return ran;
         }
 
-        [HttpPost("/accounts/forgotpassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        [HttpPost("accounts/forgotpassword")]
+        public async Task<IActionResult> ForgotPassword(/*[FromBody]  */ForgotPasswordDto forgotPasswordDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            if ((await GetUser(forgotPasswordDto.Username)) == null)
+                return Unauthorized("Username doesn't exist");
 
             var user = await GetUser(forgotPasswordDto.Username);
             if (user == null)

@@ -41,5 +41,8 @@ export class LoginComponent implements OnInit {
       this.toastr.error(error.error);
     })
   }
+  onClickForgotPassword() {
+    this.router.navigateByUrl('/accounts/forgotpassword');
+  }
 
 }
