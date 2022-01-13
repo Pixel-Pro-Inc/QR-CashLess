@@ -35,6 +35,7 @@ import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { ThankyouComponent } from './thankyou/thankyou.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { CommonModule } from '@angular/common';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { CommonModule } from '@angular/common';
     LoginComponent,
     ThankyouComponent,
     ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     ReactiveFormsModule,

@@ -17,6 +17,7 @@ import { OrderComponent } from './order/order.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { RegisterBranchComponent } from './register-branch/register-branch.component';
 import { RegisterComponent } from './register/register.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
 import { AdminGuard } from './_guards/admin.guard';
 import { AuthGuard } from './_guards/auth.guard';
@@ -34,7 +35,8 @@ const routes: Routes = [
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent },
   { path: 'accounts/forgotpassword', component: ForgotPasswordComponent },
-  { path: '**', component: NotfoundComponent, pathMatch: 'full'}
+  { path: '**', component: NotfoundComponent, pathMatch: 'full' },
+  { path: 'accounts/resetpassword', component: ResetPasswordComponent }
 ];
 
 @NgModule({

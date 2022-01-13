@@ -163,5 +163,26 @@ namespace API.Controllers
             return Ok();
         }
 
+        [HttpPost("accounts/resetpassword")]
+        public async Task<IActionResult> ResetPassword( ResetPasswordDto resetPasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var user = await GetUser(resetPasswordDto.Username);
+            if (user == null)
+                return BadRequest("Invalid Request");
+
+            var resetPassResult = await _userManager.ResetPasswordAsync(user, resetPasswordDto.Token, resetPasswordDto.Password);
+            if (!resetPassResult.Succeeded)
+            {
+                var errors = resetPassResult.Errors.Select(e => e.Description);
+
+                return BadRequest(new { Errors = errors });
+            }
+
+            return Ok();
+        }
+
     }
 }

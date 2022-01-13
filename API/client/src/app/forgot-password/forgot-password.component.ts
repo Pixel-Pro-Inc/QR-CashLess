@@ -38,7 +38,7 @@ export class ForgotPasswordComponent implements OnInit {
     const forgotPassDto: forgotPassword = {
       username:forgotPass.username,
       phoneNumber: forgotPass.phoneNumber,
-      clientURI: 'http://localhost:4200/resetpassword'
+      clientURI: 'http://localhost:4200/accounts/resetpassword'
     }
     this.accountService.forgotPassword('accounts/forgotpassword', forgotPassDto)
       .subscribe(_ => {

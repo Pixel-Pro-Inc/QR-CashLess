@@ -50,4 +50,7 @@ export class AccountService extends BaseServiceService{
   public forgotPassword = (dir: string, model: any) => {
     return this.http.post(this.baseUrl + dir, model);
   }
+  public resetPassword = (dir: string, model: any) => {
+    return this.http.post(this.baseUrl + dir, model);
+  }
 }
