@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ReferenceService } from '../_services/reference.service';
 
 @Component({
   selector: 'app-checkout',
@@ -11,5 +13,4 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

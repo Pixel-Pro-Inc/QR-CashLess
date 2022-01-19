@@ -149,7 +149,16 @@ namespace API.Controllers
                         {
                             ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString().Replace("grams", ""), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                             continue;
-                        }                           
+                        }
+
+                        if (data.Key == "OrderDateTime")
+                        {
+                            DateTime oDate = (DateTime)data.Value;
+                            oDate = oDate.AddHours(2);
+
+                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : oDate.ToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                            continue;
+                        }
 
                         ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                     }

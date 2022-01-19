@@ -32,7 +32,10 @@ export class MenuitemComponent implements OnInit {
     console.log(usersInput);
     console.log(quantity);
 
-    this.toastr.success(item.name + ' was added to your order.');
+    this.toastr.success(item.name + ' was added to your order.', 'Order Confirmation', {
+      positionClass: 'toast-top-right' 
+   });
+
     this.orderView.updateOrderView(item, quantity, usersInput);    
   }
 
