@@ -143,6 +143,10 @@ export class OrderComponent implements OnInit {
       this.block = 1;
     }             
   }
+  
+  back(){
+    this.router.navigateByUrl('/menu/' + this.referenceService.currentBranch() + '_' + this.referenceService.currentreference());
+  }
 
   removeItem(item: OrderItem){
     this.orderItems = this.getOrders();

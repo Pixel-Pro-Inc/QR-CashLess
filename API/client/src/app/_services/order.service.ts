@@ -28,6 +28,7 @@ export class OrderService extends BaseServiceService {
       //Receipt Page
       if(this.referenceService.currentreference() != 'tablet'){
         this.router.navigateByUrl('/receipt');
+        this.busyService.idle();
         return;
       }
 

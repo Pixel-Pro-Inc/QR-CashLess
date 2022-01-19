@@ -38,13 +38,13 @@
       <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
     </div>
   
-    <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable">
+    <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable && this.orderItems.length > 0">
       <div class="text-center">
         <button class="btn btn-primary" (click)="call()" style="width: 100%"><i class="fa fa-phone"></i> Call Us</button>
       </div>
     </ng-container>
   
-    <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable">
+    <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable && this.orderItems.length > 0">
       <ng-container *ngIf="isTablet()">
         <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
       </ng-container>  
@@ -52,7 +52,11 @@
       <ng-container *ngIf="isExternalCustomer()">
         <div class="text-center">
           <div id="myPaypalButtons"></div>
-        </div>      
+        <div>
+          <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
+          <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+        </div>
+        </div>         
       </ng-container>
   
       <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
@@ -65,5 +69,10 @@
         </div>    
       </ng-container>
     </ng-container>
+
+    <ng-container *ngIf="showPaymentOptions">
+      <button class="btn btn-warning mt-3" style="width: 100%" (click)="back()">Back to Menu</button>
+    </ng-container>
+    
   </div>  
 </div>
