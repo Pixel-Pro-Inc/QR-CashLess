@@ -65,7 +65,8 @@ export class MenuComponent implements OnInit {
     quantity: 0,
     orderNumber: '',
     phoneNumber: '',
-    category: ''
+    category: '',
+    prepTime: 0
   };
 
   orderItems: OrderItem[] = [];

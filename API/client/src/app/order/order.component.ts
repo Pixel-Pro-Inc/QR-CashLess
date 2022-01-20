@@ -10,6 +10,7 @@ import { OrderService } from '../_services/order.service';
 import { MenuItem } from '../_models/menuItem';
 import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
+import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
 
 @Component({
   selector: 'app-order',
@@ -75,20 +76,21 @@ export class OrderComponent implements OnInit {
     }    
     //models should add 'origin' for orderItem in POS
     let orderItem : OrderItem = {
-        name: '',
-        description: '',
-        reference: '',
-        price: '',
-        weight: '',
-        fufilled: false,
-        purchased: false,
-        preparable: false,
-        waitingForPayment: false,
-        quantity: 0,
-        orderNumber: '',
-        phoneNumber: '',
-        paymentMethod: '',
-        category: ''
+      name: '',
+      description: '',
+      reference: '',
+      price: '',
+      weight: '',
+      fufilled: false,
+      purchased: false,
+      preparable: false,
+      waitingForPayment: false,
+      quantity: 0,
+      orderNumber: '',
+      phoneNumber: '',
+      paymentMethod: '',
+      category: '',
+      prepTime: 0
     };
 
     orderItem.quantity = quantity;
@@ -96,6 +98,7 @@ export class OrderComponent implements OnInit {
     orderItem.fufilled = false;
     orderItem.name = item.name;
     orderItem.category = item.category;
+    orderItem.prepTime = parseInt(item.prepTime);
 
     if(item.category == 'Meat'){
       orderItem.price = userInput.toString();

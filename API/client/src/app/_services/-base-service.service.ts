@@ -13,6 +13,6 @@ export class BaseServiceService {
    *this needs to be public so anything that uses it, eg components, will take from it. Im confident its safe cause all the services are private properties injected into
    * components anyways
    */
-  public baseUrl = 'https://rodizioexpress.azurewebsites.net/api/'; 
-  //public baseUrl = 'https://localhost:5001/api/';
+  //public baseUrl = 'https://rodizioexpress.azurewebsites.net/api/'; 
+  public baseUrl = 'https://localhost:5001/api/';
 }
