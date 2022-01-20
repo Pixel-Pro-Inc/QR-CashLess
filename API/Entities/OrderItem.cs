@@ -24,5 +24,6 @@ namespace API.Entities
         public string PhoneNumber { get; set; }
         public string Category { get; set; }
         public DateTime OrderDateTime { get; set; }
+        public int PrepTime { get; set; }
     }
 }
