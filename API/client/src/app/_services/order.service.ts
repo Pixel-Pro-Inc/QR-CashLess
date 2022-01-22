@@ -45,7 +45,7 @@ export class OrderService extends BaseServiceService {
 
       this.busyService.idle();
       
-      this.router.navigateByUrl('/menu/' + x);
+      this.router.navigateByUrl('/thankyou');
     },
     error => {
       console.log(error);

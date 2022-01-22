@@ -8,7 +8,7 @@
 
             <p class="text-muted">BWP {{formatAmount(order.price)}}</p>
 
-            <span class="text-muted">{{order.weight}}</span>
+            <span *ngIf="order.category == 'Meat'" class="text-muted">{{order.weight}}</span>
           </div>
 
           <span class="fa fa-times-circle-o text-muted" (click)="removeItem(order)"></span>
