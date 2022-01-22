@@ -11,13 +11,17 @@ import { AccountService } from '../_services/account.service';
 export class AuthGuard implements CanActivate {
   constructor(private accountService: AccountService, private toastr: ToastrService) {}
 
-  canActivate(): Observable<boolean>{
-    return this.accountService.currentUser$.pipe(
-      map(user => {
-        if (user) return true;
-        this.toastr.error('You are unauthorized!');
-    })
-    );
+  canActivate(): boolean{
+    let token: string = localStorage.getItem('resetToken');
+    if(token == null){
+      return false;
+    }
+
+    if(token == ''){
+      return false;
+    }
+
+    return true;
   }
   
 }

@@ -7,7 +7,7 @@ namespace API.Controllers
 {
     public class SMSController : BaseApiController
     {
-        public SMSController() :base() { }
+        public SMSController() { }
 
 
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
@@ -20,7 +20,7 @@ namespace API.Controllers
 
             TwilioClient.Init(apiKeySid, apiKeySecret, accountSid);
 
-            string msgBody = "Rodizio Express. Your order #" + orderNumber + " is ready! Go to the till to collect.\n Thank you for your purchase.\n Powered by Pixel Pro";
+            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} is ready! Go to the till to collect. Thank you for your purchase.\n\nPowered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
@@ -42,7 +42,7 @@ namespace API.Controllers
 
             TwilioClient.Init(apiKeySid, apiKeySecret, accountSid);
 
-            string msgBody = "Rodizio Express. Your order #" + orderNumber + " has been cancelled. Powered by Pixel Pro";
+            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} has been cancelled.\n\nPowered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
@@ -54,8 +54,8 @@ namespace API.Controllers
         }
 
         //Make sure the token is made using QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param), it won't make sense if you try to use your own.
-        [HttpPost("send/resetpassword/{phoneNumber}")]
-        public async Task<ActionResult<string>> SendResetPasswordSMS(string phoneNumber, string temporarypasswordtoken)
+        [HttpPost("send/resetpassword/{phoneNumber}/{token}")]
+        public async Task<ActionResult<string>> SendResetPasswordSMS(string phoneNumber, string token)
         {
             string accountSid = Configuration["twillosettings:accountSid"];
 
@@ -64,7 +64,7 @@ namespace API.Controllers
 
             TwilioClient.Init(apiKeySid, apiKeySecret, accountSid);
 
-            string msgBody = $"Rodizio Express. Please click this {temporarypasswordtoken} link to get your temporary password token. Please change your password withing 2 hours.\n Powered by Pixel Pro";
+            string msgBody = $"Rodizio Express\n\nThis is your password reset token {token}.\n\nPowered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
