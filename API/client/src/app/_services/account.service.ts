@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { Toast, ToastrService } from 'ngx-toastr';
 import { ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { User } from '../_models/user';
@@ -14,7 +16,7 @@ export class AccountService extends BaseServiceService{
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  constructor(http: HttpClient, private busyService: BusyService) {
+  constructor(http: HttpClient, public busyService: BusyService, private router: Router, private toastr: ToastrService) {
     super(http);
   }
 
@@ -24,6 +26,10 @@ export class AccountService extends BaseServiceService{
     return this.http.post(this.baseUrl + dir, model).pipe(
       map((response: User) => {
         const user = response;
+
+        if(!user.admin && !user.developer && !user.superUser){
+          return null;
+        }
 
         if (user) {
           localStorage.setItem('user', JSON.stringify(user));
@@ -35,7 +41,43 @@ export class AccountService extends BaseServiceService{
       })
     )
   }
+
+  request(model: any, dir: string) {
+    this.busyService.busy();
+
+    return this.http.post(this.baseUrl + dir, model, {responseType: 'text'}).subscribe(
+      response => {
+        this.busyService.idle();
+
+        console.log(response);
+
+        localStorage.setItem('resetToken', response);
+        localStorage.setItem('accountID', model.accountID);
+
+        this.router.navigateByUrl('/password/reset/success');
+      }
+    );
+  }
   
+  reset(model: any, dir: string) {
+    this.busyService.busy();
+
+    this.http.post(this.baseUrl + dir, model, {responseType: 'text'}).subscribe(
+      response => {
+        this.busyService.idle();
+
+        console.log(response);
+
+        localStorage.removeItem('resetToken');
+        localStorage.removeItem('accountID');
+
+        this.toastr.success('Your password was successfully changed');
+        
+        this.router.navigateByUrl('login');
+      }
+    );
+  }
+
   register(model: any, dir: string) {
     this.busyService.busy();
     return this.http.post(this.baseUrl + dir, model).pipe(

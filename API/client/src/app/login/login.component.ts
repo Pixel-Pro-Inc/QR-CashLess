@@ -29,17 +29,19 @@ export class LoginComponent implements OnInit {
         this.user = response;
         console.log(this.user);
 
-        if (this.user.admin) {
-          this.router.navigateByUrl('/');
+        if (this.user == null) {
+          this.toastr.error('You cannot login to this platform');
+          return;
         }
-        else {
-          this.router.navigateByUrl('/');
-        }
+
+        this.router.navigateByUrl('/');
       });      
     }, error => {
       console.log(error);
       this.toastr.error(error.error);
     })
+
+    this.accountService.busyService.idle();
   }
 
 }

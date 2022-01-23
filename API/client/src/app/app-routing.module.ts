@@ -16,7 +16,10 @@ import { OrderComponent } from './order/order.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { RegisterBranchComponent } from './register-branch/register-branch.component';
 import { RegisterComponent } from './register/register.component';
+import { ResetComponent } from './reset/reset.component';
+import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { RestaurantBranchComponent } from './restaurant-branch/restaurant-branch.component';
+import { ThankyouComponent } from './thankyou/thankyou.component';
 import { AdminGuard } from './_guards/admin.guard';
 import { AuthGuard } from './_guards/auth.guard';
 import { DevGuard } from './_guards/dev.guard';
@@ -32,6 +35,9 @@ const routes: Routes = [
   { path: 'receipt', component: ReceiptComponent },
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent},
+  { path: 'password/reset', component: ResetpasswordComponent},
+  { path: 'password/reset/success', component: ResetComponent, canActivate: [AuthGuard]},
+  { path: 'thankyou', component: ThankyouComponent},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
 

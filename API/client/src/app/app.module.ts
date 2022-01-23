@@ -32,6 +32,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
 import { ThankyouComponent } from './thankyou/thankyou.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
+import { ResetComponent } from './reset/reset.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,8 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     RevenuechartComponent,
     LoginComponent,
     ThankyouComponent,
+    ResetpasswordComponent,
+    ResetComponent,
   ],
   imports: [
     BrowserModule,

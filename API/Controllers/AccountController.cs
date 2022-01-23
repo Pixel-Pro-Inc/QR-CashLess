@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -22,13 +23,12 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private string dir = "Account";
-        private readonly SMSController smsSender; //I added this here cause I did'nt know any other way to involve the method it contains. we use it in line 166
-        private readonly UserManager<AppUser> _userManager;
+        private readonly SMSController smsSender;
 
         public AccountController(ITokenService tokenService)//, UserManager<AppUser> userManager) :base()
         {
             _tokenService = tokenService;
-            //_userManager= userManager;
+            smsSender = new SMSController();
         }
 
         [HttpPost("register")]
@@ -37,10 +37,15 @@ namespace API.Controllers
             if (await UserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
+            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+
             using var hmac = new HMACSHA512();
             var user = new AppUser()
             {
                 UserName = registerDto.Username.ToLower(),
+                FirstName = myTI.ToTitleCase(registerDto.Firstname.ToLower()),
+                LastName = myTI.ToTitleCase(registerDto.Lastname.ToLower()),
+                PhoneNumber = registerDto.Phonenumber.ToString(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key,
                 Developer = registerDto.Developer,
@@ -120,6 +125,24 @@ namespace API.Controllers
             user = items.SingleOrDefault(x => x.UserName == username.ToLower());
             return (user);
         }
+        public async Task<AppUser> GetUserByNumber(string phoneNumber)
+        {
+            var response = await _firebaseDataContext.GetData(dir);
+            List<AppUser> items = new List<AppUser>();
+            for (int i = 0; i < response.Count; i++)
+            {
+                var item = response[i];
+
+                AppUser data = JsonConvert.DeserializeObject<AppUser>(((JObject)item).ToString());
+
+                items.Add(data);
+            }
+
+            AppUser user = null;
+
+            user = items.SingleOrDefault(x => x.PhoneNumber == phoneNumber);
+            return (user);
+        }
         public async Task<int> GetNum()
         {
             var response = await _firebaseDataContext.GetData(dir);
@@ -143,28 +166,56 @@ namespace API.Controllers
 
         //When you have set up the Identity roles thing then you can remove the below line to get access to the code
 
-       
-        [HttpPost("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+        public async Task<string> GetResetToken()
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
+            string token = "R";
 
-            var user = await GetUser(forgotPasswordDto.Username);
-            if (user == null)
-                return BadRequest("Invalid Request");
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var param = new Dictionary<string, string>
+            for (int i = 0; i < 6; i++)
             {
-                 {"token", token },
-                 {"SMS", forgotPasswordDto.phoneNumber }
-            };
-            
-            var callback = QueryHelpers.AddQueryString(forgotPasswordDto.ClientURI, param);
-            //await smsSender.SendResetPasswordSMS(user.number, callback); //Where is the user number stored
-            //
-            return Ok();
+                token += new Random().Next(0, 10);
+            }
+
+            return token;
+        }
+
+       
+        [HttpPost("forgotpassword/{accountID}")]
+        public async Task<string> ForgotPassword(string accountID)
+        {
+            string token = await GetResetToken();
+
+            int result = 0;
+
+            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID): user = await GetUser(accountID);
+
+            user.ResetToken = token;
+
+            _firebaseDataContext.EditData("Account/" + user.Id, user);
+
+            //Send SMS
+            await smsSender.SendResetPasswordSMS(user.PhoneNumber, token);
+
+            return token;
+        }
+
+        [HttpPost("forgotpassword/successful/{accountID}/{password}")]
+        public async Task<string> SetNewPassword(string accountID,string password)
+        {
+            int result = 0;
+
+            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID) : user = await GetUser(accountID);
+
+            user.ResetToken = null;
+
+            using var hmac = new HMACSHA512();
+
+            user.PasswordSalt = hmac.Key;
+
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+            _firebaseDataContext.EditData("Account/" + user.Id, user);
+
+            return "success";
         }
 
     }
