@@ -24,6 +24,16 @@
       <input type="text" class="form-control" name="num"
              [(ngModel)]="model.phoneNumber" placeholder="3333333">
     </div>
+    <div class="form-group">
+      <label>Opening Time</label>
+      <input type="time" class="form-control" name="oT"
+             [(ngModel)]="model.openingTime" >
+    </div>
+    <div class="form-group">
+      <label>Closing Time</label>
+      <input type="time" class="form-control" name="cT"
+             [(ngModel)]="model.closingTime">
+    </div>
     <div class="form-group mb-5">
       <label>Select an image</label>
       <input type="file" accept="image/*" class="form-control" name="image"

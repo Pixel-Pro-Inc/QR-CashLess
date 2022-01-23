@@ -13,5 +13,7 @@ namespace API.DTOs
         public string Img { get; set; }
         public string PhoneNumber { get; set; }
         public float LastActive { get; set; }
+        public DateTime OpeningTime { get; set; }
+        public DateTime ClosingTime { get; set; }
     }
 }

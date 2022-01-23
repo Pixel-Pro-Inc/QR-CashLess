@@ -17,7 +17,15 @@ export class RegisterBranchComponent implements OnInit {
     location: '',
     img: '',
     lastActive: undefined,
-    phoneNumber: 0
+    phoneNumber: 0,
+    openingTime: {
+      hours: 0,
+      minutes: 0
+    },
+    closingTime: {
+      hours: 0,
+      minutes: 0
+    }
   };
   img: any;
 

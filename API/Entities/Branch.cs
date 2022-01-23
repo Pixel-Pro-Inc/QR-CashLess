@@ -14,5 +14,7 @@ namespace API.Entities
         public string PublicId { get; set; }
         public DateTime LastActive { get; set; }
         public int PhoneNumber { get; set; }
+        public DateTime OpeningTime { get; set; }
+        public DateTime ClosingTime { get; set; }
     }
 }

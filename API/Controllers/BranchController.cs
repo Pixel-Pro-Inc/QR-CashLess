@@ -45,7 +45,9 @@ namespace API.Controllers
                 Id = dto.Id,
                 Location = dto.Location,
                 Name = dto.Name,
-                PhoneNumber = Int32.Parse(dto.PhoneNumber)
+                PhoneNumber = Int32.Parse(dto.PhoneNumber),
+                OpeningTime = dto.OpeningTime,
+                ClosingTime = dto.ClosingTime
             };
 
             string path = dto.Img;
