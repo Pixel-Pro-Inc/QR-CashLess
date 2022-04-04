@@ -31,18 +31,7 @@ namespace API.Controllers
         [HttpGet("getmenu/{branchId}")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
         {
-            List<MenuItem> items = new List<MenuItem>();
-
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menu);
-            }
-
-            return items;
+            return await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
         }
 
         [HttpPost("createitem/{id}")]
@@ -56,12 +45,40 @@ namespace API.Controllers
                 Description = menuItemDto.Description,
                 prepTime = menuItemDto.PrepTime.ToString(),
                 Price = menuItemDto.Price.ToString("f2"),
+                Weight = menuItemDto.Weight,
                 Restuarant = menuItemDto.Restuarant,
                 Category = menuItemDto.Category,
+                SubCategory = menuItemDto.SubCategory,
                 Rate = menuItemDto.Rate,
                 MinimumPrice = menuItemDto.MinimumPrice,
                 Availability = true
             };
+
+            menuItem.Name = String.IsNullOrEmpty(menuItem.Weight)? menuItem.Name: menuItem.Name + " (" + menuItem.Weight + " grams)";
+
+            List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
+
+            if(menuItem.Category == "Meat")
+            {
+                if (subCategories.Count == 0)
+                {
+                    List<string> subs = new List<string>();
+                    subs.Add(menuItemDto.SubCategory);
+
+                    _firebaseDataContext.StoreData("SubCategories/" + 0, new Subcategory()
+                    {
+                        SubCategories = subs
+                    });
+                }
+                else
+                {
+                    if (!subCategories[0].SubCategories.Contains(menuItemDto.SubCategory))
+                    {
+                        subCategories[0].SubCategories.Add(menuItemDto.SubCategory);
+                        _firebaseDataContext.StoreData("SubCategories/" + 0, subCategories[0]);
+                    }
+                }
+            }
 
             string path = menuItemDto.ImgUrl;
 
@@ -83,17 +100,16 @@ namespace API.Controllers
 
             return menuItemDto;
         }
+        [HttpGet("subcategory")]
+        public async Task<ActionResult<List<string>>> GetSubCategories()
+        {
+            var response = (await _firebaseDataContext.GetData<Subcategory>("SubCategories"));
+
+            return response.Count != 0? response[0].SubCategories: new List<string>();
+        }
         public async Task<int> GetId(string branchId)
         {
-            List<MenuItem> items = new List<MenuItem>();
-
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            foreach (var item in response)
-            {
-                MenuItem data = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(data);
-            }
+            List<MenuItem> items = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
 
             if (items.Count != 0)
             {
@@ -139,16 +155,7 @@ namespace API.Controllers
             };
 
             //Detect change in image
-            List<MenuItem> items = new List<MenuItem>();
-
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menu);
-            }
+            List<MenuItem> items = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
 
             var mItem = items.Where(i => i.Id == menuItem.Id);
 

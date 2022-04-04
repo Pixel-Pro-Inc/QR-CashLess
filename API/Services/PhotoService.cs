@@ -24,11 +24,6 @@ namespace API.Services
         {
             var acc = new Account
                 (
-                /*
-                 config.Value.CloudName,
-                config.Value.ApiKey,
-                config.Value.ApiSecret
-                 */
                 Configuration["CloudinarySettings:CloudName"],
                 Configuration["CloudinarySettings:ApiKey"],
                 Configuration["CloudinarySettings:ApiSecret"]

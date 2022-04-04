@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace API
 
         public Startup(IConfiguration config)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
             _config = config;
         }
 
@@ -47,16 +49,6 @@ namespace API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
             });
-            //This is supposed to configure the email service we have in the Email service project but remeber we haven't set up the email server yet.
-            //I am hoping I can replace this with twillo so that I don't have to sent up this Smpt server item.
-            /*(var emailConfig = _config
-                .GetSection("EmailConfiguration")
-                .Get<EmailConfiguration>();
-            services.AddSingleton(emailConfig);
-
-            //Now we need to add the email service to the startup
-            services.AddScoped<IEmailSender, EmailSender>();*/
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline. It's chronologically sensitive so you can't just put anything any how

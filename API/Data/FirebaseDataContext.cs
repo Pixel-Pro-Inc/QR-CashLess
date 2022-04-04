@@ -1,8 +1,7 @@
-﻿using API.Helpers;
+﻿using API.Controllers;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,15 +14,27 @@ namespace API.Data
 {
     public class FirebaseDataContext
     {
-        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
         IFirebaseConfig config = new FirebaseConfig
         {
-            AuthSecret = Configuration["Firebase:AuthSecret"],
-            BasePath = Configuration["Firebase:BasePath"]
+            AuthSecret = Configuration["FirebaseDataBaseSettings:AuthSecret"],
+            BasePath = Configuration["FirebaseDataBaseSettings:BasePath"]
         };
 
         IFirebaseClient client;
+
+        public FirebaseDataContext()
+        {
+            client = new FireSharp.FirebaseClient(config);
+        }
+
+        public async void DeleteData(string path)
+        {
+            client = new FireSharp.FirebaseClient(config);
+
+            var response = await client.DeleteAsync(path);
+        }
 
         public async void StoreData(string path, object data)
         {
@@ -31,9 +42,9 @@ namespace API.Data
 
             var response = await client.SetAsync(path, data);
         }
-        public async Task<List<object>> GetData(string path)
+        public async Task<List<T>> GetData<T>(string path) where T : class, new()
         {
-            List<object> objects = new List<object>();
+            List<T> objects = new List<T>();
 
             client = new FireSharp.FirebaseClient(config);
 
@@ -45,21 +56,21 @@ namespace API.Data
             {
                 foreach (var item in data)
                 {
-                    object _object = new object();
-
-                    if(item != null)
+                    if (item != null)
                     {
+                        var _object = new T();
+
                         if (item.GetType() == typeof(JProperty))
                         {
-                            _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
+                            _object = JsonConvert.DeserializeObject<T>(((JProperty)item).Value.ToString());
                         }
                         else
                         {
-                            _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
+                            _object = JsonConvert.DeserializeObject<T>(((JObject)item).ToString());
                         }
 
                         objects.Add(_object);
-                    }               
+                    }
                 }
             }
 
@@ -70,12 +81,6 @@ namespace API.Data
             client = new FireSharp.FirebaseClient(config);
 
             var response = await client.UpdateAsync(path, data);
-        }        
-        public async void DeleteData(string fullPath)
-        {
-            client = new FireSharp.FirebaseClient(config);
-
-            await client.DeleteAsync(fullPath);
         }
     }
 }

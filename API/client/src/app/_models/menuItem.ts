@@ -10,4 +10,6 @@ export interface MenuItem {
   rate: number;
   availability: boolean;
   publicId: string;
+  subCategory: string;
+  weight:string;
 }

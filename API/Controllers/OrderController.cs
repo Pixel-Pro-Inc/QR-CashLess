@@ -49,18 +49,14 @@ namespace API.Controllers
         }
         public async Task<int> GetOrderNum(string branchId)
         {
-            var response = await _firebaseDataContext.GetData(dir + branchId);
+            List<List<OrderItem>> ordersResult = await _firebaseDataContext.GetData<List<OrderItem>>(dir + branchId);
+
             List<OrderItem> orders = new List<OrderItem>();
 
-            foreach (var item in response)
+            foreach (var item in ordersResult)
             {
-                OrderItem[] data = JsonConvert.DeserializeObject<OrderItem[]>(((JArray)item).ToString());
-
-                for (int i = 0; i < data.Length; i++)
-                {
-                    orders.Add(data[i]);
-                }                
-            }
+                orders.AddRange(item);
+            }            
 
             int candidateNumber = new Random().Next(1000, 9999);
 

@@ -14,4 +14,5 @@ export interface OrderItem {
   phoneNumber: string;
   category: string;
   prepTime: number;
+  id_O: string;
 }

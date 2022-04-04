@@ -1,3 +1,4 @@
+import { Time } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { userInfo } from 'os';
@@ -22,7 +23,7 @@ export class RestaurantBranchComponent implements OnInit {
     this.referenceService.hideNavBar = true;
 
     let user: User;
-    user = JSON.parse(localStorage.getItem('user'));// don't touch this line of code, this is the only place its set
+    user = JSON.parse(localStorage.getItem('user'));
 
     let empty: OrderItem[] = [];
     localStorage.setItem('ordered', JSON.stringify(empty));
@@ -34,21 +35,8 @@ export class RestaurantBranchComponent implements OnInit {
 
     this.title = 'Choose a branch to manage';
 
-    if(user.superUser){
-      this.getBranches();
-      return;
-    }
-    
-    if(user.developer){
-      this.getBranches();
-      return;
-    }
-
-    if(user.admin){
-      this.getBranches();
-      return;  
-    }
-    
+    this.getBranches();
+      return;    
   }  
 
   getBranches() {
@@ -57,7 +45,9 @@ export class RestaurantBranchComponent implements OnInit {
       console.log(response);
 
       let result: Branch[] = response;
+      
       let user: User;
+      user = JSON.parse(localStorage.getItem('user'));
 
       if(user != null){
         if(user.admin){  
@@ -98,10 +88,80 @@ export class RestaurantBranchComponent implements OnInit {
   }
 
   getStatus(branch: Branch): string{
+    if(!this.isOpen(branch)){
+      return 'Closed. Opens at ' + branch.openingTime;
+    }
+
     if(branch.lastActive < 30){
       return 'Online order available.'
-    }
+    } 
     
     return 'Online order unavailable';
+  }
+
+  isOpen (b: Branch):Boolean{
+    let currentTime = new Date();
+
+    let times:any[] = this.SetHoursMins(b);
+
+    let cH = currentTime.getHours();
+
+    if(cH > times[0].hours){
+      return false;
+    }
+
+    if(cH < times[1].hours){
+      return false;
+    }
+
+    let cM = currentTime.getMinutes();
+
+    if(cH == times[1].hours){
+      if(cM < times[1].minutes){
+        return false;
+      }
+    }
+
+    if(cH == times[0].hours){
+      if(cM > times[0].minutes){
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  SetHoursMins(branch: Branch){
+    let tString = branch.closingTime.toString();
+
+    let h: number = parseInt(tString.substring(0, 2));
+
+    let m: number = parseInt(tString.substring(3, 5));
+
+    let times: any = [];
+
+    let tC: any = {};
+
+    tC.hours = h;
+
+    tC.minutes = m;
+
+    times.push(tC);
+
+    tString = branch.openingTime.toString();
+
+    h = parseInt(tString.substring(0, 2));
+
+    m = parseInt(tString.substring(3, 5));
+
+    let tO: any = {};
+
+    tO.hours = h;
+
+    tO.minutes = m;
+
+    times.push(tO);
+
+    return times;
   }
 }

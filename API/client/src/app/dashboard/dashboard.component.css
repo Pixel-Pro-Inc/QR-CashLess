@@ -84,6 +84,7 @@ html, body {
     background: #f6f9ff;
     padding: 10px 15px;
     border-radius: 4px;
+    cursor: pointer;
   }
   .sidebar-nav .nav-link i {
     font-size: 16px;

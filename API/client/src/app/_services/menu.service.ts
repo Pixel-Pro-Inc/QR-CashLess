@@ -59,5 +59,8 @@ export class MenuService extends BaseServiceService {
       })
     );
   }
+  getSubCategories(){
+    return this.http.get(this.baseUrl + 'menu/subcategory');
+  }
 
 }

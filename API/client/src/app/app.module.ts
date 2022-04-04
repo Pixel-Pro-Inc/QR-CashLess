@@ -19,7 +19,6 @@ import { SharedModule } from './_modules/shared.module';
 import { MenuComponent } from './menu/menu.component';
 import { OrderComponent } from './order/order.component';
 import { AdminComponent } from './admin/admin.component';
-import { PhotouploaderComponent } from './photouploader/photouploader.component';
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
 import { ReceiptComponent } from './receipt/receipt.component';
 import { MenuitemComponent } from './menuitem/menuitem.component';
@@ -34,6 +33,8 @@ import { ThankyouComponent } from './thankyou/thankyou.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { ResetComponent } from './reset/reset.component';
+import { QuantityCounterComponent } from './quantity-counter/quantity-counter.component';
+import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,6 @@ import { ResetComponent } from './reset/reset.component';
     MenuComponent,
     OrderComponent,
     AdminComponent,
-    PhotouploaderComponent,
     KitchendashboardComponent,
     ReceiptComponent,
     MenuitemComponent,
@@ -63,6 +63,8 @@ import { ResetComponent } from './reset/reset.component';
     ThankyouComponent,
     ResetpasswordComponent,
     ResetComponent,
+    QuantityCounterComponent,
+    ScrollToTopComponent,
   ],
   imports: [
     BrowserModule,

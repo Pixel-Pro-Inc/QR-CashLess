@@ -4,7 +4,7 @@
       <ng-container *ngIf="!order.purchased">
         <li class="list-group-item d-flex justify-content-between">
           <div>
-            <h6>{{order.name}}</h6>
+            <h6>{{order.name}} x {{order.quantity}}</h6>
 
             <p class="text-muted">BWP {{formatAmount(order.price)}}</p>
 
@@ -35,7 +35,9 @@
         </div>
       </form>
   
-      <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+      <ng-container *ngIf="model.phoneNumber != null">
+        <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+      </ng-container>      
     </div>
   
     <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable && this.orderItems.length > 0">
@@ -45,6 +47,7 @@
     </ng-container>
   
     <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable && this.orderItems.length > 0">
+      
       <ng-container *ngIf="isTablet()">
         <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
       </ng-container>  

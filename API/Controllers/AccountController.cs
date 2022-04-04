@@ -13,6 +13,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -96,29 +98,13 @@ namespace API.Controllers
         
         public async Task<bool> UserTaken(string username)
         {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
-
-                items.Add(item);
-            }
+            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
 
             return items.Any(x => x.UserName == username.ToLower());
         }
         public async Task<AppUser> GetUser(string username)
         {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-
-                AppUser data = JsonConvert.DeserializeObject<AppUser>(((JObject)item).ToString());
-
-                items.Add(data);
-            }
+            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
 
             AppUser user = null;
 
@@ -127,16 +113,7 @@ namespace API.Controllers
         }
         public async Task<AppUser> GetUserByNumber(string phoneNumber)
         {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-
-                AppUser data = JsonConvert.DeserializeObject<AppUser>(((JObject)item).ToString());
-
-                items.Add(data);
-            }
+            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
 
             AppUser user = null;
 
@@ -145,14 +122,7 @@ namespace API.Controllers
         }
         public async Task<int> GetNum()
         {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
-
-                items.Add(item);
-            }
+            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
 
             int ran = new Random().Next(10000, 99999);
 
@@ -187,6 +157,31 @@ namespace API.Controllers
             int result = 0;
 
             AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID): user = await GetUser(accountID);
+
+            if (user == null)
+                return "failed";
+
+            user.ResetToken = token;
+
+            _firebaseDataContext.EditData("Account/" + user.Id, user);
+
+            //Send SMS
+            await smsSender.SendResetPasswordSMS(user.PhoneNumber, token);
+
+            return token;
+        }
+
+        [HttpPost("forgotpassword/desktop/{accountID}")]
+        public async Task<ActionResult<string>> ForgotPasswordDesktop(string accountID)
+        {
+            string token = await GetResetToken();
+
+            int result = 0;
+
+            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID) : user = await GetUser(accountID);
+
+            if (user == null)
+                return "failed";
 
             user.ResetToken = token;
 

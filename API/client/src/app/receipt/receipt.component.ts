@@ -117,6 +117,22 @@ export class ReceiptComponent implements OnInit {
       return tot.toLocaleString('en-US', {minimumFractionDigits: 2});
     }
   }
+  getName(order: OrderItem){
+    /*let str = '';
+    for (let i = 0; i < order.name.length; i++) {
+      if(order.name[i] == ' ' && order.name[i + 1] == 'x'){
+        break;
+      }
+
+      str += order.name[i];
+    }*/
+
+    return order.name;// str;
+  }
+  getUnitPrice(order: OrderItem){
+    let amount = (parseFloat(order.price)/order.quantity).toString();
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2})
+  }
   makeNewOrder(){
     this.router.navigateByUrl('/menu/' + this.referenceService.currentBranch() + '_' + this.referenceService.currentreference());
   }

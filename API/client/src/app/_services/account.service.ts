@@ -28,12 +28,14 @@ export class AccountService extends BaseServiceService{
         const user = response;
 
         if(!user.admin && !user.developer && !user.superUser){
+          this.toastr.error('You cannot login to this platform');
           return null;
         }
 
-        if (user) {
+        if(user != null) {
           localStorage.setItem('user', JSON.stringify(user));
           this.currentUserSource.next(user);
+          this.router.navigateByUrl('/');
         }
 
         this.busyService.idle();
@@ -48,6 +50,11 @@ export class AccountService extends BaseServiceService{
     return this.http.post(this.baseUrl + dir, model, {responseType: 'text'}).subscribe(
       response => {
         this.busyService.idle();
+
+        if(response == 'failed'){
+          this.toastr.error("We could not find an account with those credentials.");
+          return;
+        }
 
         console.log(response);
 
@@ -88,8 +95,8 @@ export class AccountService extends BaseServiceService{
     )
   }
 
-  setCurrentUser(user: User) {
-    this.currentUserSource.next(user);
+  setCurrentUser(mod: User){
+    this.currentUserSource.next(mod);
   }
 
   logout() {

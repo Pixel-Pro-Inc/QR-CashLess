@@ -73,60 +73,61 @@ namespace API.Controllers
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                             if (reportDto.Name.ToUpper() == item.Name.ToUpper())
                             {
-                                Hashtable hashtable = new Hashtable();
-                                hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                                hashtable.Add("itemName", item.Name);
-                                hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                                hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                                hashtable.Add("quantity", item.Quantity);
-
-                                hashtables.Add(hashtable);
+                                hashtables.Add(GetHashtable(item));
                             }
                     }
                     else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                         {
-                            Hashtable hashtable = new Hashtable();
-                            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                            hashtable.Add("itemName", item.Name);
-                            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                            hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                            hashtable.Add("quantity", item.Quantity);
-
-                            hashtables.Add(hashtable);
+                            hashtables.Add(GetHashtable(item));
                         }
                     }
                     else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
                     {
                         if (reportDto.Name.ToUpper() == item.Name.ToUpper())
                         {
-                            Hashtable hashtable = new Hashtable();
-                            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                            hashtable.Add("itemName", item.Name);
-                            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                            hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                            hashtable.Add("quantity", item.Quantity);
-
-                            hashtables.Add(hashtable);
+                            hashtables.Add(GetHashtable(item));
                         }
                     }
                     else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
                     {
-                        Hashtable hashtable = new Hashtable();
-                        hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                        hashtable.Add("itemName", item.Name);
-                        hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                        hashtable.Add("weight", item.Weight != null ? item.Weight : "-");
-                        hashtable.Add("quantity", item.Quantity);
-
-                        hashtables.Add(hashtable);
+                        hashtables.Add(GetHashtable(item));
                     }
                 }
             }
 
             return hashtables;
         }
+
+        Hashtable GetHashtable(OrderItem item) //Formats data into a form for the angular client to understand
+        {
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
+            hashtable.Add("itemName", item.Name);
+            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
+            hashtable.Add("quantity", item.Quantity);
+
+            if (!string.IsNullOrEmpty(item.Weight))
+            {
+                bool condition = item.Weight.Contains(' ');
+
+                if (condition)
+                {
+                    string weight = item.Weight.Substring(0, item.Weight.IndexOf(' ') + 1);
+                    string newWeight = (float.Parse(weight) * (float)item.Quantity).ToString();
+
+                    hashtable.Add("weight", newWeight);
+                    return hashtable;
+                }
+
+                hashtable.Add("weight", (float.Parse(item.Weight) * (float)item.Quantity).ToString());
+                return hashtable;
+            }
+
+            hashtable.Add("weight", "-");
+            return hashtable;
+        } 
 
         bool FilterByCategory(ReportDto reportDto)
         {
@@ -169,21 +170,21 @@ namespace API.Controllers
                         {
                             item[0].OrderNumber = reportDto.Invoice;
                             item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                            temp.Add(item);
+                            temp.Add(GetWeightByQuantity(item));
                         }
                     }
                     else
                     {
                         item[0].OrderNumber = GetOrderNumber(item[0].OrderNumber);
                         item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                        temp.Add(item);
+                        temp.Add(GetWeightByQuantity(item));
                     }
                 }
                 else
                 {
                     item[0].OrderNumber = GetOrderNumber(item[0].OrderNumber);
                     item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                    temp.Add(item);
+                    temp.Add(GetWeightByQuantity(item));
                 }
             }
 
@@ -196,6 +197,31 @@ namespace API.Controllers
             }
 
             return temp;
+        }
+
+        List<OrderItem> GetWeightByQuantity(List<OrderItem> items)
+        {
+            foreach (var item in items)
+            {
+                if (!string.IsNullOrEmpty(item.Weight))
+                {
+                    bool condition = item.Weight.Contains(' ');
+
+                    if (condition)
+                    {
+                        string weight = item.Weight.Substring(0, item.Weight.IndexOf(' ') + 1);
+                        item.Weight = (float.Parse(weight) * (float)item.Quantity).ToString();
+                        continue;
+                    }
+
+                    item.Weight = (float.Parse(item.Weight) * (float)item.Quantity).ToString();
+                    continue;
+                }
+
+                item.Weight = "-";
+            }
+
+            return items;
         }
 
         [HttpPost("sales/summary")]//This gets a flat out total in a period of time
@@ -436,15 +462,7 @@ namespace API.Controllers
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
-            var result = await _firebaseDataContext.GetData(dir + reportDto.BranchId);
-
-            List<List<OrderItem>> orders = new List<List<OrderItem>>();
-
-            foreach (var item in result)
-            {
-                var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-                orders.Add(pain);
-            }
+            List<List<OrderItem>> orders = await _firebaseDataContext.GetData<List<OrderItem>>(dir + reportDto.BranchId);
 
             foreach (var order in orders)
             {
@@ -476,11 +494,11 @@ namespace API.Controllers
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData("Branch");
+            var response = await _firebaseDataContext.GetData<Branch>("Branch");
 
             foreach (var item in response)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
+                Branch branch = item;
 
                 TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
 
@@ -503,11 +521,11 @@ namespace API.Controllers
 
             for (int i = 0; i < branches.Count; i++)
             {
-                var result = await _firebaseDataContext.GetData(dir + branches[i].Id);
+                var result = await _firebaseDataContext.GetData<List<OrderItem>>(dir + branches[i].Id);
 
                 foreach (var item in result)
                 {
-                    var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
+                    var pain = item;
                     orders.Add(pain);
                 }
             }

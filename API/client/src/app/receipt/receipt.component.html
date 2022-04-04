@@ -53,14 +53,18 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Item</th>
-              <th scope="col" style="text-align: right;">Amount (BWP)</th>
+              <th style="text-align: right;" scope="col">Units</th>
+              <th style="text-align: right;" scope="col">Unit Price (BWP)</th>
+              <th style="text-align: right;" scope="col">Amount (BWP)</th>
             </tr>
           </thead>
           <tbody>
             <ng-container *ngFor="let o of orders">
               <tr>
                 <th scope="row">{{orders.indexOf(o) + 1}}</th>
-                <td>{{o.name}}</td>
+                <td>{{getName(o)}}</td>
+                <td style="text-align: right;">{{o.quantity}}</td>
+                <td style="text-align: right;">{{getUnitPrice(o)}}</td>
                 <td style="text-align: right;">{{formatAmount(o.price)}}</td>
               </tr>                                   
             </ng-container>      

@@ -1,3 +1,9 @@
 <body class="mt-3">
-    <app-order [showPaymentOptions] = "true"></app-order> 
+    <ng-container *ngFor="let b of branches">
+        <ng-container *ngIf="b.id == getBranch()">
+            <app-order *ngIf="isOpen(b)" [showPaymentOptions] = "true"></app-order> 
+
+            <h1 *ngIf="!isOpen(b)" class="text-center">We are currently closed</h1>
+        </ng-container>        
+    </ng-container>    
 </body>

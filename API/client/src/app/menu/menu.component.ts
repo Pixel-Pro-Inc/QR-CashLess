@@ -24,6 +24,8 @@ export class MenuComponent implements OnInit {
   authorized: boolean;
   showform = false;
 
+  standardCheck: any = {};
+
   showMeats = true;
   showDrinks = false;
   showDesserts = false;
@@ -33,6 +35,9 @@ export class MenuComponent implements OnInit {
 
   imageSrc: string;
   user: User;
+
+  subCategories: string[] = [];
+  subCategoryCollapse: boolean[] = [];
 
   model: MenuItem = {
     name: '',
@@ -45,7 +50,9 @@ export class MenuComponent implements OnInit {
     rate: 0,
     availability: false,
     id: 0,
-    publicId: ''
+    publicId: '',
+    subCategory: '',
+    weight:''
   };
   img: any = {};
 
@@ -66,7 +73,8 @@ export class MenuComponent implements OnInit {
     orderNumber: '',
     phoneNumber: '',
     category: '',
-    prepTime: 0
+    prepTime: 0,
+    id_O: ''
   };
 
   orderItems: OrderItem[] = [];
@@ -82,6 +90,7 @@ export class MenuComponent implements OnInit {
   constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
+    this.standardCheck.check = false;
     this.user = JSON.parse(localStorage.getItem('user'));
 
     if (this.user != null) {
@@ -106,6 +115,23 @@ export class MenuComponent implements OnInit {
     }
 
     this.getMenuItems(this.referenceService.currentBranch());
+
+    this.menuService.getSubCategories().subscribe(
+      response =>{
+        let m: any = {};
+        m = response;
+        
+        m.forEach(element => {
+          if(!this.subCategories.includes(element)){
+            this.subCategories.push(element);
+          } 
+        });
+
+        this.subCategories.forEach(element => {
+          this.subCategoryCollapse.push(false);
+        });
+      }
+    );
 
     console.log(this.showEditing);
   }
@@ -133,7 +159,7 @@ export class MenuComponent implements OnInit {
     }, 
     error =>{
       console.log(error);
-    })    
+    })
   }
 
   editMenuItem() {
