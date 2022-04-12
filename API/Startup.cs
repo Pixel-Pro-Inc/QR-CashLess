@@ -25,6 +25,7 @@ namespace API
 {
     //This is the development Branch. If You see this then you're in the Dev branch. Remeber to always ignore this line in the git push
     //Development
+    // TODO: View Order Button Render On Top Of Evedrything. If you need futher clarifaction ask yewo, mans never says what he is trying to do
     public class Startup
     {
         private readonly IConfiguration _config;
@@ -67,7 +68,7 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseCors(x => x.allow.AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod());
 
             app.UseAuthentication();
 
