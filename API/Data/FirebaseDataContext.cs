@@ -14,6 +14,7 @@ namespace API.Data
 {
     public class FirebaseDataContext
     {
+        // REFACTOR: Another instance of config that we may need to modify to use environment variaables
         protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
         IFirebaseConfig config = new FirebaseConfig

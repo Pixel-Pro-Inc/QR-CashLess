@@ -9,6 +9,7 @@ namespace API.Controllers
 {
     public class SMSController : BaseApiController
     {
+        // REFACTOR: Twillo sensitive date, we need to also deal with this. You wont find this in the base API controller
         private readonly string accountSid = Configuration["twillosettings:accountSid"];
         private readonly string apiKeySid = Configuration["twillosettings:apiKeySid"];
         private readonly string apiKeySecret = Configuration["twillosettings:apiKeySecret"];

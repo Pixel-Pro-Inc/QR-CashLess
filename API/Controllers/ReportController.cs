@@ -100,6 +100,7 @@ namespace API.Controllers
             return hashtables;
         }
 
+        // TRACK: This needs to be studied. I have an idea of what it is doing but why did he chose this, or to accomplish what
         Hashtable GetHashtable(OrderItem item) //Formats data into a form for the angular client to understand
         {
             Hashtable hashtable = new Hashtable();
