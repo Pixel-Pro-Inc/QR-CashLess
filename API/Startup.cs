@@ -84,3 +84,5 @@ namespace API
         }
     }
 }
+// TODO: These are the links for the Dark and light mode https://betterprogramming.pub/turn-off-the-lights-with-angular-dark-mode-194241f491ae
+// https://pkief.medium.com/automatic-dark-mode-detection-in-angular-material-8342917885a0 They should help you set up things easy
