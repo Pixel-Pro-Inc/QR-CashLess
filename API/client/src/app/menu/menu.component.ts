@@ -119,7 +119,8 @@ export class MenuComponent implements OnInit {
   menu: MenuComponent = this;
 
 
-  constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService, private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
+  constructor(private referenceService: ReferenceService, private route: ActivatedRoute, private menuService: MenuService,
+    private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.standardCheck.check = false;

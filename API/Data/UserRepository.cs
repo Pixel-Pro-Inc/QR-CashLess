@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace API.Data
 {
+    [Obsolete]
+    // OBSOLETE: We used this when we were working with EF Core and stuff. But now we on Firebase so itsn't not necessary
     public class UserRepository
     {
 

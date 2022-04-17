@@ -14,7 +14,7 @@ export class DashService extends BaseServiceService{
   constructor(http: HttpClient, private toastr: ToastrService, private busyService: BusyService) {
     super(http);
   }
-
+  // REFACTOR: The below three methods could be refactored. We can't have repeating code for such important business logic
   totalSales(model: any){
     this.busyService.busy();
     return this.http.post(this.baseUrl + 'report/sales/total', model).pipe(
