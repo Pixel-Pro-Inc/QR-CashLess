@@ -25,6 +25,7 @@ namespace API
 {
     //This is the development Branch. If You see this then you're in the Dev branch. Remeber to always ignore this line in the git push
     //Development
+    // TODO: View Order Button Render On Top Of Evedrything. If you need futher clarifaction ask yewo, mans never says what he is trying to do
     public class Startup
     {
         private readonly IConfiguration _config;
@@ -87,3 +88,5 @@ namespace API
         }
     }
 }
+// TODO: These are the links for the Dark and light mode https://betterprogramming.pub/turn-off-the-lights-with-angular-dark-mode-194241f491ae
+// https://pkief.medium.com/automatic-dark-mode-detection-in-angular-material-8342917885a0 They should help you set up things easy
