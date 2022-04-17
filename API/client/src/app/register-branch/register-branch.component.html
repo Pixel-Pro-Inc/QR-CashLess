@@ -1,6 +1,6 @@
 <div class="login-form-2">
   <div class="text-center">
-    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10" 
+    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2Frodizio_express_logo.png?alt=media&token=94661086-7b2c-4b83-98fe-e422301776aa" 
     alt="logo"
     width="300"
     class="mt-5"/>
@@ -12,28 +12,118 @@
     <label>Name</label>
     <div class="form-group">
       <input type="text" class="form-control" name="name"
-             [(ngModel)]="model.name" placeholder="Name">
+             [(ngModel)]="dto.name" placeholder="Name">
     </div>
     <div class="form-group">
       <label>Location</label>
       <input type="text" class="form-control" name="location"
-             [(ngModel)]="model.location" placeholder="Location">
+             [(ngModel)]="dto.location" placeholder="Location">
     </div>
-    <div class="form-group">
-      <label>Phone Number</label>
-      <input type="text" class="form-control" name="num"
-             [(ngModel)]="model.phoneNumber" placeholder="3333333">
+    
+    <h4>Phone Lines</h4>
+    <div class="d-flex">
+      <div class="form-group mr-2">
+        <label>Phone Number 1</label>
+        <input type="text" class="form-control" name="num1"
+               [(ngModel)]="dto.phoneNumber1" placeholder="3333333">
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number 2</label>
+        <input type="text" class="form-control" name="num2"
+               [(ngModel)]="dto.phoneNumber2" placeholder="3333333">
+      </div>
+
     </div>
-    <div class="form-group">
-      <label>Opening Time</label>
-      <input type="time" class="form-control" name="oT"
-             [(ngModel)]="model.openingTime" >
+    
+    <h4>Opening Time</h4>
+    <div class="d-flex">
+      <div class="form-group mr-2">
+        <label>Monday</label>
+        <input type="time" class="form-control" name="oT1"
+               [(ngModel)]="dto.openingTime_1" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Tuesday</label>
+        <input type="time" class="form-control" name="oT2"
+               [(ngModel)]="dto.openingTime_2" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Wednesday</label>
+        <input type="time" class="form-control" name="oT3"
+               [(ngModel)]="dto.openingTime_3" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Thursday</label>
+        <input type="time" class="form-control" name="oT4"
+               [(ngModel)]="dto.openingTime_4" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Friday</label>
+        <input type="time" class="form-control" name="oT5"
+               [(ngModel)]="dto.openingTime_5" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Saturday</label>
+        <input type="time" class="form-control" name="oT6"
+               [(ngModel)]="dto.openingTime_6" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Sunday</label>
+        <input type="time" class="form-control" name="oT7"
+               [(ngModel)]="dto.openingTime_7" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Public Holiday</label>
+        <input type="time" class="form-control" name="oT8"
+               [(ngModel)]="dto.openingTime_8" >
+      </div>
     </div>
-    <div class="form-group">
-      <label>Closing Time</label>
-      <input type="time" class="form-control" name="cT"
-             [(ngModel)]="model.closingTime">
+
+    <h4>Closing Time</h4>
+    <div class="d-flex">
+      <div class="form-group mr-2">
+        <label>Monday</label>
+        <input type="time" class="form-control" name="cT1"
+               [(ngModel)]="dto.closingTime_1" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Tuesday</label>
+        <input type="time" class="form-control" name="cT2"
+               [(ngModel)]="dto.closingTime_2" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Wednesday</label>
+        <input type="time" class="form-control" name="cT3"
+               [(ngModel)]="dto.closingTime_3" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Thursday</label>
+        <input type="time" class="form-control" name="cT4"
+               [(ngModel)]="dto.closingTime_4" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Friday</label>
+        <input type="time" class="form-control" name="cT5"
+               [(ngModel)]="dto.closingTime_5" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Saturday</label>
+        <input type="time" class="form-control" name="cT6"
+               [(ngModel)]="dto.closingTime_6" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Sunday</label>
+        <input type="time" class="form-control" name="cT7"
+               [(ngModel)]="dto.closingTime_7" >
+      </div>
+      <div class="form-group mr-2">
+        <label>Public Holiday</label>
+        <input type="time" class="form-control" name="cT8"
+               [(ngModel)]="dto.closingTime_8" >
+      </div>
     </div>
+
     <div class="form-group mb-5">
       <label>Select an image</label>
       <input type="file" accept="image/*" class="form-control" name="image"

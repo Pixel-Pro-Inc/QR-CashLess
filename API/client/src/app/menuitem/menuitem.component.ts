@@ -35,6 +35,8 @@ export class MenuitemComponent implements OnInit {
     console.log(usersInput);
     console.log(this.model);
 
+    console.log(item);
+
     this.toastr.success(item.name + ' was added to your order.', 'Order Confirmation', {
       positionClass: 'toast-top-right' 
    });

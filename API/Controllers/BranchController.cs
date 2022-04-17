@@ -6,6 +6,7 @@ using API.Interfaces;
 using FireSharp.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nager.Date;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -47,9 +48,9 @@ namespace API.Controllers
                 Id = dto.Id,
                 Location = dto.Location,
                 Name = dto.Name,
-                PhoneNumber = Int32.Parse(dto.PhoneNumber),
-                OpeningTime = new DateTime(0001, 1, 1, GetTime(dto.OpeningTime)[0], GetTime(dto.OpeningTime)[1], 0),
-                ClosingTime = new DateTime(0001, 1, 1, GetTime(dto.ClosingTime)[0], GetTime(dto.ClosingTime)[1], 0)
+                PhoneNumbers = GetPhoneNumbers_Int(dto.PhoneNumbers),
+                OpeningTimes = GetDateTimes(dto.OpeningTime),
+                ClosingTimes = GetDateTimes(dto.ClosingTime)
             };
 
             string path = dto.Img;
@@ -67,6 +68,42 @@ namespace API.Controllers
             _firebaseDataContext.StoreData("Branch/" + branch.Id, branch);
 
             return dto;
+        }
+
+        List<int> GetPhoneNumbers_Int(List<string> numbers)
+        {
+            List<int> phoneNumbers = new List<int>();
+            foreach (var number in numbers)
+            {
+                phoneNumbers.Add(Int32.Parse(number));
+            }
+
+            return phoneNumbers;
+        }
+        List<string> GetPhoneNumbers_String(List<int> numbers)
+        {
+            List<string> phoneNumbers = new List<string>();
+            foreach (var number in numbers)
+            {
+                phoneNumbers.Add(number.ToString());
+            }
+
+            return phoneNumbers;
+        }
+        List<DateTime> GetDateTimes(object times)
+        {
+            List<DateTime> dateTimes = new List<DateTime>();
+
+            var element = (JsonElement)times;
+
+            for (int i = 0; i < element.GetArrayLength(); i++)
+            {
+                var time = element[i];
+
+                dateTimes.Add(new DateTime(0001, 1, 1, GetTime(time)[0], GetTime(time)[1], 0));
+            }
+            
+            return dateTimes;
         }
 
         int[] GetTime(object time)
@@ -106,9 +143,10 @@ namespace API.Controllers
                     LastActive = x,
                     Location = branch.Location,
                     Name = branch.Name,
-                    PhoneNumber = branch.PhoneNumber.ToString(),
-                    OpeningTime = GetJsonElement(branch.OpeningTime),
-                    ClosingTime = GetJsonElement(branch.ClosingTime)
+                    PhoneNumbers = GetPhoneNumbers_String(branch.PhoneNumbers),
+                    OpeningTime = GetJsonElement(branch.OpeningTimes),
+                    ClosingTime = GetJsonElement(branch.ClosingTimes),
+                    OpeningTimeTomorrow = GetJsonElement_Tomorrow(branch.OpeningTimes)
                 };
 
                 branches.Add(branchDto);
@@ -116,8 +154,28 @@ namespace API.Controllers
 
             return branches;
         }
-        JsonElement? GetJsonElement(DateTime dateTime)
+        JsonElement? GetJsonElement(List<DateTime> dateTimes)
         {
+            //Get Todays Date And Opening/ Closing Time (Botswana)
+            var currentDateTime = DateTime.UtcNow.AddHours(2);
+
+            var publicHolidays = DateSystem.GetPublicHolidays(currentDateTime.Year, CountryCode.BW);
+
+            DateTime dateTime = new DateTime();
+
+            //Get time for day of week
+            dateTime = dateTimes[GetDayOfWeek(currentDateTime.DayOfWeek)];
+
+            //If is public holiday set to last item in array
+            foreach (var item in publicHolidays)
+            {
+                if(item.Date.DayOfYear == currentDateTime.DayOfYear)
+                {
+                    dateTime = dateTimes[dateTimes.Count - 1];
+                    break;
+                }
+            }
+
             if (dateTime == new DateTime())
                 return null;
 
@@ -131,9 +189,66 @@ namespace API.Controllers
 
             return jsonElement;
         }
+        JsonElement? GetJsonElement_Tomorrow(List<DateTime> dateTimes)
+        {
+            //Get Todays Date And Opening/ Closing Time (Botswana)
+            var tomorrowDateTime = DateTime.UtcNow.AddHours(26);// 24 + 2 for tomorrow in the utc +2 time zone
+
+            var publicHolidays = DateSystem.GetPublicHolidays(tomorrowDateTime.Year, CountryCode.BW);
+
+            DateTime dateTime = new DateTime();
+
+            //Get time for day of week
+            dateTime = dateTimes[GetDayOfWeek(tomorrowDateTime.DayOfWeek)];
+
+            //If is public holiday set to last item in array
+            foreach (var item in publicHolidays)
+            {
+                if (item.Date.DayOfYear == tomorrowDateTime.DayOfYear)
+                {
+                    dateTime = dateTimes[dateTimes.Count - 1];
+                    break;
+                }
+            }
+
+            if (dateTime == new DateTime())
+                return null;
+
+            var time = dateTime.Hour.ToString("00") + ":" + dateTime.Minute.ToString("00");
+
+            var json = System.Text.Json.JsonSerializer.Serialize(time);
+
+            var document = JsonDocument.Parse(json);
+
+            var jsonElement = document.RootElement;
+
+            return jsonElement;
+        }
+        int GetDayOfWeek(DayOfWeek dayOfWeek)
+        {
+            var data = (DayOfWeek[])DayOfWeek.GetValues(typeof(DayOfWeek));
+            List<DayOfWeek> properlyOrganizedDays = new List<DayOfWeek>();
+
+            for (int i = 1; i < data.Length; i++)
+            {
+                properlyOrganizedDays.Add(data[i]);
+            }
+
+            properlyOrganizedDays.Add(data[0]);//Add Sunday as last day of week
+
+            for (int i = 0; i < properlyOrganizedDays.Count; i++)
+            {
+                if (dayOfWeek == properlyOrganizedDays[i])
+                    return i;
+            }
+
+            return 0;
+        }
         public async Task<List<Branch>> GetBranches2()
         {
-            return await _firebaseDataContext.GetData<Branch>("Branch");
+            var result = await _firebaseDataContext.GetData<Branch>("Branch");
+
+            return result;
         }
     }
 }

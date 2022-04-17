@@ -21,5 +21,9 @@ namespace API.Entities
         public float MinimumPrice { get; set; }
         public float Rate { get; set; }
         public bool Availability { get; set; }
+        //new Additions
+        public List<string> Flavours { get; set; }
+        public List<string> MeatTemperatures { get; set; }
+        public List<string> Sauces { get; set; }
     }
 }

@@ -27,10 +27,11 @@ namespace API.Entities
         public DateTime OrderDateTime { get; set; }
         public string User { get; set; }
         public int PrepTime { get; set; }
+        public List<string> Chefs { get; set; }
 
-        //I'm putting the enum properties here in case we scrap them it will be easier
-        public flavours flavour { get; set; }
-        public sauces sauce { get; set; }
-        public prepQuality prepQuality { get; set; }
+        //New Addidtions Before Launch
+        public string Flavour { get; set; }
+        public string MeatTemperature { get; set; }
+        public List<string> Sauces { get; set; }
     }
 }

@@ -35,7 +35,7 @@ export class OrderComponent implements OnInit {
   block = 0;
 
   onlineOrderAvailable: Boolean;
-  branchPhoneNumber: number;
+  branchPhoneNumbers: number[];
 
   constructor(private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
 
@@ -52,9 +52,9 @@ export class OrderComponent implements OnInit {
       for (let i = 0; i < RestBranches.length; i++) {
         if(RestBranches[i].id == this.referenceService.currentBranch()){
 
-          console.log(RestBranches[i].phoneNumber);
+          console.log(RestBranches[i].phoneNumbers);
           
-          this.branchPhoneNumber = RestBranches[i].phoneNumber;
+          this.branchPhoneNumbers = RestBranches[i].phoneNumbers;
 
           if(RestBranches[i].lastActive < 30 && this.isOpen(RestBranches[i])){
             this.onlineOrderAvailable = true;
@@ -158,7 +158,11 @@ export class OrderComponent implements OnInit {
       paymentMethod: '',
       category: '',
       prepTime: 0,
-      id_O: ''
+      id_O: '',
+      flavour: '',
+      meatTemperature: '',
+      sauces: [],
+      subCategory: ''
     };
 
     orderItem.quantity = quantity;
@@ -168,6 +172,18 @@ export class OrderComponent implements OnInit {
     orderItem.category = item.category;
     orderItem.prepTime = parseInt(item.prepTime);
     orderItem.id_O = (new Date()).toString();
+    orderItem.flavour = item.selectedFlavour;
+    orderItem.meatTemperature = item.selectedMeatTemperature;
+
+    if(item.subCategory != 'Platter'){
+      orderItem.sauces.push(item.selectedSauces.toString());
+    }
+
+    if(item.subCategory == 'Platter'){
+      orderItem.sauces = item.sauces;
+    }
+    
+    orderItem.subCategory = item.subCategory;
 
     if(item.category == 'Meat'){
       if(item.price == '0.00'){
@@ -307,8 +323,8 @@ export class OrderComponent implements OnInit {
     return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
   }
 
-  call(){
-    window.open('tel:' + this.branchPhoneNumber);
+  call(index: number){
+    window.open('tel:' + this.branchPhoneNumbers[index]);
   }
   leave() {
     this.thanks = false;

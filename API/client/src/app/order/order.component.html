@@ -1,4 +1,20 @@
 <div class="container mb-3">
+  <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
+    <form #numberForm="ngForm" (ngSubmit)="showOptions()" autocomplete="off">      
+      <hr>
+      <label>Enter your phone number (example 71111111)</label>
+      <div class="form-group">
+        <input type="number" class="form-control" name="pNumber"
+               [(ngModel)]="model.phoneNumber">
+      </div>
+    </form>
+
+    <ng-container *ngIf="model.phoneNumber != null">
+      <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+    </ng-container> 
+
+    <hr>     
+  </div>
   <ul class="list-group mb-3">
     <ng-container *ngFor="let order of orderItems">
       <ng-container *ngIf="!order.purchased">
@@ -7,6 +23,12 @@
             <h6>{{order.name}} x {{order.quantity}}</h6>
 
             <p class="text-muted">BWP {{formatAmount(order.price)}}</p>
+
+            <p class="text-muted" *ngIf="order.subCategory == 'Chicken' || (order.subCategory == 'Platter' && order.name.toLowerCase().includes('chicken'))">Flavour: {{order.flavour}}</p>
+
+            <p class="text-muted" *ngIf="order.subCategory == 'Steak'">Readiness: {{order.meatTemperature}}</p>
+
+            <p class="text-muted" *ngIf="order.category == 'Meat'">Sauces: {{order.sauces}}</p>
 
             <span *ngIf="order.category == 'Meat'" class="text-muted">{{order.weight}}</span>
           </div>
@@ -24,25 +46,14 @@
     </li>
   </ul>
 
-  <div class="mb-5">
-    <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
-      <form #numberForm="ngForm" (ngSubmit)="showOptions()" autocomplete="off">      
-        <hr>
-        <label>Enter your phone number (example 71111111)</label>
-        <div class="form-group">
-          <input type="number" class="form-control" name="pNumber"
-                 [(ngModel)]="model.phoneNumber">
-        </div>
-      </form>
-  
-      <ng-container *ngIf="model.phoneNumber != null">
-        <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
-      </ng-container>      
-    </div>
+  <div class="mb-5">    
   
     <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable && this.orderItems.length > 0">
       <div class="text-center">
-        <button class="btn btn-primary" (click)="call()" style="width: 100%"><i class="fa fa-phone"></i> Call Us</button>
+        <button class="btn btn-primary" (click)="call(0)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 1)</button>
+      </div>
+      <div class="text-center mt-2">
+        <button class="btn btn-primary" (click)="call(1)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 2)</button>
       </div>
     </ng-container>
   
@@ -56,7 +67,7 @@
         <div class="text-center">
           <div id="myPaypalButtons"></div>
         <div>
-          <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
+          <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
           <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
         </div>
         </div>         
@@ -66,7 +77,7 @@
         <div class="text-center">
           <div id="myPaypalButtons"></div>
         <div>
-          <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
+          <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
           <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
         </div>
         </div>    

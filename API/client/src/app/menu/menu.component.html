@@ -1,4 +1,5 @@
-<app-scroll-to-top *ngIf="!(showEditing || cantOrder)"></app-scroll-to-top>
+<ng-container *ngIf="!(showEditing || cantOrder)">
+</ng-container>
 
 <div class="card bg-light mt-2">
   <h2 class="text-center">Your Order</h2>
@@ -66,6 +67,67 @@
           <input type="number" class="form-control" name="weight"
                  [(ngModel)]="model.weight" placeholder="Weight (grams)">
         </div>
+
+        <!--New Changes Inclusive of Meat Temp, Flavour, Sauce-->
+          <!--Flavour-->            
+            <div class="form-group">
+              <label>Flavour</label>
+              <ng-multiselect-dropdown
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'Flavour'"
+                        [settings]="dropdownSettings"
+                        [data]="dropdownList"
+                        [(ngModel)]="selectedItems"
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+            </div>
+
+            <label>Create New Flavour</label>
+            <div class="d-flex">
+              <input class="form-control" type="text" name="newflavour" [(ngModel)]="model.newFlavour"/>
+              <button class="btn btn-primary ml-2" (click)="createNewFlavour(model.newFlavour)">Create Flavour</button>
+            </div>
+            
+          <!--End Of Flavour-->
+          <!--Meat Temp-->
+            <div class="form-group">
+              <label>Meat Temperature</label>
+              <ng-multiselect-dropdown
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'Meat Temperature'"
+                        [settings]="dropdownSettings"
+                        [data]="dropdownList_1"
+                        [(ngModel)]="selectedItems_1"
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+            </div>
+
+            <label>Create New Meat Temperature</label>
+            <div class="d-flex">
+              <input class="form-control" type="text" name="newtemperature" [(ngModel)]="model.newTemperature"/>
+              <button class="btn btn-primary ml-2" (click)="createNewMeatTemperature(model.newTemperature)">Create Meat Temperature</button>
+            </div>            
+          <!--End Meat Temp-->
+          <!--Sauce-->
+          <div class="form-group">
+            <label>Sauce</label>
+            <ng-multiselect-dropdown
+                      [ngModelOptions]="{standalone: true}"
+                      [placeholder]="'Sauce'"
+                      [settings]="dropdownSettings"
+                      [data]="dropdownList_2"
+                      [(ngModel)]="selectedItems_2"
+                      (onSelect)="onItemSelect($event)"
+                      (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+          </div>
+
+          <label>Create New Sauce</label>
+          <div class="d-flex">
+            <input class="form-control" type="text" name="newsauce" [(ngModel)]="model.newSauce"/>
+            <button class="btn btn-primary ml-2" (click)="createNewSauce(model.newSauce)">Create Sauce</button>
+          </div>            
+        <!--End Sauce Temp-->
+        <!--End Of New Changes-->
       </div> 
       
       <div class="form-group" *ngIf="model.category == 'Meat' && !standardCheck.check">

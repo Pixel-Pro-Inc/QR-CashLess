@@ -62,5 +62,37 @@ export class MenuService extends BaseServiceService {
   getSubCategories(){
     return this.http.get(this.baseUrl + 'menu/subcategory');
   }
-
+  getFlavours(){
+    return this.http.get(this.baseUrl + 'menu/flavours/get');
+  }
+  createFlavour(flavour: string){
+    this.http.get(this.baseUrl + 'menu/flavours/create/' + flavour).subscribe(
+      response =>{
+        console.log(response);
+        window.location.reload();
+      }
+    );
+  }
+  getMeatTemperatures(){
+    return this.http.get(this.baseUrl + 'menu/meattemperatures/get');
+  }
+  createMeatTemperature(meattemperature: string){
+    this.http.get(this.baseUrl + 'menu/meattemperature/create/' + meattemperature).subscribe(
+      response =>{
+        console.log(response);
+        window.location.reload();
+      }
+    );
+  }
+  getSauces(){
+    return this.http.get(this.baseUrl + 'menu/sauce/get');
+  }
+  createSauce(sauce: string){
+    this.http.get(this.baseUrl + 'menu/sauce/create/' + sauce).subscribe(
+      response =>{
+        console.log(response);
+        window.location.reload();
+      }
+    );
+  }
 }

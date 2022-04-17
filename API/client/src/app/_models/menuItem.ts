@@ -12,4 +12,10 @@ export interface MenuItem {
   publicId: string;
   subCategory: string;
   weight:string;
+  flavours: string[];
+  meatTemperatures: string[];
+  sauces: string[];
+  selectedFlavour: string;
+  selectedMeatTemperature: string;
+  selectedSauces: string[];
 }

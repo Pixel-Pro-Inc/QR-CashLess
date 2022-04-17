@@ -51,10 +51,14 @@ namespace API.Controllers
                 SubCategory = menuItemDto.SubCategory,
                 Rate = menuItemDto.Rate,
                 MinimumPrice = menuItemDto.MinimumPrice,
-                Availability = true
+                Availability = true,
+                Flavours = menuItemDto.Flavours,
+                MeatTemperatures = menuItemDto.MeatTemperatures,
+                Sauces = menuItemDto.Sauces
             };
 
-            menuItem.Name = String.IsNullOrEmpty(menuItem.Weight)? menuItem.Name: menuItem.Name + " (" + menuItem.Weight + " grams)";
+            if (menuItem.Weight != "0")
+                menuItem.Name = String.IsNullOrEmpty(menuItem.Weight) ? menuItem.Name : menuItem.Name + " (" + menuItem.Weight + " grams)";
 
             List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
 
@@ -107,6 +111,78 @@ namespace API.Controllers
             var response = (await _firebaseDataContext.GetData<Subcategory>("SubCategories"));
 
             return response.Count != 0? response[0].SubCategories: new List<string>();
+        }
+
+        [HttpGet("flavours/create/{flavour}")]
+        public async Task<ActionResult<List<string>>> CreateFlavours(string flavour)
+        {            
+            var response = (await _firebaseDataContext.GetData<Flavour>("Flavours"));
+
+            if (response.Count == 0)
+                response.Add(new Flavour());
+
+            response[0].Flavours.Add(flavour);
+            
+
+            _firebaseDataContext.StoreData("Flavours/" + 0, response[0]);
+
+            return response[0].Flavours;
+        }
+
+        [HttpGet("flavours/get")]
+        public async Task<ActionResult<List<string>>> GetFlavours()
+        {
+            var response = (await _firebaseDataContext.GetData<Flavour>("Flavours"));
+
+            return response.Count != 0 ? response[0].Flavours : new List<string>();
+        }
+
+        [HttpGet("meattemperature/create/{meattemperature}")]
+        public async Task<ActionResult<List<string>>> CreateMeatTemperature(string meattemperature)
+        {
+            var response = (await _firebaseDataContext.GetData<MeatTemperature>("MeatTemperature"));
+
+            if (response.Count == 0)
+                response.Add(new MeatTemperature());
+
+            response[0].MeatTemperatures.Add(meattemperature);
+
+
+            _firebaseDataContext.StoreData("MeatTemperature/" + 0, response[0]);
+
+            return response[0].MeatTemperatures;
+        }
+
+        [HttpGet("meattemperatures/get")]
+        public async Task<ActionResult<List<string>>> GetMeatTemperatures()
+        {
+            var response = (await _firebaseDataContext.GetData<MeatTemperature>("MeatTemperature"));
+
+            return response.Count != 0 ? response[0].MeatTemperatures : new List<string>();
+        }
+
+        [HttpGet("sauce/create/{sauce}")]
+        public async Task<ActionResult<List<string>>> CreateSauce(string sauce)
+        {
+            var response = (await _firebaseDataContext.GetData<Sauce>("Sauce"));
+
+            if (response.Count == 0)
+                response.Add(new Sauce());
+
+            response[0].Sauces.Add(sauce);
+
+
+            _firebaseDataContext.StoreData("Sauce/" + 0, response[0]);
+
+            return response[0].Sauces;
+        }
+
+        [HttpGet("sauce/get")]
+        public async Task<ActionResult<List<string>>> GetSauces()
+        {
+            var response = (await _firebaseDataContext.GetData<Sauce>("Sauce"));
+
+            return response.Count != 0 ? response[0].Sauces : new List<string>();
         }
         public async Task<int> GetId(string branchId)
         {
