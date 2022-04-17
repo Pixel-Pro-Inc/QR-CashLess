@@ -29,6 +29,60 @@
                         </ng-container>                
         
                         <h6 *ngIf="dish.category != 'Meat' || dish.price != '0.00'" class="mt1">BWP {{dish.price}}</h6>
+
+                        <!--New Additions Flavour, Meat Temperature, Sauces-->
+                        <div class="d-flex">
+                            <!--Flavour-->
+                            <ng-container *ngIf="dish.flavours != null">
+                                <ng-container *ngIf="dish.flavours.length > 0">
+                                    <div>
+                                        <label class="font-weight-bold">Select a flavour</label>
+                                        <form #flavourForm="ngForm">
+                                            <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedFlavour">
+                                                <option>None</option>
+                                                <ng-container *ngFor="let fla of dish.flavours">
+                                                    <option>{{fla}}</option>
+                                                </ng-container>                                    
+                                            </select>
+                                        </form>                                                   
+                                    </div>                                
+                                </ng-container>
+                            </ng-container>                                                       
+                            <!--End Flavour-->
+                            <!--Meat Temp-->
+                             <ng-container *ngIf="dish.meatTemperatures != null">
+                                <ng-container *ngIf="dish.meatTemperatures.length > 0">
+                                    <div>
+                                        <label class="font-weight-bold">How do you want it Prepared?</label>
+                                        <form #meatTempForm="ngForm">
+                                            <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedMeatTemperature">
+                                                <ng-container *ngFor="let mea of dish.meatTemperatures">
+                                                    <option>{{mea}}</option>
+                                                </ng-container>                                    
+                                            </select>
+                                        </form>                                                   
+                                    </div>                                
+                                </ng-container>
+                            </ng-container>                                                       
+                            <!--End Meat-->
+                            <!--Sauce-->
+                            <ng-container *ngIf="dish.sauces != null && dish.subCategory != 'Platter'">
+                                <ng-container *ngIf="dish.sauces.length > 0">
+                                    <div>
+                                        <label class="font-weight-bold">Your pick of a free sauce</label>
+                                        <form #msauceForm="ngForm">
+                                            <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedSauces">
+                                                <ng-container *ngFor="let sau of dish.sauces">
+                                                    <option>{{sau}}</option>
+                                                </ng-container>                                    
+                                            </select>
+                                        </form>                                                   
+                                    </div>                                
+                                </ng-container>
+                            </ng-container>                                                       
+                            <!--End Sauce-->
+                        </div>                            
+                        <!--End new additions-->
                     
         
                     <div style="display:flex; justify-content: right; align-items: end;">

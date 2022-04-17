@@ -4,6 +4,7 @@
             <app-order *ngIf="isOpen(b)" [showPaymentOptions] = "true"></app-order> 
 
             <h1 *ngIf="!isOpen(b)" class="text-center">We are currently closed</h1>
+            <h2 *ngIf="!isOpen(b)" class="text-center text-success">Opens at {{openingTime(b)}} AM</h2>
         </ng-container>        
     </ng-container>    
 </body>

@@ -35,6 +35,7 @@ import { ResetpasswordComponent } from './resetpassword/resetpassword.component'
 import { ResetComponent } from './reset/reset.component';
 import { QuantityCounterComponent } from './quantity-counter/quantity-counter.component';
 import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
     BrowserAnimationsModule,
     FormsModule,
     SharedModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

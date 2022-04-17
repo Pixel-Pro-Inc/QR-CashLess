@@ -26,5 +26,11 @@ namespace API.Entities
         public DateTime OrderDateTime { get; set; }
         public string User { get; set; }
         public int PrepTime { get; set; }
+        public List<string> Chefs { get; set; }
+
+        //New Addidtions Before Launch
+        public string Flavour { get; set; }
+        public string MeatTemperature { get; set; }
+        public List<string> Sauces { get; set; }
     }
 }

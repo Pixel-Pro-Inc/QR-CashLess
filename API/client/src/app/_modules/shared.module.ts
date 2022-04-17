@@ -5,10 +5,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { FileUploadModule } from 'ng2-file-upload';
 
 
-
 @NgModule({
   declarations: [],
-  imports: [
+  imports: [    
     CommonModule,
     BsDropdownModule.forRoot(),
     ToastrModule.forRoot({

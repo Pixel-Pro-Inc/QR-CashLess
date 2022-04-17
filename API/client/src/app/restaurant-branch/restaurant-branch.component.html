@@ -1,6 +1,6 @@
 <body class="mb-5">
     <div class="text-center m-5">
-        <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10"
+        <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2Frodizio_express_logo.png?alt=media&token=94661086-7b2c-4b83-98fe-e422301776aa"
     alt="logo"
     style="width: 200px;">
     </div>
@@ -10,7 +10,7 @@
     <div class="list-group ml-2 mr-2">
         <ng-container *ngFor="let branch of RestBranches">
             <a (click)="onClick(branch)" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                <img *ngIf="branch.img != null" src="{{branch.img}}" width="100" alt="location">
+                <img *ngIf="branch.img != null" src="{{branch.img}}" width="100" height="100" alt="location">
                 <div class="d-flex">
                     <div>
                         <h4 class="mb-0">{{branch.name}}</h4>

@@ -67,7 +67,10 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseCors(x => x.allow.AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(x => x.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true)
+                    .AllowCredentials());
 
             app.UseAuthentication();
 

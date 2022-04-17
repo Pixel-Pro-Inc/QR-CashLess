@@ -53,7 +53,9 @@ namespace API.Controllers
                 Developer = registerDto.Developer,
                 branchId = registerDto.branchId,
                 Admin = registerDto.Admin,
-                SuperUser = registerDto.SuperUser
+                SuperUser = registerDto.SuperUser,
+                Email = registerDto.Email,
+                NationalIdentityNumber = registerDto.NationalIdentityNumber
             };            
 
             user.Id = await GetNum();

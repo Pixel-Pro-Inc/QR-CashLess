@@ -21,5 +21,9 @@ namespace API.DTOs
         public float MinimumPrice { get; set; }
         public bool Availability { get; set; }
         public string publicId { get; set; }
+        //New Additions
+        public List<string> Flavours { get; set; }
+        public List<string> MeatTemperatures { get; set; }
+        public List<string> Sauces { get; set; }
     }
 }

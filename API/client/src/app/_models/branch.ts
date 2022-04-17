@@ -6,7 +6,8 @@ export interface Branch {
     location: string;
     img: string;
     lastActive: number;
-    phoneNumber: number;
+    phoneNumbers: number[];
     openingTime: Time;
     closingTime: Time;
+    openingTimeTomorrow: Time;
   }

@@ -15,4 +15,8 @@ export interface OrderItem {
   category: string;
   prepTime: number;
   id_O: string;
+  flavour: string;
+  meatTemperature: string;
+  sauces: string[];
+  subCategory: string;
 }

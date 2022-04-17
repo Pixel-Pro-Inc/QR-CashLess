@@ -12,9 +12,10 @@ namespace API.DTOs
         public string Name { get; set; }
         public string Location { get; set; }
         public string Img { get; set; }
-        public string PhoneNumber { get; set; }
+        public List<string> PhoneNumbers { get; set; }
         public float LastActive { get; set; }
         public object OpeningTime { get; set; }
         public object ClosingTime { get; set; }
+        public object OpeningTimeTomorrow { get; set; }
     }
 }

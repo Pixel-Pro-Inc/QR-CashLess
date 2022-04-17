@@ -11,6 +11,8 @@ import { AccountService } from '../_services/account.service';
 import { User } from '../_models/user';
 import { ReferenceService } from '../_services/reference.service';
 import { ToastrService } from 'ngx-toastr';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-menu',
@@ -19,7 +21,24 @@ import { ToastrService } from 'ngx-toastr';
 })
 
 export class MenuComponent implements OnInit {
+  dropdownList:any[] = [];
+  selectedItems:any = [];
 
+  dropdownList_1:any[] = [];
+  selectedItems_1:any = [];
+
+  dropdownList_2:any[] = [];
+  selectedItems_2:any = [];
+
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 3,
+    allowSearchFilter: true};
+  
   routeSub: Subscription;
   authorized: boolean;
   showform = false;
@@ -37,6 +56,9 @@ export class MenuComponent implements OnInit {
   user: User;
 
   subCategories: string[] = [];
+  flavours: string[] = [];
+  meatTemperatures: string[] = [];
+  sauces: string[] = [];
   subCategoryCollapse: boolean[] = [];
 
   model: MenuItem = {
@@ -52,7 +74,13 @@ export class MenuComponent implements OnInit {
     id: 0,
     publicId: '',
     subCategory: '',
-    weight:''
+    weight: '',
+    flavours: [],
+    meatTemperatures: [],
+    sauces: [],
+    selectedFlavour: '',
+    selectedMeatTemperature: '',
+    selectedSauces: []
   };
   img: any = {};
 
@@ -74,7 +102,11 @@ export class MenuComponent implements OnInit {
     phoneNumber: '',
     category: '',
     prepTime: 0,
-    id_O: ''
+    id_O: '',
+    flavour: '',
+    meatTemperature: '',
+    sauces: [],
+    subCategory: ''
   };
 
   orderItems: OrderItem[] = [];
@@ -133,13 +165,80 @@ export class MenuComponent implements OnInit {
       }
     );
 
+    //Flavours
+    this.menuService.getFlavours().subscribe(
+      response =>{
+        let f: any = {};
+        f = response;
+        
+        f.forEach(element => {
+          if(!this.flavours.includes(element)){
+            this.flavours.push(element);
+
+            this.dropdownList.push(element);
+          } 
+        });
+      }
+    );
+
+    //Meat Temperature
+    this.menuService.getMeatTemperatures().subscribe(
+      response =>{
+        let f: any = {};
+        f = response;
+        
+        f.forEach(element => {
+          if(!this.meatTemperatures.includes(element)){
+            this.meatTemperatures.push(element);
+
+            this.dropdownList_1.push(element);
+          } 
+        });
+      }
+    );
+
+    //Sauce
+    this.menuService.getSauces().subscribe(
+      response =>{
+        let f: any = {};
+        f = response;
+        
+        f.forEach(element => {
+          if(!this.sauces.includes(element)){
+            this.sauces.push(element);
+
+            this.dropdownList_2.push(element);
+          } 
+        });
+      }
+    );
+
     console.log(this.showEditing);
+  }
+
+  createNewFlavour(flavour: string){
+    this.menuService.createFlavour(flavour);
+  }
+
+  createNewMeatTemperature(meattemperature: string){
+    this.menuService.createMeatTemperature(meattemperature);
+  }
+
+  createNewSauce(sauce: string){
+    this.menuService.createSauce(sauce);
   }
   
   getMenuItems(branchId: string) {
     //console.log(branchId);
     this.menuService.getMenuItems('menu/getmenu', branchId).subscribe(response => {
       this.menuItems = response;
+
+      this.menuItems.forEach(element => {
+        element.selectedFlavour = 'None';  
+        element.selectedMeatTemperature = 'Well Done';
+        element.selectedSauces = ['Lemon & Garlic'];
+      });
+
       console.log(response);
     }, error => console.log(error));    
   }
@@ -150,6 +249,12 @@ export class MenuComponent implements OnInit {
     
     this.formToggle();
     this.model.imgUrl = this.imageSrc;
+    this.model.flavours = this.selectedItems;
+    this.model.meatTemperatures = this.selectedItems_1;
+    this.model.sauces = this.selectedItems_2;
+    //Forcing it to always be a string before it touches the api because sometimes its a number
+    this.model.weight = this.model.weight.toString();
+
     console.log(this.model);
 
     this.toastr.success("Menu item added successfully");

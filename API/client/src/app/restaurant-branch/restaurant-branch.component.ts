@@ -76,7 +76,7 @@ export class RestaurantBranchComponent implements OnInit {
       this.referenceService.setBranch(branch.id);
       this.referenceService.hideNavBar = false;
 
-      this.router.navigateByUrl('/menu/edit');
+      this.router.navigateByUrl('/dashboard');
 
       return;
     }
@@ -89,7 +89,7 @@ export class RestaurantBranchComponent implements OnInit {
 
   getStatus(branch: Branch): string{
     if(!this.isOpen(branch)){
-      return 'Closed. Opens at ' + branch.openingTime;
+      return 'Closed. Opens at ' + branch.openingTimeTomorrow;
     }
 
     if(branch.lastActive < 30){

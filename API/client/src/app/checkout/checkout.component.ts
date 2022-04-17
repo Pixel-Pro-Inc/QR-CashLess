@@ -21,6 +21,9 @@ export class CheckoutComponent implements OnInit {
       this.branches = RestBranches;      
     });
   }
+  openingTime(b: Branch){
+    return b.openingTime;
+  }
   isOpen(b: Branch):Boolean{
 
     let currentTime = new Date();

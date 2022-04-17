@@ -16,7 +16,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../API/wwwroot",
+            "outputPath": "../../API/wwwroot",
             "aot": true,
             "index": "src/index.html",
             "main": "src/main.ts",
