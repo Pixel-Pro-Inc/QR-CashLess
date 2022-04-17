@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static API.Model.Enums;
 
 namespace API.Entities
 {
@@ -26,5 +27,10 @@ namespace API.Entities
         public DateTime OrderDateTime { get; set; }
         public string User { get; set; }
         public int PrepTime { get; set; }
+
+        //I'm putting the enum properties here in case we scrap them it will be easier
+        public flavours flavour { get; set; }
+        public sauces sauce { get; set; }
+        public prepQuality prepQuality { get; set; }
     }
 }

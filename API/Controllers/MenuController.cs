@@ -58,6 +58,7 @@ namespace API.Controllers
 
             List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
 
+            //You need to comment on why you have this block/logic here, cause it was cool when you showed Mr Billy but ahhh, I couldn't understand why it exists
             if(menuItem.Category == "Meat")
             {
                 if (subCategories.Count == 0)
