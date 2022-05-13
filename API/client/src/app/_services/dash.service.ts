@@ -16,40 +16,40 @@ export class DashService extends BaseServiceService{
   }
   // REFACTOR: The below three methods could be refactored. We can't have repeating code for such important business logic
   totalSales(model: any){
-    this.busyService.busy();
+    this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/total', model).pipe(
       map((response: ReportItem[]) => {
-        this.busyService.idle();
+        this.busyService.idle_1();
         return response;
       })
     )
   }
 
   totalDetailedSales(model: any){
-    this.busyService.busy();
+    this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/item', model).pipe(
       map((response: ReportItem[]) => {
-        this.busyService.idle();
+        this.busyService.idle_1();
         return response;
       })
     )
   }
 
   revenue(model: any){
-    this.busyService.busy();
+    this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/summary', model).pipe(
       map((response: ReportItem) => {
-        this.busyService.idle();
+        this.busyService.idle_1();
         return response;
       })
     )
   }
 
   payment(model: any){
-    this.busyService.busy();
+    this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/paymentmethods', model).pipe(
       map((response: PaymentItem[]) => {
-        this.busyService.idle();
+        this.busyService.idle_1();
         return response;
       })
     )
@@ -77,10 +77,10 @@ export class DashService extends BaseServiceService{
     )
   }
   invoice(model: any){
-    this.busyService.busy();
+    this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/invoice', model).pipe(
       map((response: any) => {
-        this.busyService.idle();
+        this.busyService.idle_1();
         return response;
       })
     )

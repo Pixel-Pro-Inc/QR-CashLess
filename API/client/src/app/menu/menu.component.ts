@@ -215,6 +215,14 @@ export class MenuComponent implements OnInit {
     );
 
     console.log(this.showEditing);
+
+    //Means you havent visited this site until the lastest update on this browser
+    if(localStorage.getItem('hasEverVisited') == null){
+      let empty: OrderItem[] = [];
+      localStorage.setItem('ordered', JSON.stringify(empty));
+
+      localStorage.setItem('hasEverVisited', 'true');
+    }
   }
 
   createNewFlavour(flavour: string){

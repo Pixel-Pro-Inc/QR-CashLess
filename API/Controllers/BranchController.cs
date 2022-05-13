@@ -121,6 +121,38 @@ namespace API.Controllers
             return values;
         }
 
+        [HttpPost("setclosingtime")]
+        public async Task<ActionResult<DateTime>> CreateClosingTime(CloseTimeDto closeTimeDto)
+        {
+            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+
+            if (response.Count == 0)
+                response.Add(new ClosingTime());
+
+            object time = closeTimeDto.ClosingTime;
+
+            var element = (JsonElement)time;
+
+            response[0].ClosingTimeToday = new DateTime(0001, 1, 1, GetTime(element)[0], GetTime(element)[1], 0);
+            response[0].EffectiveDate = DateTime.UtcNow.AddHours(2);
+
+
+            _firebaseDataContext.StoreData("ClosingTime/" + 0, response[0]);
+
+            return response[0].ClosingTimeToday;
+        }
+        public async Task<DateTime> GetClosingTime()
+        {
+            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+
+            if (response.Count == 0)
+                return new DateTime();
+
+            if (response[0].EffectiveDate.ToShortDateString() != System.DateTime.UtcNow.AddHours(2).ToShortDateString())
+                return new DateTime();
+
+            return response[0].ClosingTimeToday;
+        }
         [HttpGet("getbranches")]
         public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches()
         {
@@ -136,6 +168,8 @@ namespace API.Controllers
 
                 float x = (float)(timeSpan.TotalMinutes);
 
+                DateTime prospectiveCloseTime = await GetClosingTime();
+
                 BranchDto branchDto = new BranchDto()
                 {
                     Id = branch.Id,
@@ -145,7 +179,7 @@ namespace API.Controllers
                     Name = branch.Name,
                     PhoneNumbers = GetPhoneNumbers_String(branch.PhoneNumbers),
                     OpeningTime = GetJsonElement(branch.OpeningTimes),
-                    ClosingTime = GetJsonElement(branch.ClosingTimes),
+                    ClosingTime = await GetClosingTime() == new DateTime()? GetJsonElement(branch.ClosingTimes) : ConvertDateTimeToAngularTime(prospectiveCloseTime),
                     OpeningTimeTomorrow = GetJsonElement_Tomorrow(branch.OpeningTimes)
                 };
 
@@ -179,6 +213,11 @@ namespace API.Controllers
             if (dateTime == new DateTime())
                 return null;
 
+            return ConvertDateTimeToAngularTime(dateTime);
+        }
+
+        JsonElement ConvertDateTimeToAngularTime(DateTime dateTime)
+        {
             var time = dateTime.Hour.ToString("00") + ":" + dateTime.Minute.ToString("00");
 
             var json = System.Text.Json.JsonSerializer.Serialize(time);

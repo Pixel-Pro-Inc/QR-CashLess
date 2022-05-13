@@ -39,4 +39,10 @@ export class BranchService extends BaseServiceService {
       })
     )
   }
+
+  setBranchClosingTime(model: any){
+    this.http.post(this.baseUrl + 'branch/setclosingtime', model).subscribe(response => {
+      this.toastr.success("Branch Closing Time Set Successfully");
+    });
+  }
 }

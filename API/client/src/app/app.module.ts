@@ -36,6 +36,7 @@ import { ResetComponent } from './reset/reset.component';
 import { QuantityCounterComponent } from './quantity-counter/quantity-counter.component';
 import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-picker.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     ResetComponent,
     QuantityCounterComponent,
     ScrollToTopComponent,
+    ClosingTimePickerComponent,
   ],
   imports: [
     BrowserModule,

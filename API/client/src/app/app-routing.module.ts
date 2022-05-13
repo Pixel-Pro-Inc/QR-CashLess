@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
 import { CheckoutComponent } from './checkout/checkout.component';
+import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-picker.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { KitchendashboardComponent } from './kitchendashboard/kitchendashboard.component';
@@ -27,6 +28,7 @@ import { DevGuard } from './_guards/dev.guard';
 const routes: Routes = [
   { path: '', component: RestaurantBranchComponent },
   { path: 'menu/:id', component: MenuComponent },
+  { path: 'setclosetime', component: ClosingTimePickerComponent, canActivate: [AdminGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register/branch', component: RegisterBranchComponent, canActivate: [DevGuard]},
   { path: 'register/admin', component: RegisterComponent, canActivate: [DevGuard]},

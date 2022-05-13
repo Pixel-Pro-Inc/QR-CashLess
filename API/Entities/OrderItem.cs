@@ -33,5 +33,6 @@ namespace API.Entities
         public string Flavour { get; set; }
         public string MeatTemperature { get; set; }
         public List<string> Sauces { get; set; }
+        public string SubCategory { get; set; }
     }
 }

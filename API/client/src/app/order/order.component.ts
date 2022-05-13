@@ -12,6 +12,7 @@ import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
 import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
 import { element } from 'protractor';
+import { MenuService } from '../_services/menu.service';
 
 @Component({
   selector: 'app-order',
@@ -26,24 +27,35 @@ export class OrderComponent implements OnInit {
   totalDisplay = '';
   totalUsd = 0.00;
 
+  showInteractionOptions: any = {};
   
   orderItems : OrderItem[];
   tempOrderItems : OrderItem[] = [];
+  menuItems: MenuItem[] = [];
+
+  showBags: Boolean;
 
   model: any = {};
 
   block = 0;
-
-  onlineOrderAvailable: Boolean;
+  
   branchPhoneNumbers: number[];
 
-  constructor(private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
+  constructor(private menuService: MenuService, private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
 
   ngOnInit(): void {
+    this.showInteractionOptions = null;
+    
     this.model.phoneNumber = JSON.parse(localStorage.getItem('userPhoneNumber'));
 
-    this.orderItems = this.getOrders();    
-    
+    this.orderItems = this.getOrders();
+
+    this.getMenuItems(this.referenceService.currentBranch());
+
+    this.onlineOrderAvailable();
+  }
+
+  onlineOrderAvailable(){
     this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
       console.log(response);
       
@@ -57,12 +69,28 @@ export class OrderComponent implements OnInit {
           this.branchPhoneNumbers = RestBranches[i].phoneNumbers;
 
           if(RestBranches[i].lastActive < 30 && this.isOpen(RestBranches[i])){
-            this.onlineOrderAvailable = true;
+            this.showInteractionOptions = true;
           }
         }
       }
-      
+
+      this.showInteractionOptions = false;
     });
+  }
+
+  getMenuItems(branchId: string) {
+    //console.log(branchId);
+    this.menuService.getMenuItems('menu/getmenu', branchId).subscribe(response => {
+      this.menuItems = response;
+
+      this.menuItems.forEach(element => {
+        element.selectedFlavour = 'None';  
+        element.selectedMeatTemperature = 'Well Done';
+        element.selectedSauces = ['Lemon & Garlic'];
+      });
+
+      console.log(response);
+    }, error => console.log(error));    
   }
 
   isOpen (b: Branch):Boolean{

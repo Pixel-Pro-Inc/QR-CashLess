@@ -28,14 +28,14 @@
                             <h6 *ngIf="dish.category == 'Meat' && dish.price == '0.00'" class="mt1">Weight = {{(userInput[menuItems.indexOf(dish)] * dish.rate).toFixed(2)}} grams</h6>
                         </ng-container>                
         
-                        <h6 *ngIf="dish.category != 'Meat' || dish.price != '0.00'" class="mt1">BWP {{dish.price}}</h6>
+                        <h5 *ngIf="dish.category != 'Meat' || dish.price != '0.00'" class="mt1">BWP {{dish.price}}</h5>
 
                         <!--New Additions Flavour, Meat Temperature, Sauces-->
-                        <div class="d-flex">
+                        <div class="d-flex mb-2 mt-1">
                             <!--Flavour-->
                             <ng-container *ngIf="dish.flavours != null">
                                 <ng-container *ngIf="dish.flavours.length > 0">
-                                    <div>
+                                    <div class="ml-2">
                                         <label class="font-weight-bold">Select a flavour</label>
                                         <form #flavourForm="ngForm">
                                             <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedFlavour">
@@ -52,7 +52,7 @@
                             <!--Meat Temp-->
                              <ng-container *ngIf="dish.meatTemperatures != null">
                                 <ng-container *ngIf="dish.meatTemperatures.length > 0">
-                                    <div>
+                                    <div class="ml-2">
                                         <label class="font-weight-bold">How do you want it Prepared?</label>
                                         <form #meatTempForm="ngForm">
                                             <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedMeatTemperature">
@@ -68,7 +68,7 @@
                             <!--Sauce-->
                             <ng-container *ngIf="dish.sauces != null && dish.subCategory != 'Platter'">
                                 <ng-container *ngIf="dish.sauces.length > 0">
-                                    <div>
+                                    <div class="ml-2">
                                         <label class="font-weight-bold">Your pick of a free sauce</label>
                                         <form #msauceForm="ngForm">
                                             <select class="custom-select" type="text" [ngModelOptions]="{standalone: true}" [(ngModel)]="dish.selectedSauces">

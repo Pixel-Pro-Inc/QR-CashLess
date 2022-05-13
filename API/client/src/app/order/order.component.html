@@ -24,7 +24,7 @@
 
             <p class="text-muted">BWP {{formatAmount(order.price)}}</p>
 
-            <p class="text-muted" *ngIf="order.subCategory == 'Chicken' || (order.subCategory == 'Platter' && order.name.toLowerCase().includes('chicken'))">Flavour: {{order.flavour}}</p>
+            <p class="text-muted" *ngIf="(order.subCategory == 'Platter' && order.name.toLowerCase().includes('chicken'))">Flavour: {{order.flavour}}</p>
 
             <p class="text-muted" *ngIf="order.subCategory == 'Steak'">Readiness: {{order.meatTemperature}}</p>
 
@@ -44,43 +44,57 @@
       <span>Total (BWP)</span>
       <strong>BWP {{formatAmount(totalDisplay)}}</strong>
     </li>
-  </ul>
+  </ul>  
 
   <div class="mb-5">    
-  
-    <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable && this.orderItems.length > 0">
-      <div class="text-center">
-        <button class="btn btn-primary" (click)="call(0)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 1)</button>
-      </div>
-      <div class="text-center mt-2">
-        <button class="btn btn-primary" (click)="call(1)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 2)</button>
-      </div>
-    </ng-container>
-  
-    <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable && this.orderItems.length > 0">
-      
-      <ng-container *ngIf="isTablet()">
-        <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
-      </ng-container>  
-  
-      <ng-container *ngIf="isExternalCustomer()">
+
+    <div *ngIf="showInteractionOptions == null" class="text-center">
+      <i class="fa fa-4x fa-spinner fa-spin fa-pulse"></i>
+    </div>   
+
+    <ng-container *ngIf="showInteractionOptions != null">
+      <ng-container *ngIf="showPaymentOptions && showInteractionOptions && this.orderItems.length > 0">
         <div class="text-center">
-          <div id="myPaypalButtons"></div>
-        <div>
-          <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
-          <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+          <button class="btn btn-primary" (click)="call(0)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 1)</button>
         </div>
-        </div>         
+        <div class="text-center mt-2">
+          <button class="btn btn-primary" (click)="call(1)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 2)</button>
+        </div>
       </ng-container>
   
-      <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
-        <div class="text-center">
-          <div id="myPaypalButtons"></div>
-        <div>
-          <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
+      <ng-container *ngIf="showPaymentOptions && !showInteractionOptions && this.orderItems.length > 0">
+  
+        <button class="btn btn-outline-danger mb-3" style="width: 100%;" (click)="showBags = !showBags">
+          <div class="d-flex justify-content-between">
+            <h4 class="mr-2">Would you like a carry bag?</h4> <i *ngIf="!showBags" class="fa fa-2x fa-chevron-down"></i><i *ngIf="showBags" class="fa fa-2x fa-chevron-up"></i>
+          </div>      
+        </button>
+  
+        <app-menuitem *ngIf="showBags" [orderView]="this" [cantOrder]="false" [menuItems]="menuItems" [category]="'Carry Bag'"></app-menuitem>
+        
+        <ng-container *ngIf="isTablet()">
           <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
-        </div>
-        </div>    
+        </ng-container>  
+    
+        <ng-container *ngIf="isExternalCustomer()">
+          <div class="text-center">
+            <div id="myPaypalButtons"></div>
+          <div>
+            <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
+            <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+          </div>
+          </div>         
+        </ng-container>
+    
+        <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
+          <div class="text-center">
+            <div id="myPaypalButtons"></div>
+          <div>
+            <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
+            <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+          </div>
+          </div>    
+        </ng-container>
       </ng-container>
     </ng-container>
 
