@@ -1,14 +1,36 @@
 <div class="container mb-3">
+  <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
+    <form #numberForm="ngForm" (ngSubmit)="showOptions()" autocomplete="off">      
+      <hr>
+      <label>Enter your phone number (example 71111111)</label>
+      <div class="form-group">
+        <input type="number" class="form-control" name="pNumber"
+               [(ngModel)]="model.phoneNumber">
+      </div>
+    </form>
+
+    <ng-container *ngIf="model.phoneNumber != null">
+      <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
+    </ng-container> 
+
+    <hr>     
+  </div>
   <ul class="list-group mb-3">
     <ng-container *ngFor="let order of orderItems">
       <ng-container *ngIf="!order.purchased">
         <li class="list-group-item d-flex justify-content-between">
           <div>
-            <h6>{{order.name}}</h6>
+            <h6>{{order.name}} x {{order.quantity}}</h6>
 
             <p class="text-muted">BWP {{formatAmount(order.price)}}</p>
 
-            <span class="text-muted">{{order.weight}}</span>
+            <p class="text-muted" *ngIf="(order.subCategory == 'Platter' && order.name.toLowerCase().includes('chicken'))">Flavour: {{order.flavour}}</p>
+
+            <p class="text-muted" *ngIf="order.subCategory == 'Steak'">Readiness: {{order.meatTemperature}}</p>
+
+            <p class="text-muted" *ngIf="order.category == 'Meat'">Sauces: {{order.sauces}}</p>
+
+            <span *ngIf="order.category == 'Meat'" class="text-muted">{{order.weight}}</span>
           </div>
 
           <span class="fa fa-times-circle-o text-muted" (click)="removeItem(order)"></span>
@@ -22,48 +44,63 @@
       <span>Total (BWP)</span>
       <strong>BWP {{formatAmount(totalDisplay)}}</strong>
     </li>
-  </ul>
+  </ul>  
 
-  <div class="mb-5">
-    <div *ngIf="!showPaymentOptions && this.orderItems.length > 0">
-      <form #numberForm="ngForm" (ngSubmit)="showOptions()" autocomplete="off">      
-        <hr>
-        <label>Enter your phone number (example 71111111)</label>
-        <div class="form-group">
-          <input type="number" class="form-control" name="pNumber"
-                 [(ngModel)]="model.phoneNumber">
-        </div>
-      </form>
-  
-      <button *ngIf="model.phoneNumber.toString().length == 8" class="btn btn-primary" (click)="confirmOrder()" style="width: 100%">Confirm Order</button>
-    </div>
-  
-    <ng-container *ngIf="showPaymentOptions && !onlineOrderAvailable">
-      <div class="text-center">
-        <button class="btn btn-primary" (click)="call()" style="width: 100%"><i class="fa fa-phone"></i> Call Us</button>
-      </div>
-    </ng-container>
-  
-    <ng-container *ngIf="showPaymentOptions && onlineOrderAvailable">
-      <ng-container *ngIf="isTablet()">
-        <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
-      </ng-container>  
-  
-      <ng-container *ngIf="isExternalCustomer()">
+  <div class="mb-5">    
+
+    <div *ngIf="showInteractionOptions == null" class="text-center">
+      <i class="fa fa-4x fa-spinner fa-spin fa-pulse"></i>
+    </div>   
+
+    <ng-container *ngIf="showInteractionOptions != null">
+      <ng-container *ngIf="showPaymentOptions && showInteractionOptions && this.orderItems.length > 0">
         <div class="text-center">
-          <div id="myPaypalButtons"></div>
-        </div>      
+          <button class="btn btn-primary" (click)="call(0)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 1)</button>
+        </div>
+        <div class="text-center mt-2">
+          <button class="btn btn-primary" (click)="call(1)" style="width: 100%"><i class="fa fa-phone"></i> Call Us (Line 2)</button>
+        </div>
       </ng-container>
   
-      <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
-        <div class="text-center">
-          <div id="myPaypalButtons"></div>
-        <div>
-          <button class="btn btn-primary mb-3" (click)="showOptions()" style="width: 100%">Pay Online</button>
+      <ng-container *ngIf="showPaymentOptions && !showInteractionOptions && this.orderItems.length > 0">
+  
+        <button class="btn btn-outline-danger mb-3" style="width: 100%;" (click)="showBags = !showBags">
+          <div class="d-flex justify-content-between">
+            <h4 class="mr-2">Would you like a carry bag?</h4> <i *ngIf="!showBags" class="fa fa-2x fa-chevron-down"></i><i *ngIf="showBags" class="fa fa-2x fa-chevron-up"></i>
+          </div>      
+        </button>
+  
+        <app-menuitem *ngIf="showBags" [orderView]="this" [cantOrder]="false" [menuItems]="menuItems" [category]="'Carry Bag'"></app-menuitem>
+        
+        <ng-container *ngIf="isTablet()">
           <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
-        </div>
-        </div>    
+        </ng-container>  
+    
+        <ng-container *ngIf="isExternalCustomer()">
+          <div class="text-center">
+            <div id="myPaypalButtons"></div>
+          <div>
+            <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
+            <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+          </div>
+          </div>         
+        </ng-container>
+    
+        <ng-container *ngIf="!isExternalCustomer() && !isTablet()">
+          <div class="text-center">
+            <div id="myPaypalButtons"></div>
+          <div>
+            <!--<button class="btn btn-primary mb-3" [disabled]="true" (click)="showOptions()" style="width: 100%">Pay Online</button>-->
+            <button class="btn btn-primary" (click)="payAtTill()" style="width: 100%">Pay At Counter</button>
+          </div>
+          </div>    
+        </ng-container>
       </ng-container>
     </ng-container>
+
+    <ng-container *ngIf="showPaymentOptions">
+      <button class="btn btn-warning mt-3" style="width: 100%" (click)="back()">Back to Menu</button>
+    </ng-container>
+    
   </div>  
 </div>

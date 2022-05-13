@@ -1,3 +1,6 @@
+<ng-container *ngIf="!(showEditing || cantOrder)">
+</ng-container>
+
 <div class="card bg-light mt-2">
   <h2 class="text-center">Your Order</h2>
   <app-order class="mt-3" [showPaymentOptions] = "false" #orderWindow></app-order>    
@@ -30,7 +33,17 @@
           <option>Side</option>
           <option>Dessert</option>
           <option>Drink</option>
+          <option>Carry Bag</option>
         </select>
+      </div>    
+      <div *ngIf="model.category == 'Meat'" class="form-group">
+        <label>Sub Category</label>
+        <input class="form-control" type="text" list="sub" name="subCategory" [(ngModel)]="model.subCategory"/>
+        <datalist id="sub">
+          <ng-container *ngFor="let subCat of subCategories">
+            <option>{{subCat}}</option>
+          </ng-container>         
+        </datalist>
       </div>    
       <div class="form-group" *ngIf="model.category != 'Meat'">
         <label>Price</label>
@@ -41,13 +54,89 @@
         <label>Description</label>
         <input type="text" class="form-control" name="description"
                [(ngModel)]="model.description" placeholder="Descripiton">
-      </div>    
-      <div class="form-group" *ngIf="model.category == 'Meat'">
+      </div>  
+
+      <div *ngIf="model.category == 'Meat'">
+        <label>Set Standard Price/Weight <input type="checkbox" name="check" [ngModelOptions]="{standalone: true}" [(ngModel)]="standardCheck.check"></label>
+        <div class="form-group" *ngIf="standardCheck.check">
+          <label>Standard Price</label>
+          <input type="number" class="form-control" name="price"
+                 [(ngModel)]="model.price" placeholder="Price">
+        </div>
+        <div class="form-group" *ngIf="standardCheck.check">
+          <label>Standard Weight</label>
+          <input type="number" class="form-control" name="weight"
+                 [(ngModel)]="model.weight" placeholder="Weight (grams)">
+        </div>
+
+        <!--New Changes Inclusive of Meat Temp, Flavour, Sauce-->
+          <!--Flavour-->            
+            <div class="form-group">
+              <label>Flavour</label>
+              <ng-multiselect-dropdown
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'Flavour'"
+                        [settings]="dropdownSettings"
+                        [data]="dropdownList"
+                        [(ngModel)]="selectedItems"
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+            </div>
+
+            <label>Create New Flavour</label>
+            <div class="d-flex">
+              <input class="form-control" type="text" name="newflavour" [(ngModel)]="model.newFlavour"/>
+              <button class="btn btn-primary ml-2" (click)="createNewFlavour(model.newFlavour)">Create Flavour</button>
+            </div>
+            
+          <!--End Of Flavour-->
+          <!--Meat Temp-->
+            <div class="form-group">
+              <label>Meat Temperature</label>
+              <ng-multiselect-dropdown
+                        [ngModelOptions]="{standalone: true}"
+                        [placeholder]="'Meat Temperature'"
+                        [settings]="dropdownSettings"
+                        [data]="dropdownList_1"
+                        [(ngModel)]="selectedItems_1"
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+            </div>
+
+            <label>Create New Meat Temperature</label>
+            <div class="d-flex">
+              <input class="form-control" type="text" name="newtemperature" [(ngModel)]="model.newTemperature"/>
+              <button class="btn btn-primary ml-2" (click)="createNewMeatTemperature(model.newTemperature)">Create Meat Temperature</button>
+            </div>            
+          <!--End Meat Temp-->
+          <!--Sauce-->
+          <div class="form-group">
+            <label>Sauce</label>
+            <ng-multiselect-dropdown
+                      [ngModelOptions]="{standalone: true}"
+                      [placeholder]="'Sauce'"
+                      [settings]="dropdownSettings"
+                      [data]="dropdownList_2"
+                      [(ngModel)]="selectedItems_2"
+                      (onSelect)="onItemSelect($event)"
+                      (onSelectAll)="onSelectAll($event)"></ng-multiselect-dropdown>
+          </div>
+
+          <label>Create New Sauce</label>
+          <div class="d-flex">
+            <input class="form-control" type="text" name="newsauce" [(ngModel)]="model.newSauce"/>
+            <button class="btn btn-primary ml-2" (click)="createNewSauce(model.newSauce)">Create Sauce</button>
+          </div>            
+        <!--End Sauce Temp-->
+        <!--End Of New Changes-->
+      </div> 
+      
+      <div class="form-group" *ngIf="model.category == 'Meat' && !standardCheck.check">
         <label>Minimum Price</label>
         <input type="number" class="form-control" name="minPrice"
                [(ngModel)]="model.minimumPrice" placeholder="Minimum Price">
       </div>
-      <div class="form-group" *ngIf="model.category == 'Meat'">
+      <div class="form-group" *ngIf="model.category == 'Meat' && !standardCheck.check">
         <label>Rate per gram</label>
         <input type="number" class="form-control" name="rate"
                [(ngModel)]="model.rate" placeholder="Price/Gram">
@@ -79,12 +168,24 @@
     <b *ngIf="showDrinks" class="nav-link mt-2 text-danger" (click)="categoryDrinks()">Drinks</b>
     <a *ngIf="!showDrinks" class="nav-link mt-2 text-light" (click)="categoryDrinks()">Drinks</a>
 
-    <b *ngIf="showDesserts" class="nav-link mt-2 text-danger" (click)="categoryDesserts()">Desserts</b>
-    <a *ngIf="!showDesserts" class="nav-link mt-2 text-light" (click)="categoryDesserts()">Desserts</a>
+    <b *ngIf="showDesserts" class="nav-link mt-2 text-danger" (click)="categoryDesserts()">Ice Cream</b>
+    <a *ngIf="!showDesserts" class="nav-link mt-2 text-light" (click)="categoryDesserts()">Ice Cream</a>
   </nav> 
 
   <div *ngIf="showMeats">
-    <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Meat'"></app-menuitem>
+    <ng-container *ngFor="let x of subCategories">
+      <div class="px-4 mb-3">
+        <button (click)="subCategoryCollapse[subCategories.indexOf(x)] = !subCategoryCollapse[subCategories.indexOf(x)]" class="btn btn-outline-danger mt-3" style="width: 100%; height: 40px;">
+          <div class="d-flex justify-content-between">
+            <p>{{x}}</p>
+            <i *ngIf="!subCategoryCollapse[subCategories.indexOf(x)]" class="fa fa-chevron-down"></i>
+            <i *ngIf="subCategoryCollapse[subCategories.indexOf(x)]" class="fa fa-chevron-up"></i>
+          </div>
+        </button>
+      </div>
+
+      <app-menuitem *ngIf="subCategoryCollapse[subCategories.indexOf(x)]" [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [subCategory]="x" [category]="'Meat'"></app-menuitem>
+    </ng-container>    
   </div>
   <div *ngIf="showSides">
     <app-menuitem [orderView]="orderWindow" [menuView]="menu" [cantOrder]="cantOrder" [menuItems]="menuItems" [category]="'Side'"></app-menuitem>

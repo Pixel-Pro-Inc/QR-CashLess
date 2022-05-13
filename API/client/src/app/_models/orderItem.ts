@@ -13,4 +13,10 @@ export interface OrderItem {
   orderNumber: string;
   phoneNumber: string;
   category: string;
+  prepTime: number;
+  id_O: string;
+  flavour: string;
+  meatTemperature: string;
+  sauces: string[];
+  subCategory: string;
 }

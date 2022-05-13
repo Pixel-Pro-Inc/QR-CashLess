@@ -10,6 +10,9 @@ import { OrderService } from '../_services/order.service';
 import { MenuItem } from '../_models/menuItem';
 import { Branch } from '../_models/branch';
 import { BranchService } from '../_services/branch.service';
+import { float } from 'html2canvas/dist/types/css/property-descriptors/float';
+import { element } from 'protractor';
+import { MenuService } from '../_services/menu.service';
 
 @Component({
   selector: 'app-order',
@@ -24,24 +27,35 @@ export class OrderComponent implements OnInit {
   totalDisplay = '';
   totalUsd = 0.00;
 
+  showInteractionOptions: any = {};
   
   orderItems : OrderItem[];
   tempOrderItems : OrderItem[] = [];
+  menuItems: MenuItem[] = [];
+
+  showBags: Boolean;
 
   model: any = {};
 
   block = 0;
+  
+  branchPhoneNumbers: number[];
 
-  onlineOrderAvailable: Boolean;
-  branchPhoneNumber: number;
-
-  constructor(private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
+  constructor(private menuService: MenuService, private router: Router, private orderService: OrderService, private referenceService: ReferenceService, private branchService: BranchService) { }
 
   ngOnInit(): void {
+    this.showInteractionOptions = null;
+    
     this.model.phoneNumber = JSON.parse(localStorage.getItem('userPhoneNumber'));
 
-    this.orderItems = this.getOrders();    
-    
+    this.orderItems = this.getOrders();
+
+    this.getMenuItems(this.referenceService.currentBranch());
+
+    this.onlineOrderAvailable();
+  }
+
+  onlineOrderAvailable(){
     this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
       console.log(response);
       
@@ -50,17 +64,99 @@ export class OrderComponent implements OnInit {
       for (let i = 0; i < RestBranches.length; i++) {
         if(RestBranches[i].id == this.referenceService.currentBranch()){
 
-          console.log(RestBranches[i].phoneNumber);
+          console.log(RestBranches[i].phoneNumbers);
           
-          this.branchPhoneNumber = RestBranches[i].phoneNumber;
+          this.branchPhoneNumbers = RestBranches[i].phoneNumbers;
 
-          if(RestBranches[i].lastActive < 30){
-            this.onlineOrderAvailable = true;
+          if(RestBranches[i].lastActive < 30 && this.isOpen(RestBranches[i])){
+            this.showInteractionOptions = true;
           }
         }
       }
-      
+
+      this.showInteractionOptions = false;
     });
+  }
+
+  getMenuItems(branchId: string) {
+    //console.log(branchId);
+    this.menuService.getMenuItems('menu/getmenu', branchId).subscribe(response => {
+      this.menuItems = response;
+
+      this.menuItems.forEach(element => {
+        element.selectedFlavour = 'None';  
+        element.selectedMeatTemperature = 'Well Done';
+        element.selectedSauces = ['Lemon & Garlic'];
+      });
+
+      console.log(response);
+    }, error => console.log(error));    
+  }
+
+  isOpen (b: Branch):Boolean{
+    let currentTime = new Date();
+
+    let times:any[] = this.SetHoursMins(b);
+
+    let cH = currentTime.getHours();
+
+    if(cH > times[0].hours){
+      return false;
+    }
+
+    if(cH < times[1].hours){
+      return false;
+    }
+
+    let cM = currentTime.getMinutes();
+
+    if(cH == times[1].hours){
+      if(cM < times[1].minutes){
+        return false;
+      }
+    }
+
+    if(cH == times[0].hours){
+      if(cM > times[0].minutes){
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  SetHoursMins(branch: Branch){
+    let tString = branch.closingTime.toString();
+
+    let h: number = parseInt(tString.substring(0, 2));
+
+    let m: number = parseInt(tString.substring(3, 5));
+
+    let times: any = [];
+
+    let tC: any = {};
+
+    tC.hours = h;
+
+    tC.minutes = m;
+
+    times.push(tC);
+
+    tString = branch.openingTime.toString();
+
+    h = parseInt(tString.substring(0, 2));
+
+    m = parseInt(tString.substring(3, 5));
+
+    let tO: any = {};
+
+    tO.hours = h;
+
+    tO.minutes = m;
+
+    times.push(tO);
+
+    return times;
   }
 
   showOptions(){
@@ -75,20 +171,26 @@ export class OrderComponent implements OnInit {
     }    
     //models should add 'origin' for orderItem in POS
     let orderItem : OrderItem = {
-        name: '',
-        description: '',
-        reference: '',
-        price: '',
-        weight: '',
-        fufilled: false,
-        purchased: false,
-        preparable: false,
-        waitingForPayment: false,
-        quantity: 0,
-        orderNumber: '',
-        phoneNumber: '',
-        paymentMethod: '',
-        category: ''
+      name: '',
+      description: '',
+      reference: '',
+      price: '',
+      weight: '',
+      fufilled: false,
+      purchased: false,
+      preparable: false,
+      waitingForPayment: false,
+      quantity: 0,
+      orderNumber: '',
+      phoneNumber: '',
+      paymentMethod: '',
+      category: '',
+      prepTime: 0,
+      id_O: '',
+      flavour: '',
+      meatTemperature: '',
+      sauces: [],
+      subCategory: ''
     };
 
     orderItem.quantity = quantity;
@@ -96,20 +198,49 @@ export class OrderComponent implements OnInit {
     orderItem.fufilled = false;
     orderItem.name = item.name;
     orderItem.category = item.category;
+    orderItem.prepTime = parseInt(item.prepTime);
+    orderItem.id_O = (new Date()).toString();
+    orderItem.flavour = item.selectedFlavour;
+    orderItem.meatTemperature = item.selectedMeatTemperature;
+
+    if(item.subCategory != 'Platter'){
+      orderItem.sauces.push(item.selectedSauces.toString());
+    }
+
+    if(item.subCategory == 'Platter'){
+      orderItem.sauces = item.sauces;
+    }
+    
+    orderItem.subCategory = item.subCategory;
 
     if(item.category == 'Meat'){
-      orderItem.price = userInput.toString();
+      if(item.price == '0.00'){
+        orderItem.price = (userInput * quantity).toString();
+      }
+      else{
+        orderItem.price = (parseFloat(item.price) * quantity).toString();
+      }  
     }
 
     if(item.category != 'Meat'){
-      orderItem.price = item.price;
+      orderItem.price = (parseFloat(item.price) * quantity).toString();
     }
     
     orderItem.purchased = false;
     orderItem.reference = this.referenceService.currentreference();
 
     let weight = item.rate * userInput;
-    orderItem.weight = weight.toFixed(2) + ' grams';
+    orderItem.weight = (weight.toFixed(2)).toString() + ' grams';
+
+    console.log((weight.toFixed(2)).toString() + ' grams');
+
+    if(item.weight == ''){
+      item.weight = null;
+    }
+
+    if(item.weight != null){
+      orderItem.weight = parseFloat(item.weight).toFixed(2) + ' grams';
+    }
 
     if(orderItem.weight == '0 grams'){
       orderItem.weight = '-';      
@@ -143,10 +274,19 @@ export class OrderComponent implements OnInit {
       this.block = 1;
     }             
   }
+  
+  back(){
+    this.router.navigateByUrl('/menu/' + this.referenceService.currentBranch() + '_' + this.referenceService.currentreference());
+  }
 
   removeItem(item: OrderItem){
     this.orderItems = this.getOrders();
-    this.orderItems.splice(this.orderItems.indexOf(item));
+
+    let filteredItems = this.orderItems.filter(element => element.id_O != item.id_O);
+
+    console.log(filteredItems);
+
+    this.orderItems = filteredItems;
 
     localStorage.setItem('ordered', JSON.stringify(this.orderItems));
     this.reload();
@@ -185,6 +325,8 @@ export class OrderComponent implements OnInit {
     for (let i = 0; i < orders.length; i++) {
       orders[i].phoneNumber = this.model.phoneNumber.toString();  
     }
+
+    console.log(orders);
     
     this.orderService.payAtTill(orders);
   }
@@ -209,8 +351,8 @@ export class OrderComponent implements OnInit {
     return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
   }
 
-  call(){
-    window.open('tel:' + this.branchPhoneNumber);
+  call(index: number){
+    window.open('tel:' + this.branchPhoneNumbers[index]);
   }
   leave() {
     this.thanks = false;

@@ -15,9 +15,12 @@ import { ReferenceService } from '../_services/reference.service';
 export class MenuitemComponent implements OnInit {
   @Input() menuItems : MenuItem[];
   @Input() category : string;
+  @Input() subCategory : string = '';
   @Input() cantOrder: boolean;
   @Input() orderView: OrderComponent;
   @Input() menuView: MenuComponent;
+
+  model:any = {};
 
   userInput: number[] = [];
 
@@ -27,13 +30,18 @@ export class MenuitemComponent implements OnInit {
     
   }
 
-  clicked(item: MenuItem, quantity: number, usersInput: number){
+  clicked(item: MenuItem, usersInput: number){
     console.log(item);
     console.log(usersInput);
-    console.log(quantity);
+    console.log(this.model);
 
-    this.toastr.success(item.name + ' was added to your order.');
-    this.orderView.updateOrderView(item, quantity, usersInput);    
+    console.log(item);
+
+    this.toastr.success(item.name + ' was added to your order.', 'Order Confirmation', {
+      positionClass: 'toast-top-right' 
+   });
+
+    this.orderView.updateOrderView(item, this.model.quantity, usersInput);  
   }
 
   editItem(model: any){

@@ -8,6 +8,7 @@ html, body {
   # Sidebar
   --------------------------------------------------------------*/
   .sidebar {
+    height: 100%;
     top: 60px;
     left: 0;
     bottom: 0;
@@ -83,6 +84,7 @@ html, body {
     background: #f6f9ff;
     padding: 10px 15px;
     border-radius: 4px;
+    cursor: pointer;
   }
   .sidebar-nav .nav-link i {
     font-size: 16px;

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./member-list.component.css']
 })
 export class MemberListComponent implements OnInit {
-
+  // OBSOLETE: We need to remove these, they have no use
   constructor() { }
 
   ngOnInit(): void {

@@ -27,7 +27,7 @@ namespace API.Controllers
         }
 
         [HttpGet("export/{branchId}")]//This is used as reference for http calls that is api/excel/export will call the ExportData() method
-        public async /*Task<HttpResponseMessage>*/ Task<IActionResult> ExportData(string branchId)
+        public async Task<IActionResult> ExportData(string branchId)
         {
             //Remove previously stored files if any
             if (Directory.Exists(savePath("Rodizio Express Data_Export")))
@@ -47,15 +47,6 @@ namespace API.Controllers
                 //Gets Orders from the Database
                 string dir = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
                 List<List<OrderItem>> orderItems = await GetOrders(dir + "/", branchId);
-
-                if (orderItems.Count <= 0) //Checks to see if the result from the database actually has data
-                {
-                    emptyCount++;
-                    continue;
-                }
-
-                if (emptyCount == worksheetNames.Length)
-                    return BadRequest("There is no data to export");
 
                 CreateWorkSheet(ex, worksheetNames[i], orderItems);
             }            
@@ -82,18 +73,6 @@ namespace API.Controllers
             }
 
             memory.Position = 0;
-
-            /*var reportStream = memory;
-            var result = new HttpResponseMessage(HttpStatusCode.OK);
-
-            result.Content = new StreamContent(reportStream);
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = "Schedule Report.xlsx"
-            };
-
-            return result;*/
 
             return File(memory, GetContentType(filePath), "Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
         }
@@ -149,7 +128,16 @@ namespace API.Controllers
                         {
                             ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString().Replace("grams", ""), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                             continue;
-                        }                           
+                        }
+
+                        if (data.Key == "OrderDateTime")
+                        {
+                            DateTime oDate = (DateTime)data.Value;
+                            oDate = oDate.AddHours(2);
+
+                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : oDate.ToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                            continue;
+                        }
 
                         ex.WriteToCell(rowCount, x, data.Value == null ? "-" : data.Value.ToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                     }
@@ -177,18 +165,7 @@ namespace API.Controllers
 
         private async Task<List<List<OrderItem>>> GetOrders(string path, string branchId) 
         {
-            var result = await _firebaseDataContext.GetData(path + branchId);
-
-            List<List<OrderItem>> temp = new List<List<OrderItem>>();
-
-            foreach (var item in result)
-            {
-                List<OrderItem> data = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-
-                temp.Add(data);
-            }
-
-            return temp;
+            return await _firebaseDataContext.GetData<List<OrderItem>>(path + branchId);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static API.Model.Enums;
 
 namespace API.Entities
 {
@@ -24,5 +25,14 @@ namespace API.Entities
         public string PhoneNumber { get; set; }
         public string Category { get; set; }
         public DateTime OrderDateTime { get; set; }
+        public string User { get; set; }
+        public int PrepTime { get; set; }
+        public List<string> Chefs { get; set; }
+
+        //New Addidtions Before Launch
+        public string Flavour { get; set; }
+        public string MeatTemperature { get; set; }
+        public List<string> Sauces { get; set; }
+        public string SubCategory { get; set; }
     }
 }

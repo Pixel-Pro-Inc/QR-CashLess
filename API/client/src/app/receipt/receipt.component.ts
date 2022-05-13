@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ElementRef ,ViewChild } from '@angular/core';
-import { Local } from 'protractor/built/driverProviders';
-import { map } from 'rxjs/operators';
-import { AdminComponent } from '../admin/admin.component';
+import { Component, OnInit} from '@angular/core';
 import { OrderItem } from '../_models/orderItem';
 import { AccountService } from '../_services/account.service';
 import { ReferenceService } from '../_services/reference.service';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-receipt',
@@ -15,6 +13,7 @@ import html2canvas from 'html2canvas';
   styleUrls: ['./receipt.component.css']
 })
 export class ReceiptComponent implements OnInit {
+  showSpin = false;
   orders: OrderItem[]
   orderItems: OrderItem[] = [];
   baseUrl: string;
@@ -22,11 +21,12 @@ export class ReceiptComponent implements OnInit {
   date: any;
   total = 0;
   title = 'html-to-pdf-angular-application';
-  private adminComponent: AdminComponent;
+  orderTime: string = '';
 
-  constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService) { }
+  constructor(private http: HttpClient, private accountService: AccountService, private referenceService: ReferenceService, private router: Router) { }
 
   ngOnInit(): void {
+    this.orderTime = new Date().toLocaleTimeString();
     this.baseUrl = this.accountService.baseUrl;
     this.orders = JSON.parse(localStorage.getItem('ordered'));
 
@@ -35,7 +35,7 @@ export class ReceiptComponent implements OnInit {
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
 
     let _today = mm + '/' + dd + '/' + yyyy;
@@ -45,8 +45,20 @@ export class ReceiptComponent implements OnInit {
     //Clear Orders List
     let empty: OrderItem[] = [];
     localStorage.setItem('ordered', JSON.stringify(empty));
+  }
+  GetCurrentTime(){
+    return this.orderTime;
+  }
+  GetPrepTime(){
+    let pTime = 0;
 
-    //this.adminComponent.pushreceipt(this);
+    for (let i = 0; i < this.orders.length; i++) {
+      if(pTime < this.orders[i].prepTime){
+        pTime = this.orders[i].prepTime;
+      }
+    }
+
+    return pTime;
   }
   Paid(): boolean{
     if(this.orders[0].purchased){
@@ -72,19 +84,23 @@ export class ReceiptComponent implements OnInit {
   }
   public convertToPDF()
   {
+    this.showSpin = true;
    var data = document.getElementById('contentToConvert');
    html2canvas(data).then(canvas => {
+
    // Few necessary setting options
-   var imgWidth = 208;
-   var pageHeight = 295;
-   var imgHeight = canvas.height * imgWidth / canvas.width;
-   var heightLeft = imgHeight;
+   var imgWidth = canvas.width *.1;//208;
+   var imgHeight = canvas.height *.1;// * imgWidth / canvas.width;
+
+   console.log(imgHeight);
+   console.log(imgWidth);
    
    const contentDataURL = canvas.toDataURL('image/png')
    let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
    var position = 0;
-   pdf.addImage(contentDataURL, 'PNG', 0, position, imgWidth, imgHeight)
-   pdf.save('rodizio-express-receipt.pdf'); // Generated PDF
+   pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight)
+   pdf.save('rodizio-express-receipt-' + this.getOrderNum() + '.pdf'); // Generated PDF
+   this.showSpin = false;
   });
   }
   getTotal(item: any, origin: string){
@@ -101,8 +117,26 @@ export class ReceiptComponent implements OnInit {
       return tot.toLocaleString('en-US', {minimumFractionDigits: 2});
     }
   }
+  getName(order: OrderItem){
+    /*let str = '';
+    for (let i = 0; i < order.name.length; i++) {
+      if(order.name[i] == ' ' && order.name[i + 1] == 'x'){
+        break;
+      }
 
+      str += order.name[i];
+    }*/
+
+    return order.name;// str;
+  }
+  getUnitPrice(order: OrderItem){
+    let amount = (parseFloat(order.price)/order.quantity).toString();
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2})
+  }
+  makeNewOrder(){
+    this.router.navigateByUrl('/menu/' + this.referenceService.currentBranch() + '_' + this.referenceService.currentreference());
+  }
   formatAmount(amount: string){
-    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});;
+    return parseFloat(amount.split(',').join('')).toLocaleString('en-US', {minimumFractionDigits: 2});
   }
 }
