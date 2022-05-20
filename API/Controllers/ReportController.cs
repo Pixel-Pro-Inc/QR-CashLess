@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,8 +18,12 @@ namespace API.Controllers
     public class ReportController : BaseApiController
     {
         private readonly string dir = "CompletedOrders/";
+        private readonly IWebHostEnvironment _env;
 
-        public ReportController():base(){ }
+        public ReportController(IWebHostEnvironment env) //:base()
+        {
+            _env = env;
+        }
         
         [HttpPost("sales/total")]
         public async Task<ActionResult<List<SalesDto>>> GetTotalSales(ReportDto reportDto)
@@ -538,6 +543,58 @@ namespace API.Controllers
 
             return eligibleOrders;
         }
+
+        [HttpPost("excel/export")] 
+        public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
+        {
+            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            ordersgiven = await GetOrdersByDate(reportDto);
+
+            List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
+
+            // REFACTOR: Theres a better way, have the total and remove instead of adding
+            foreach (var order in ordersgiven)
+            {
+                orderfiltered.Add(new List<OrderItem>());
+                foreach (var item in order)
+                {
+                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                            if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                            {
+                                orderfiltered[orderfiltered.Count-1].Add(item);
+                            }
+                    }
+                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        orderfiltered[orderfiltered.Count - 1].Add(item);
+                    }
+                }
+
+                if (orderfiltered[orderfiltered.Count - 1].Count==0)
+                    orderfiltered[orderfiltered.Count - 1].RemoveAt(orderfiltered.Count - 1);
+
+            }
+
+            return await new ExcelController(_env).ExportData(orderfiltered);
+
+        }
+
         string GetOrderNumber(string OrderNumber)
         {
             return OrderNumber.Substring(OrderNumber.IndexOf('_') + 1, 4);

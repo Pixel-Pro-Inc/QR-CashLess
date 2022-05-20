@@ -25,6 +25,7 @@ namespace API.Controllers
 
         public BaseApiController()
         {
+            // @Yewo: NOTE: It appears we use legacy deprecated credentials and we should switch to Admin SDK, so that's why it is throwing the No host exception ........prolly
             _firebaseDataContext = new FirebaseDataContext();
         }
 

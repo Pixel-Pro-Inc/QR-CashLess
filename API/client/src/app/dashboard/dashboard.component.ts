@@ -277,5 +277,21 @@ export class DashboardComponent implements OnInit {
   exportToExcel(){    
     this.dashService.exportToExcel(this.referenceService.currentBranch());
   }
+  detailReportToExcel(){
+    // NOTE: The reason why it wasn't working is because we weren't subscribed to it.
+    // The real mystery is why it choose to fire another logic instead
+    this.dashService.detailReportToExcel(this.reportDto(this.model1)).subscribe(
+      response => {
+        this.detailedtotalSales = response;
+
+        if(response.length == 0){
+          this.model1.empty = true;
+        }else{
+          this.model1.empty = false;
+        }
+        
+      }
+    )
+  } 
 
 }

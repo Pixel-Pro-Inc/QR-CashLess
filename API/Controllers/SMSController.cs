@@ -7,7 +7,7 @@ namespace API.Controllers
 {
     public class SMSController : BaseApiController
     {
-        public SMSController() :base() { }
+        public SMSController() { }
 
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)

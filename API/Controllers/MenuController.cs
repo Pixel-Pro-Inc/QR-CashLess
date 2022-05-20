@@ -181,7 +181,7 @@ namespace API.Controllers
                 }
             }            
 
-            //Update firebase
+            //Updates firebase
 
             _firebaseDataContext.EditData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
 

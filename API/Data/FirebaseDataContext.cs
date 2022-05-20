@@ -17,10 +17,12 @@ namespace API.Data
     {
         static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
+       
+        // NOTE: The configuration works properly
         IFirebaseConfig config = new FirebaseConfig
         {
-            AuthSecret = Configuration["Firebase:AuthSecret"],
-            BasePath = Configuration["Firebase:BasePath"]
+            AuthSecret = Configuration["FirebaseDataBaseSettings:AuthSecret"],
+            BasePath = Configuration["FirebaseDataBaseSettings:BasePath"]
         };
 
         IFirebaseClient client;
@@ -34,7 +36,6 @@ namespace API.Data
         public async Task<List<object>> GetData(string path)
         {
             List<object> objects = new List<object>();
-
             client = new FireSharp.FirebaseClient(config);
 
             FirebaseResponse response = await client.GetAsync(path);

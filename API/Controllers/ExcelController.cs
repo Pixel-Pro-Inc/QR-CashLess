@@ -98,6 +98,70 @@ namespace API.Controllers
             return File(memory, GetContentType(filePath), "Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
         }
 
+        public async Task<IActionResult> ExportData(List<List<OrderItem>> Orders)
+        {
+            //Remove previously stored files if any
+            if (Directory.Exists(savePath("Rodizio Express Data_Export")))
+            {
+                Directory.Delete(savePath("Rodizio Express Data_Export"), true);
+            }
+
+            Excel ex = new Excel();//Creates new instance of Excel class
+
+            ex.CreateNewFile();//Creates a new excel file
+
+            string dir = "CompletedOrders";
+            List<List<OrderItem>> orderItems = Orders;
+
+
+            if (Orders.Count == 0)
+                return BadRequest("There is no data to export");
+
+            CreateWorkSheet(ex, dir, orderItems);
+
+            #region Excel making
+
+            string folderName = "Rodizio Express Data_Export";//Generates folder name
+
+            string fileName = "Rodizio Express Data_Export/Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx";//Generates file name
+
+            Directory.CreateDirectory(savePath(folderName));//Creates directory
+
+            System.IO.File.SetAttributes(savePath(folderName), FileAttributes.Normal);//Removes special priveledges for folder
+
+            ex.SaveAs(savePath(fileName));//Saves file to local storage
+
+            System.IO.File.SetAttributes(savePath(fileName), FileAttributes.Normal);//Removes special priveledges for file
+
+            var filePath = savePath(fileName);
+
+            var memory = new MemoryStream();//Creates new Memory stream
+
+            await using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);//copies the file at that location to memory stream
+            }
+
+            memory.Position = 0;
+
+            /*var reportStream = memory;
+            var result = new HttpResponseMessage(HttpStatusCode.OK);
+
+            result.Content = new StreamContent(reportStream);
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = "Schedule Report.xlsx"
+            };
+
+            return result;*/
+
+
+            #endregion
+
+            return File(memory, GetContentType(filePath), "Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
+        }
+
         private void CreateWorkSheet(Excel ex, string worksheetName, List<List<OrderItem>> orderItems)
         {
             ex.CreateWorkSheet(worksheetName);//Creates a new work sheet
