@@ -12,14 +12,16 @@ namespace API.Entities
     /// </summary>
     public class BilledUser:AppUser
     {
+        public DateTime LastPaidDate { get; set; }
 
+        // The assumption is the regardless of how many branches you have they we will all be paid at the same time so one date is enough
         public DateTime DuePaymentDate { get; set; }
-        public float Monthlyfee { get; set; }
 
         /// <summary>
-        /// This is a list of the Branches that the user will be charged for.
+        /// This is a list of the Branches that the user will be charged for. And the monthly fee expected from it
+        /// The Key is the Branchid, the double is the monthlyfee for that branch
         /// </summary>
-        public List<string> BilledBranchIds { get; set; }
+        public Dictionary<string, double> BilledBranchIds { get; set; }
 
     }
 }

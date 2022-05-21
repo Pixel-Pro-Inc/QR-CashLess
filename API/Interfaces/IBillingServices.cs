@@ -22,19 +22,7 @@ namespace API.Interfaces
         /// Finds the payment due for the user
         /// </summary>
         /// <returns></returns>
-        public float CalculatePaymentDue();
-
-        /// <summary>
-        /// Returns a bool if the payment is past the due date.
-        /// </summary>
-        /// <returns> DateTime</returns>
-        public bool isPastDueDate(DateTime Today);
-
-        /// <summary>
-        /// Gives the due date of the payment
-        /// </summary>
-        /// <returns> The date Today</returns>
-        public DateTime DueDate();
+        public double CalculatePaymentDue();
 
         /// <summary>
         /// This should be creating the view of how the invoice would look like .
@@ -43,6 +31,31 @@ namespace API.Interfaces
         /// </summary>
         /// <param name="payment"></param>
         public void CreateInvoice(float payment);
+
+        /// <summary>
+        /// Sets the current date so that BillingServices can use it to work the logic
+        /// </summary>
+        /// <param name="date">Given date by the user</param>
+        public void SetCurrentDate(DateTime date);
+        /// <summary>
+        ///  Returns a bool if the payment is past the due date.
+        /// </summary>
+        /// <param name="Today"> This is hopefully what the system's date today is</param>
+        /// <returns>True or false</returns>
+        public bool isPastDueDate(DateTime Today);
+        /// <summary>
+        /// Sets the due date of the users next payment
+        /// </summary>
+        public void SetDueDate(DateTime DueDate);
+        /// <summary>
+        /// Sets the due date of the users next payment a certain number of months away from given date
+        /// </summary>
+        public void SetDueDate(DateTime Today, int MonthsfromDate);
+        /// <summary>
+        /// Gives the due date of the payment
+        /// </summary>
+        /// <returns> The date Today</returns>
+        public DateTime DueDate();
 
     }
 }

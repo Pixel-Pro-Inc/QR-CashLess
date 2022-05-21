@@ -42,7 +42,12 @@ namespace API.Controllers
                 branchId = registerDto.branchId,
                 Admin = registerDto.Admin,
                 SuperUser = registerDto.SuperUser
-            };            
+            };
+
+            // TODO: add logic for if that person is a billable user
+            // which means the registerDto has to include isBillable
+            // _firebaseDataContext.StoreData("Account/BilledAccounts" + "/" + user.Id.ToString(), user);
+
 
             user.Id = await GetNum();
 
@@ -84,6 +89,7 @@ namespace API.Controllers
             };
         }
         
+        // REFACTOR: Have the repeating code extracted and made into a service all controllers can use
         public async Task<bool> UserTaken(string username)
         {
             var response = await _firebaseDataContext.GetData(dir);

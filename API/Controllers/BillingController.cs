@@ -26,56 +26,48 @@ namespace API.Controllers
             Bill = new BillingServices();
         }
 
-
+        // REFACTOR: Within BillingServices there is a method that is to be called automatically that calls this method.
         /// <summary>
         /// This will be an automatic sender that will send the bill email.
         /// It will be given the date of the client, and client info and if it is past due it will send this method
         /// 
-        /// It doesn't need to be public, cause its called automatically, and noone should really tamper with it
+        /// It doesn't need to be public, cause its called automatically, and noone should really tamper with it. Its internal cause Services need to use it
         /// </summary>
         /// <param name="BillInfo"></param>
         /// <returns></returns>
         [HttpGet("sendbill/{BillInfo}")]
-        private void /*async Task<IActionResult>*/ BillSender (BillInfoDto BillInfo)
+        internal void /*async Task<IActionResult>*/ BillSender (BillInfoDto BillInfo)
         {
-            // REFACTOR: Consider having a check whenever the API is running on Startup or something to check if there are overdue branches and then it will
-            // pass the branch Id into this and then that will bill the specific person
-
-            //Sets the User to do the billing logic with
-            SetUser(BillInfo.User);
-
+            //Sets the parameters to do the billing logic with
+            SetParameters(BillInfo);
 
             // Checks if the time to send is not now
             // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
-            if (!Bill.isPastDueDate(BillInfo.Date))
-            {
-                // Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"
-            }
-            try
-            {
-                SendBill();
-                // Now that you are finished with the logic it will set it back to nothing
-                Bill.SetUser(null);
-            }
-            catch (Exception)
-            {
+            if (!Bill.isPastDueDate(BillInfo.Date)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
 
-                throw;
-            }
+            SendBillToUser();
+            InformBillToDeveloper();
+           
+            // Now that you are finished with the logic it will set it back to nothing
+            SetParameters(null);
+
             //return 
 
         }
 
-       
-
+        private void InformBillToDeveloper()
+        {
+            // TODO: Send email to developers about the ability to send Emails.
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Sends the bill as an Email to the debtor
         /// </summary>
-        public void SendBill()
+        private void SendBillToUser()
         {
             //Calculates how much is due
-            float payment=Bill.CalculatePaymentDue();
+            double payment=Bill.CalculatePaymentDue();
 
             // TODO: Create message in the bill format we want
 
@@ -89,7 +81,7 @@ namespace API.Controllers
 
         }
 
-      
+        // Updates the database on payment made
 
         // Could send SMS to the debtor
 
@@ -109,9 +101,13 @@ namespace API.Controllers
         /// This is an Billing exclusive method that was extracted to set the user
         /// </summary>
         /// <param name="User"></param>
-        private void SetUser(AppUser User)
+        private void SetParameters(BillInfoDto BillInfoDto)
         {
-            try { Bill.SetUser(User); }
+            try 
+            { 
+                Bill.SetUser(BillInfoDto.User);
+                Bill.SetCurrentDate(BillInfoDto.Date);
+            }
             catch (UnBillableUserException)
             {
                 // Should display a message $"You aren't properly set up to be billed by Pixel Pro. Please contact them to recover Services"
