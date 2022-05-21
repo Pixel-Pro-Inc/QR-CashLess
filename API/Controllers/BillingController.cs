@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Entities;
 using API.Exceptions;
+using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,11 +20,12 @@ namespace API.Controllers
     public class BillingController:BaseApiController
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
-        private BillingServices Bill;
+        private IBillingServices Bill;
 
-        public BillingController()
+        // I haven't tested the injection but it should work
+        public BillingController(IBillingServices billingServices)
         {
-            Bill = new BillingServices();
+            Bill = billingServices;
         }
 
         // REFACTOR: Within BillingServices there is a method that is to be called automatically that calls this method.
