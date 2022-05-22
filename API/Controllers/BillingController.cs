@@ -20,12 +20,14 @@ namespace API.Controllers
     public class BillingController:BaseApiController
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
-        private IBillingServices Bill;
+        private IBillingServices _billingServices;
+        private IFirebaseServices _firebaseServices;
 
         // I haven't tested the injection but it should work
-        public BillingController(IBillingServices billingServices)
+        public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices)
         {
-            Bill = billingServices;
+            _billingServices = billingServices;
+            _firebaseServices = firebaseServices;
         }
 
         // REFACTOR: Within BillingServices there is a method that is to be called automatically that calls this method.
@@ -45,7 +47,7 @@ namespace API.Controllers
 
             // Checks if the time to send is not now
             // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
-            if (!Bill.isPastDueDate(System.DateTime.Today)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
+            if (!_billingServices.isPastDueDate(System.DateTime.Today)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
 
             SendBillToUser();
             InformBillToDeveloper();
@@ -69,7 +71,7 @@ namespace API.Controllers
         private void SendBillToUser()
         {
             //Calculates how much is due
-            double payment=Bill.CalculateTotalPaymentDue();
+            double payment=_billingServices.CalculateTotalPaymentDue();
 
             // TODO: Create message in the bill format we want
 
@@ -89,17 +91,18 @@ namespace API.Controllers
 
         // Could send Invoice Email to the debtor
 
+        // REFACTOR: These two methods could have their information sent up with a simple dto that fits a model that gives the view everything it needs
         //Tells the debtor how much is due
         [HttpGet("paymentamount")]
-        public string GetTotalPaymentDue() => Bill.CalculateTotalPaymentDue().ToString();
+        public string GetTotalPaymentDue() => _billingServices.CalculateTotalPaymentDue().ToString();
 
         // Gets the due date of the User
         [HttpGet("duedate")]
-        public string GetDueDate() => Bill.DueDate().ToString();
+        public string GetDueDate() => _billingServices.DueDate().ToString();
 
-        // TODO: Doesn't have GetBilledAccounts in the interface because interface can't define async methods
+
         [HttpGet("getbranches")]
-        public async Task<List<BilledUser>> GetUsersBilledBranches() => await Bill.GetBilledAccounts();
+        public async Task<List<BilledUser>> GetUsersBilledBranches() => await _firebaseServices.GetBilledAccounts();
 
 
 
@@ -109,11 +112,12 @@ namespace API.Controllers
         /// <param name="User"></param>
         private void SetParameters(UserDto UserDto)
         {
+            // TODO: Have the firebaseService gibe the user that it is looking for
             try 
             { 
                 // FIXME: This should be got from the database as a user from the UserDto 
-                Bill.SetUser(BillInfoDto.User);
-                Bill.SetCurrentDate(System.DateTime.Today);
+                //_billingServices.SetUser(BillInfoDto.User);
+                _billingServices.SetCurrentDate(System.DateTime.Today);
             }
             catch (UnBillableUserException)
             {

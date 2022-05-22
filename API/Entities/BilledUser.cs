@@ -18,8 +18,10 @@ namespace API.Entities
         public DateTime DuePaymentDate { get; set; }
 
         /// <summary>
-        /// This is a list of the Branches that the user will be charged for. And the Current Charge expected from it
+        /// This is a list of the Branches that the user will be charged for and the Current Charge expected from it.
+        /// <remarks>
         /// The Key is the Branchid, the double is the CurrentCharge for that branch
+        /// </remarks>
         /// </summary>
         public Dictionary<string, double> BilledBranchIds { get; set; }
 

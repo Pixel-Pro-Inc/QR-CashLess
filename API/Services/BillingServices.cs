@@ -20,9 +20,10 @@ namespace API.Services
     /// </summary>
     public class BillingServices : IBillingServices
     {
-        public BillingServices()
+        IFirebaseServices _IFirebaseServices;
+        public BillingServices(IFirebaseServices firebaseServices)
         {
-            _firebaseDataContext = new FirebaseDataContext();
+            _IFirebaseServices = firebaseServices;
         }
 
         #region Properties
@@ -38,8 +39,6 @@ namespace API.Services
 
         // This is the date only used for by the Services but it indeed should be the current date
         DateTime Today { get; set; }
-
-        FirebaseDataContext _firebaseDataContext;
 
         #endregion
 
@@ -100,7 +99,7 @@ namespace API.Services
             // Because the error it is throwing is saying that it needs to be defined in the class
             //List<BilledUser> billedUsers= await _firebaseDataContext.GetData("Account/BilledAccounts").FromJsonToObject<BilledUser>();
 
-            List<BilledUser> billedUsers = await GetBilledAccounts();
+            List<BilledUser> billedUsers = await _IFirebaseServices.GetBilledAccounts();
             // Collects all the users who owe 
             foreach (var user in billedUsers)
             {
@@ -114,41 +113,20 @@ namespace API.Services
             // foreach OwingUser it should make a BillingDto and send it to the BillingController
             foreach (var user in OwingUsers)
             {
-                BilledUserDto dto = new BilledUserDto
+
+                UserDto dto = new UserDto()
                 {
-                    User = user,
-                    Date = System.DateTime.Today
+                    Username = user.UserName
                 };
-                new BillingController(this).BillSender(dto);
+                new BillingController(this,_IFirebaseServices).BillSender(dto);
 
             }
 
         }
 
-        /// <summary>
-        /// This gets all the Billed Users from the database.
-        /// </summary>
-        /// <remarks>
-        /// It wasn't defined in the interface because an async method has to have a body.
-        /// <para>
-        ///  It also seems too much to have a method to get the billed branches from the branch node,
-        /// cause that would require us to change the brannch entity. (again)
-        /// </para>
-        ///
-        /// </remarks>
-        /// <returns></returns>
-        private async Task<List<BilledUser>> GetBilledAccounts()
-        {
-            var response = await _firebaseDataContext.GetData("Account/BilledAccounts");
-            List<BilledUser> items = new List<BilledUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                BilledUser item = JsonConvert.DeserializeObject<BilledUser>(((JObject)response[i]).ToString());
+        
+       
 
-                items.Add(item);
-            }
-            return items;
-        }
 
 
         #endregion

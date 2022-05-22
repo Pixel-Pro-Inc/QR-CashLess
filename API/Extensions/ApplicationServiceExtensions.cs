@@ -20,6 +20,7 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBillingServices, BillingServices>();
+            services.AddScoped<IFirebaseServices, FirebaseServices>();
             //services.AddScoped<LogUserActivity>();
 
             return services;
