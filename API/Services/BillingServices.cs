@@ -26,12 +26,14 @@ namespace API.Services
         }
 
         #region Properties
-
-        // The user will be set by whatever calls Billingservices, but it should be accessed by anyone outside Billing. Since all the information
-        // needed that will be possible to get from billing will be handed off by the methods themselves
+ 
         /// <summary>
-        /// You can only set this property. 
+        /// This is what the billingService uses to represent the user. You can only set this property. 
         /// </summary>
+        /// <remarks>
+        /// The user will be set by whatever calls Billingservices, but it should not be accessed by anyone outside Billing. Since all the information
+        /// needed that will be possible to get from billing will be handed off by the methods themselves
+        /// </remarks>
         internal BilledUser _User { private get; set; }
 
         // This is the date only used for by the Services but it indeed should be the current date
@@ -46,18 +48,18 @@ namespace API.Services
         //I thought, we could just store the value but then how will we accomodate for changes, We would have to have logic
         //to calculate those changes. It would be easier to simply calculate how much is due, each time, assuming a change has been made, (eg date,
         // ammount, number of branches being managed)
-        public double CalculatePaymentDue()
+        public double CalculateTotalPaymentDue()
         {
             // calculates the overdue span by finding how much longer Today is after due date
             TimeSpan overdueSpan = Today-_User.DuePaymentDate;
             // If today is before due date the user owes nothing
-            if (Today.CompareTo(_User.DuePaymentDate) < 0) return 0.0f;
+            if (Today.CompareTo(_User.DuePaymentDate) < 0) return 0;
 
             // divides it by a month of Febuary, 28 days and takes the whole number
             int NumerofOverdueMonths = (int)overdueSpan.TotalDays / DateTime.DaysInMonth(Today.Year, 2);
             
             double result=0;
-            // gets the monthly fee per branch and multiples it by the NumerofOverdueMonths
+            // gets the current charge per branch and multiples it by the NumerofOverdueMonths
             foreach (var branch in _User.BilledBranchIds)
             {
                 result += branch.Value * NumerofOverdueMonths;
@@ -112,12 +114,12 @@ namespace API.Services
             // foreach OwingUser it should make a BillingDto and send it to the BillingController
             foreach (var user in OwingUsers)
             {
-                BillInfoDto dto = new BillInfoDto
+                BilledUserDto dto = new BilledUserDto
                 {
                     User = user,
                     Date = System.DateTime.Today
                 };
-                new BillingController().BillSender(dto);
+                new BillingController(this).BillSender(dto);
 
             }
 
@@ -125,9 +127,15 @@ namespace API.Services
 
         /// <summary>
         /// This gets all the Billed Users from the database.
-        /// 
-        /// It wasn't defined in the interface because an async method has to have a body
         /// </summary>
+        /// <remarks>
+        /// It wasn't defined in the interface because an async method has to have a body.
+        /// <para>
+        ///  It also seems too much to have a method to get the billed branches from the branch node,
+        /// cause that would require us to change the brannch entity. (again)
+        /// </para>
+        ///
+        /// </remarks>
         /// <returns></returns>
         private async Task<List<BilledUser>> GetBilledAccounts()
         {

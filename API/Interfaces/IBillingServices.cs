@@ -19,10 +19,10 @@ namespace API.Interfaces
         public void SetUser(AppUser user);
 
         /// <summary>
-        /// Finds the payment due for the user
+        /// Finds the total payment due for the user
         /// </summary>
         /// <returns></returns>
-        public double CalculatePaymentDue();
+        public double CalculateTotalPaymentDue();
 
         /// <summary>
         /// This should be creating the view of how the invoice would look like .

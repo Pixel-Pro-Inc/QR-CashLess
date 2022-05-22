@@ -38,14 +38,14 @@ namespace API.Controllers
         /// <param name="BillInfo"></param>
         /// <returns></returns>
         [HttpGet("sendbill/{BillInfo}")]
-        internal void /*async Task<IActionResult>*/ BillSender (BillInfoDto BillInfo)
+        internal void /*async Task<IActionResult>*/ BillSender (UserDto UserDto)
         {
             //Sets the parameters to do the billing logic with
-            SetParameters(BillInfo);
+            SetParameters(UserDto);
 
             // Checks if the time to send is not now
             // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
-            if (!Bill.isPastDueDate(BillInfo.Date)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
+            if (!Bill.isPastDueDate(System.DateTime.Today)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
 
             SendBillToUser();
             InformBillToDeveloper();
@@ -69,7 +69,7 @@ namespace API.Controllers
         private void SendBillToUser()
         {
             //Calculates how much is due
-            double payment=Bill.CalculatePaymentDue();
+            double payment=Bill.CalculateTotalPaymentDue();
 
             // TODO: Create message in the bill format we want
 
@@ -91,11 +91,15 @@ namespace API.Controllers
 
         //Tells the debtor how much is due
         [HttpGet("paymentamount")]
-        public string GetDuePaymentAmount() => Bill.CalculatePaymentDue().ToString();
+        public string GetTotalPaymentDue() => Bill.CalculateTotalPaymentDue().ToString();
 
         // Gets the due date of the User
         [HttpGet("duedate")]
         public string GetDueDate() => Bill.DueDate().ToString();
+
+        // TODO: Doesn't have GetBilledAccounts in the interface because interface can't define async methods
+        [HttpGet("getbranches")]
+        public async Task<List<BilledUser>> GetUsersBilledBranches() => await Bill.GetBilledAccounts();
 
 
 
@@ -103,12 +107,13 @@ namespace API.Controllers
         /// This is an Billing exclusive method that was extracted to set the user
         /// </summary>
         /// <param name="User"></param>
-        private void SetParameters(BillInfoDto BillInfoDto)
+        private void SetParameters(UserDto UserDto)
         {
             try 
             { 
+                // FIXME: This should be got from the database as a user from the UserDto 
                 Bill.SetUser(BillInfoDto.User);
-                Bill.SetCurrentDate(BillInfoDto.Date);
+                Bill.SetCurrentDate(System.DateTime.Today);
             }
             catch (UnBillableUserException)
             {

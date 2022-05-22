@@ -9,7 +9,7 @@ namespace API.DTOs
     /// <summary>
     /// This is a Dto that contains all the information needed to find process and send Bills the the franchisee representitives
     /// </summary>
-    public class BillInfoDto
+    public class BilledUserDto
     {
         // We expect any kind of user to come through here
         public AppUser User { get; set; }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './admin/admin.component';
+import { BillingComponent } from './billing/billing.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'receipt', component: ReceiptComponent },
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent},
+  { path: 'billing', component: BillingComponent},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
 

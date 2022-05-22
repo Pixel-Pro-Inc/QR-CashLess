@@ -32,6 +32,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
 import { LoadingInterceptor } from './_interceptors/loading.interceptor';
 import { ThankyouComponent } from './thankyou/thankyou.component';
+import { BillingComponent } from './billing/billing.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ThankyouComponent } from './thankyou/thankyou.component';
     RevenuechartComponent,
     LoginComponent,
     ThankyouComponent,
+    BillingComponent,
   ],
   imports: [
     BrowserModule,
