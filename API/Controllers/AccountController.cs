@@ -150,7 +150,6 @@ namespace API.Controllers
             return token;
         }
 
-       
         [HttpPost("forgotpassword/{accountID}")]
         public async Task<string> ForgotPassword(string accountID)
         {

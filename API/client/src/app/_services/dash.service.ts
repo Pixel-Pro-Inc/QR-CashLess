@@ -76,6 +76,34 @@ export class DashService extends BaseServiceService{
       })
     )
   }
+  salesAverage(branchId: string){
+    return this.http.get(this.baseUrl + 'report/sales/thismonth/averagevolume/' + branchId).pipe(
+      map((response: any) => {
+        return response;
+      })
+    )
+  }
+  revenueAverage(branchId: string){
+    return this.http.get(this.baseUrl + 'report/sales/thismonth/averagerevenue/' + branchId).pipe(
+      map((response: any) => {
+        return response;
+      })
+    )
+  }
+  itemsAverage(branchId: string){
+    return this.http.get(this.baseUrl + 'report/sales/thismonth/averageitems/' + branchId).pipe(
+      map((response: any) => {
+        return response;
+      })
+    )
+  }
+  orderSource(branchId: string){
+    return this.http.get(this.baseUrl + 'report/sales/thismonth/ordersource/' + branchId).pipe(
+      map((response: any) => {
+        return response;
+      })
+    )
+  }
   invoice(model: any){
     this.busyService.busy_1();
     return this.http.post(this.baseUrl + 'report/sales/invoice', model).pipe(
@@ -88,5 +116,35 @@ export class DashService extends BaseServiceService{
 
   exportToExcel(branchId: string){
     window.open(this.baseUrl + 'excel/export/' + branchId);
+  }
+
+  exportDetailReportToExcel(model: any){
+    this.http.post(this.baseUrl + 'report/excel/export-detailedsales', model,{responseType: 'blob' as 'json'}).subscribe(
+      (response: any) =>{
+          let dataType = response.type;
+          let binaryData = [];
+          binaryData.push(response);
+          let downloadLink = document.createElement('a');
+          downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+          downloadLink.setAttribute('download', 'Rodizio Express Data_Export ' + (new Date()).toString());
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+      }
+  );
+  }
+
+  exportTotalReportToExcel(model: any){
+    this.http.post(this.baseUrl + 'report/excel/export-totalsales', model,{responseType: 'blob' as 'json'}).subscribe(
+      (response: any) =>{
+          let dataType = response.type;
+          let binaryData = [];
+          binaryData.push(response);
+          let downloadLink = document.createElement('a');
+          downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, {type: dataType}));
+          downloadLink.setAttribute('download', 'Rodizio Express Data_Export ' + (new Date()).toString());
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+      }
+  );
   }
 }

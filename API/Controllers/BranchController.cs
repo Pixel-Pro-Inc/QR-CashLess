@@ -4,6 +4,7 @@ using API.Entities;
 using API.Helpers;
 using API.Interfaces;
 using FireSharp.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nager.Date;
@@ -25,6 +26,7 @@ namespace API.Controllers
         {
             _photoService = photoService;
         }
+        [Authorize]
         [HttpPost("register")]
         public async Task<ActionResult<BranchDto>> CreateBranch(BranchDto dto)
         {
@@ -121,6 +123,7 @@ namespace API.Controllers
             return values;
         }
 
+        [Authorize]
         [HttpPost("setclosingtime")]
         public async Task<ActionResult<DateTime>> CreateClosingTime(CloseTimeDto closeTimeDto)
         {
@@ -153,6 +156,7 @@ namespace API.Controllers
 
             return response[0].ClosingTimeToday;
         }
+
         [HttpGet("getbranches")]
         public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches()
         {

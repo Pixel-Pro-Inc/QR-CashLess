@@ -76,7 +76,7 @@ export class RestaurantBranchComponent implements OnInit {
       this.referenceService.setBranch(branch.id);
       this.referenceService.hideNavBar = false;
 
-      this.router.navigateByUrl('/dashboard');
+      this.router.navigateByUrl('/admin-portal');
 
       return;
     }

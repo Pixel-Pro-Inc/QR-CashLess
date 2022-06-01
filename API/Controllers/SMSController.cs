@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -16,13 +17,12 @@ namespace API.Controllers
 
         public SMSController() { }
 
-
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)
         {
             TwilioClient.Init(apiKeySid, apiKeySecret, accountSid);
 
-            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} is ready! Go to the till to collect. Thank you for your purchase.\n\nPowered by Pixel Pro";
+            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} is ready! Go to the till to collect. Thank you for your purchase order again at https://rodizioexpress.com.\n\nPowered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,
@@ -40,7 +40,7 @@ namespace API.Controllers
         {
             TwilioClient.Init(apiKeySid, apiKeySecret, accountSid);
 
-            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} has been cancelled.\n\nPowered by Pixel Pro";
+            string msgBody = $"Rodizio Express\n\nYour order #{orderNumber} has been cancelled order again at https://rodizioexpress.com.\n\nPowered by Pixel Pro";
 
             var message = await MessageResource.CreateAsync(
                 body: msgBody,

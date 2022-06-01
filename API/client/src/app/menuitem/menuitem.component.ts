@@ -48,6 +48,14 @@ export class MenuitemComponent implements OnInit {
     this.menuView.showEditForm = true;
 
     this.menuView.model1 = model;
+
+    console.log(model);
+
+    this.toBottom();
+  }
+
+  toBottom(){
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   deleteItem(model: any){

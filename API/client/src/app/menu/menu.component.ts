@@ -123,7 +123,7 @@ export class MenuComponent implements OnInit {
     private http: HttpClient, private accountService: AccountService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
-    this.standardCheck.check = false;
+    this.standardCheck.check = true;
     this.user = JSON.parse(localStorage.getItem('user'));
 
     if (this.user != null) {
@@ -279,9 +279,15 @@ export class MenuComponent implements OnInit {
   editMenuItem() {
     let branchId = this.referenceService.currentBranch();
 
-    console.log('branch id ' + branchId);
+    //console.log('branch id ' + branchId);
     
     this.formToggle();
+    this.model1.flavours = this.selectedItems;
+    this.model1.meatTemperatures = this.selectedItems_1;
+    this.model1.sauces = this.selectedItems_2;
+    //Forcing it to always be a string before it touches the api because sometimes its a number
+    this.model1.weight = this.model.weight.toString();
+
     this.model1.imgUrl = this.img.image == null? this.model1.imgUrl : this.imageSrc;
 
     console.log(this.model1);
@@ -348,10 +354,4 @@ export class MenuComponent implements OnInit {
 
     }
   }
-
-  toBottom(){
-    console.log('something');
-    window.scrollTo(0, document.body.scrollHeight);
-  }
-
 }

@@ -1,85 +1,87 @@
-<ng-container *ngIf="!showSpin">
-  <button class="mt-3 ml-3 btn btn-primary" (click)="convertToPDF()"><i class="fa fa-download"></i> Download Your Receipt</button>
-</ng-container>
-
-<ng-container *ngIf="showSpin">
-  <button class="mt-3 ml-3 btn btn-primary"><i class="fa fa-spinner fa-spin fa-pulse"></i> Downloading Your Receipt</button>
-</ng-container>
-
-<button class="mt-3 ml-3 btn btn-primary" (click)="makeNewOrder()">Make New Order</button>
-
-<div id="contentToConvert" class="page-content container">  
-  <div class="page-header text-blue-d2">
-    <h1 class="page-title text-secondary-d1">
-      Receipt
-    </h1>    
-  </div>
-
-  <div class="container px-0">
-    <div class="row mt-4">
-      <div class="col-12 col-lg-10 offset-lg-1">
-        <div class="row">
-          <div class="col-12">
-            <div class="text-center text-150">
-              <h1>Rodizio Express</h1>
-              <h3>Order Number {{getOrderNum()}}</h3>
-            </div>
-          </div>
-        </div>*
-
-        <hr class="row brc-default-l1 mx-n1 mb-4" />
-
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="text-grey-m2">
-              <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
-                Receipt
-              </div>
-
-              <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> ID:</span> #{{invoiceNum}}</div>
-
-              <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Issue Date:</span> {{getDate()}}</div>
-
-              <div *ngIf="Paid()" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90 mr-1"> Status:</span> <span class="badge badge-success badge-pill px-25">Paid</span></div>
-              <div *ngIf="!Paid()" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90 mr-1"> Status:</span> <span class="badge badge-warning badge-pill px-25">Not Paid</span></div>
-              <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Order Time:</span> {{GetCurrentTime()}}</div>
-              <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Preparation Time:</span> {{GetPrepTime()}} minutes</div>
-            </div>
-          </div>
-        </div>
-
-        <table class="table mb-5">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Item</th>
-              <th style="text-align: right;" scope="col">Units</th>
-              <th style="text-align: right;" scope="col">Unit Price (BWP)</th>
-              <th style="text-align: right;" scope="col">Amount (BWP)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <ng-container *ngFor="let o of orders">
-              <tr>
-                <th scope="row">{{orders.indexOf(o) + 1}}</th>
-                <td>{{getName(o)}}</td>
-                <td style="text-align: right;">{{o.quantity}}</td>
-                <td style="text-align: right;">{{getUnitPrice(o)}}</td>
-                <td style="text-align: right;">{{formatAmount(o.price)}}</td>
-              </tr>                                   
-            </ng-container>      
-            
-            <tr>
-              <th>Total</th>
-
-              <th style="text-align: right;">BWP <span style="width: 200px;">{{getTotal(orders, 'invoice')}}</span></th>
-            </tr>                                   
-          </tbody>
-        </table>
-        <div style="display: flex; align-items: center; justify-content: right;">
-          <img width="120px" src="https://firebasestorage.googleapis.com/v0/b/pixelprodatabase.appspot.com/o/Website%20Assets%2FImages%2Fpixel_pro_logo.png?alt=media&token=47e81a2c-0961-4c16-b4b1-3b1714421843" alt="logo"/>
-        </div>        
-      </div>
+<body style="min-height: calc(100vh - (var(--footbar-height) + var(--navbar-height)));">
+  <ng-container *ngIf="!showSpin">
+    <button class="mt-3 ml-3 btn btn-primary" (click)="convertToPDF()"><i class="fa fa-download"></i> Download Your Receipt</button>
+  </ng-container>
+  
+  <ng-container *ngIf="showSpin">
+    <button class="mt-3 ml-3 btn btn-primary"><i class="fa fa-spinner fa-spin fa-pulse"></i> Downloading Your Receipt</button>
+  </ng-container>
+  
+  <button class="mt-3 ml-3 btn btn-primary" (click)="makeNewOrder()">Make New Order</button>
+  
+  <div id="contentToConvert" class="page-content container">  
+    <div class="page-header text-blue-d2">
+      <h1 class="page-title text-secondary-d1">
+        Receipt
+      </h1>    
     </div>
-  </div>  
-</div>
+  
+    <div class="container px-0">
+      <div class="row mt-4">
+        <div class="col-12 col-lg-10 offset-lg-1">
+          <div class="row">
+            <div class="col-12">
+              <div class="text-center text-150">
+                <h1>Rodizio Express</h1>
+                <h3>Order Number {{getOrderNum()}}</h3>
+              </div>
+            </div>
+          </div>*
+  
+          <hr class="row brc-default-l1 mx-n1 mb-4" />
+  
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="text-grey-m2">
+                <div class="mt-1 mb-2 text-secondary-m1 text-600 text-125">
+                  Receipt
+                </div>
+  
+                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> ID:</span> #{{invoiceNum}}</div>
+  
+                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Issue Date:</span> {{getDate()}}</div>
+  
+                <div *ngIf="Paid()" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90 mr-1"> Status:</span> <span class="badge badge-success badge-pill px-25">Paid</span></div>
+                <div *ngIf="!Paid()" class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90 mr-1"> Status:</span> <span class="badge badge-warning badge-pill px-25">Not Paid</span></div>
+                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Order Time:</span> {{GetCurrentTime()}}</div>
+                <div class="my-2"><i class="fa fa-circle text-blue-m2 text-xs mr-1"></i> <span class="text-600 text-90"> Preparation Time:</span> {{GetPrepTime()}} minutes</div>
+              </div>
+            </div>
+          </div>
+  
+          <table class="table mb-5">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Item</th>
+                <th style="text-align: right;" scope="col">Units</th>
+                <th style="text-align: right;" scope="col">Unit Price (BWP)</th>
+                <th style="text-align: right;" scope="col">Amount (BWP)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let o of orders">
+                <tr>
+                  <th scope="row">{{orders.indexOf(o) + 1}}</th>
+                  <td>{{getName(o)}}</td>
+                  <td style="text-align: right;">{{o.quantity}}</td>
+                  <td style="text-align: right;">{{getUnitPrice(o)}}</td>
+                  <td style="text-align: right;">{{formatAmount(o.price)}}</td>
+                </tr>                                   
+              </ng-container>      
+              
+              <tr>
+                <th>Total</th>
+  
+                <th style="text-align: right;">BWP <span style="width: 200px;">{{getTotal(orders, 'invoice')}}</span></th>
+              </tr>                                   
+            </tbody>
+          </table>
+          <div style="margin-bottom: 1rem; display: flex; align-items: center; justify-content: right;">
+            <img width="120px" src="assets/Images/pixel_pro_logo_slogan.png" alt="logo"/>
+          </div>        
+        </div>
+      </div>
+    </div>  
+  </div>
+</body>

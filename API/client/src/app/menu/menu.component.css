@@ -1,10 +1,10 @@
 div {
-    border-radius: 20px;
-  }
+  border-radius: 20px;
+}
 
-  .shadow {
-    box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
-    }
+.shadow {
+  box-shadow: 0 7px 30px -10px rgba(150,170,180,0.5);
+}
 
 .btn-collapse{
   background-color: #292929;
