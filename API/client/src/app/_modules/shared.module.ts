@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ToastrModule } from 'ngx-toastr';
 import { FileUploadModule } from 'ng2-file-upload';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -13,13 +15,17 @@ import { FileUploadModule } from 'ng2-file-upload';
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right'
     }),
-    FileUploadModule
+    FileUploadModule,
+    ReactiveFormsModule,
+    NgxChartsModule
   ],
 
   exports: [
     BsDropdownModule,
     ToastrModule,
-    FileUploadModule
+    FileUploadModule,
+    ReactiveFormsModule,
+    NgxChartsModule
   ]
 })
 export class SharedModule { }

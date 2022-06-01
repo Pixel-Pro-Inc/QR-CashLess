@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-light shadow">
+<nav class="navbar navbar-expand-md navbar-dark bg-light shadow" style="height: var(--navbar-height);">
   <div class="container">
-    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2Frodizio_express_logo.png?alt=media&token=94661086-7b2c-4b83-98fe-e422301776aa"
-    alt="logo"    
-    width="120">
+    <a routerLink="/">
+      <img src="assets/Images/rodizio_express_logo.png" alt="logo" width="120">
+    </a>   
     
     <ng-container *ngIf="!referenceService.hideNavBar">
       <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
@@ -20,8 +20,8 @@
               <a class="dropdown-item" routerLink="/">
                 Switch Branch
               </a>
-              <a class="dropdown-item" routerLink="/dashboard">
-                Dashboard
+              <a class="dropdown-item" routerLink="/admin-portal">
+                Admin Portal
               </a>
               <a class="dropdown-item" routerLink="/setclosetime">
                 Set Closing Time

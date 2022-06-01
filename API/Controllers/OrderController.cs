@@ -49,47 +49,40 @@ namespace API.Controllers
         }
         public async Task<int> GetOrderNum(string branchId)
         {
-            List<List<OrderItem>> ordersResult = await _firebaseDataContext.GetData<List<OrderItem>>(dir + branchId);
+            List<OrderNumber> ordersNumbersResult = await _firebaseDataContext.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
 
-            List<OrderItem> orders = new List<OrderItem>();
+            List<string> oNumbersAssigned = new List<string>();
 
-            foreach (var item in ordersResult)
+            if (ordersNumbersResult.Count > 0)
+                oNumbersAssigned = ordersNumbersResult[0].OrderNumbers;
+
+            string d = DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-"
+                    + DateTime.Now.Year.ToString("0000");
+
+            bool clearList = false;
+
+            foreach (var oNumber in oNumbersAssigned)
             {
-                orders.AddRange(item);
-            }            
+                if(oNumber.Substring(0, 10) != d)
+                {
+                    clearList = true;
+                }
+            }
+
+            if(clearList)
+                oNumbersAssigned.Clear();
 
             int candidateNumber = new Random().Next(1000, 9999);
 
             //Check Against Other Order Numbers For The Day
-            List<int> orderNums = new List<int>();
-
-            for (int i = 0; i < orders.Count; i++)
-            {
-                //Only 4 digit numbers
-
-                string orderNum = orders[i].OrderNumber;
-
-                int n = orderNum.IndexOf('_');
-
-                string date = orderNum.Remove(n, 5);
-
-                string number = orderNum.Remove(0, n + 1);
-
-                string dateToday =
-                    DateTime.Now.Day.ToString("00") + "-"
-                    + DateTime.Now.Month.ToString("00") + "-"
-                    + DateTime.Now.Year.ToString("0000");
-
-                if (date == dateToday)
-                {
-                    orderNums.Add((Int32.Parse(number)));
-                }
-            }
-
-            while (orderNums.Contains(candidateNumber))
+            while (oNumbersAssigned.Contains(d + "_" + candidateNumber))
             {
                 candidateNumber = new Random().Next(1000, 9999);
             }
+
+            oNumbersAssigned.Add(d + "_" + candidateNumber);
+
+            _firebaseDataContext.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
 
             return candidateNumber;
         }

@@ -1,0 +1,11 @@
+.row {
+    overflow: hidden;
+  }
+
+.pie-chart-container {
+  height: 300px;
+  width: 100%;
+  min-width: 800px;
+  display: block;
+  background: #fff;
+}

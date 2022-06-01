@@ -34,6 +34,7 @@ namespace API.Controllers
             return await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
         }
 
+        [Authorize]
         [HttpPost("createitem/{id}")]
         public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string id)
         {
@@ -105,24 +106,25 @@ namespace API.Controllers
 
             return menuItemDto;
         }
+        #region Extras
         [HttpGet("subcategory")]
         public async Task<ActionResult<List<string>>> GetSubCategories()
         {
             var response = (await _firebaseDataContext.GetData<Subcategory>("SubCategories"));
 
-            return response.Count != 0? response[0].SubCategories: new List<string>();
+            return response.Count != 0 ? response[0].SubCategories : new List<string>();
         }
 
         [HttpGet("flavours/create/{flavour}")]
         public async Task<ActionResult<List<string>>> CreateFlavours(string flavour)
-        {            
+        {
             var response = (await _firebaseDataContext.GetData<Flavour>("Flavours"));
 
             if (response.Count == 0)
                 response.Add(new Flavour());
 
             response[0].Flavours.Add(flavour);
-            
+
 
             _firebaseDataContext.StoreData("Flavours/" + 0, response[0]);
 
@@ -208,70 +210,111 @@ namespace API.Controllers
                 return k;
             }
 
-            return 0;            
+            return 0;
         }
+        #endregion
+
+        [Authorize]
         [HttpPost("edititem/{id}")]
         public async Task<ActionResult<MenuItemDto>> EditMenuItem(MenuItemDto menuItemDto, string id)
         {
             string branchId = id;
 
-            var menuItem = new MenuItem
+            var menuItems = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
+            MenuItem oldMenuItem = null;
+
+            foreach (var item in menuItems)
             {
-                Id = menuItemDto.Id,
-                Name = menuItemDto.Name,
-                Description = menuItemDto.Description,
-                prepTime = menuItemDto.PrepTime.ToString(),
-                Price = menuItemDto.Price.ToString("f2"),
-                Restuarant = menuItemDto.Restuarant,
-                Category = menuItemDto.Category,
-                Rate = menuItemDto.Rate,
-                MinimumPrice = menuItemDto.MinimumPrice,
-                Availability = true,
-                ImgUrl = menuItemDto.ImgUrl,
-                PublicId = menuItemDto.publicId
-            };
-
-            //Detect change in image
-            List<MenuItem> items = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
-
-            var mItem = items.Where(i => i.Id == menuItem.Id);
-
-            MenuItem temp = null;
-
-            foreach (var m in mItem)
-            {
-                temp = m;
+                if(item.Id == menuItemDto.Id)
+                {
+                    oldMenuItem = item;
+                    break;
+                }
             }
 
-            if(temp.ImgUrl != menuItemDto.ImgUrl)
+            #region Assign Values
+            oldMenuItem.Name = menuItemDto.Name;
+            oldMenuItem.Description = menuItemDto.Description;
+            oldMenuItem.prepTime = menuItemDto.PrepTime.ToString();
+            oldMenuItem.Price = menuItemDto.Price.ToString("f2");
+            oldMenuItem.Weight = menuItemDto.Weight;
+
+            oldMenuItem.Category = menuItemDto.Category;
+            oldMenuItem.SubCategory = menuItemDto.SubCategory;
+
+            oldMenuItem.Rate = menuItemDto.Rate;
+            oldMenuItem.MinimumPrice = menuItemDto.MinimumPrice;
+
+            oldMenuItem.Availability = true;
+
+            oldMenuItem.Flavours = menuItemDto.Flavours.Count == 0 ? oldMenuItem.Flavours : menuItemDto.Flavours;
+            oldMenuItem.MeatTemperatures = menuItemDto.MeatTemperatures.Count == 0 ?
+                oldMenuItem.MeatTemperatures : menuItemDto.MeatTemperatures;
+
+            oldMenuItem.Sauces = menuItemDto.Sauces.Count == 0 ? oldMenuItem.Sauces : menuItemDto.Sauces;
+            #endregion
+
+            if (oldMenuItem.Weight != "0" && !oldMenuItem.Name.Contains("grams"))
+                oldMenuItem.Name = String.IsNullOrEmpty(oldMenuItem.Weight) ? oldMenuItem.Name : oldMenuItem.Name + " (" + oldMenuItem.Weight + " grams)";
+
+            List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
+
+            //You need to comment on why you have this block/logic here, cause it was cool when you showed Mr Billy but ahhh, I couldn't understand why it exists
+            if (oldMenuItem.Category == "Meat")
             {
-                //STORE NEW IMAGE
-
-                //Delete old image
-                await _photoService.DeletePhotoAsync(menuItem.PublicId);
-
-                //Upload new image
-
-                string path = menuItemDto.ImgUrl;
-
-                if (path != null && path != "")
+                if (subCategories.Count == 0)
                 {
-                    var result = await _photoService.AddPhotoAsync(path);
+                    List<string> subs = new List<string>();
+                    subs.Add(menuItemDto.SubCategory);
 
-                    if (result.Error != null) return BadRequest(result.Error.Message);
-
-                    menuItem.ImgUrl = result.SecureUrl.AbsoluteUri;
-                    menuItem.PublicId = result.PublicId;
+                    _firebaseDataContext.StoreData("SubCategories/" + 0, new Subcategory()
+                    {
+                        SubCategories = subs
+                    });
                 }
-            }            
+                else
+                {
+                    if (!subCategories[0].SubCategories.Contains(menuItemDto.SubCategory))
+                    {
+                        subCategories[0].SubCategories.Add(menuItemDto.SubCategory);
+                        _firebaseDataContext.StoreData("SubCategories/" + 0, subCategories[0]);
+                    }
+                }
+            }
+
+            //Detect change in image
+
+            if (!string.IsNullOrEmpty(menuItemDto.ImgUrl))
+                if (oldMenuItem.ImgUrl != menuItemDto.ImgUrl)
+                {
+                    //STORE NEW IMAGE
+
+                    //Delete old image
+                    await _photoService.DeletePhotoAsync(oldMenuItem.PublicId);
+
+                    //Upload new image
+
+                    string path = menuItemDto.ImgUrl;
+
+                    if (!string.IsNullOrEmpty(path))
+                    {
+                        var result = await _photoService.AddPhotoAsync(path);
+
+                        if (result.Error != null) return BadRequest(result.Error.Message);
+
+                        oldMenuItem.ImgUrl = result.SecureUrl.AbsoluteUri;
+                        oldMenuItem.PublicId = result.PublicId;
+                    }
+                }
 
             //Update firebase
 
-            _firebaseDataContext.EditData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
+            _firebaseDataContext.EditData("Menu/" + branchId + "/" + oldMenuItem.Id, oldMenuItem);
 
             return menuItemDto;
         }
 
+        [Authorize]
         [HttpPost("delete/{branchId}")]
         public async Task<ActionResult<MenuItemDto>> DeleteMenuItem(MenuItemDto menuItemDto, string branchId)
         {

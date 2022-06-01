@@ -37,6 +37,11 @@ import { QuantityCounterComponent } from './quantity-counter/quantity-counter.co
 import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-picker.component';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { SideBarComponent } from './side-bar/side-bar.component';
+import { AdminPortalComponent } from './admin-portal/admin-portal.component';
+import { PieChartAdvancedComponent } from './pie-chart-advanced/pie-chart-advanced.component';
+import { TextInputComponent } from './_forms/text-input/text-input.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +73,10 @@ import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-p
     QuantityCounterComponent,
     ScrollToTopComponent,
     ClosingTimePickerComponent,
+    SideBarComponent,
+    AdminPortalComponent,
+    PieChartAdvancedComponent,
+    TextInputComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +89,9 @@ import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-p
     NgMultiSelectDropDownModule.forRoot()
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

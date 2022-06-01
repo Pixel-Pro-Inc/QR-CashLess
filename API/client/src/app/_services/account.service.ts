@@ -97,6 +97,11 @@ export class AccountService extends BaseServiceService{
 
   setCurrentUser(mod: User){
     this.currentUserSource.next(mod);
+    localStorage.removeItem('user');
+  }
+
+  getCurrentUser(){
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   logout() {
