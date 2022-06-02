@@ -27,7 +27,7 @@ namespace API.Controllers
         private IFirebaseServices _firebaseServices;
 
         // I haven't tested the injection but it should work
-        public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices)
+        public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _billingServices = billingServices;
             _firebaseServices = firebaseServices;

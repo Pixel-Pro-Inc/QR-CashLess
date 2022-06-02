@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,11 @@ namespace API.Controllers
     {
         private readonly string dir = "CompletedOrders/";
         private readonly IWebHostEnvironment _env;
+        private readonly IFirebaseServices _firebaseService;
 
-        public ReportController(IWebHostEnvironment env) //:base()
+        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService) :base(firebaseService)
         {
+            _firebaseService = firebaseService;
             _env = env;
         }
         
@@ -591,7 +594,7 @@ namespace API.Controllers
 
             }
 
-            return await new ExcelController(_env).ExportData(orderfiltered);
+            return await new ExcelController(_env, _firebaseService).ExportData(orderfiltered);
 
         }
 

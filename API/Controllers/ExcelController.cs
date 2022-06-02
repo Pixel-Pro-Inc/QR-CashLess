@@ -15,13 +15,14 @@ using Microsoft.AspNetCore.Hosting;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using API.Interfaces;
 
 namespace API.Controllers
 {
     public class ExcelController: BaseApiController
     {
         private readonly string _rootPath;
-        public ExcelController(IWebHostEnvironment env) 
+        public ExcelController(IWebHostEnvironment env, IFirebaseServices firebaseServices) :base (firebaseServices)
         {
             _rootPath = env.WebRootPath;
         }

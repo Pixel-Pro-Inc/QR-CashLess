@@ -23,7 +23,7 @@ namespace API.Controllers
     {
         private IPhotoService _photoService;
 
-        public MenuController(IPhotoService photoService):base()
+        public MenuController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }

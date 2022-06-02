@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using API.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -7,7 +8,7 @@ namespace API.Controllers
 {
     public class SMSController : BaseApiController
     {
-        public SMSController() { }
+        public SMSController(IFirebaseServices firebaseServices): base(firebaseServices){ }
 
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)

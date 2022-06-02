@@ -18,7 +18,7 @@ namespace API.Controllers
     public class BranchController : BaseApiController
     {
         private IPhotoService _photoService;
-        public BranchController(IPhotoService photoService):base()
+        public BranchController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }

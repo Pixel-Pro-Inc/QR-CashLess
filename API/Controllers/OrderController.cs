@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace API.Controllers
     {
         private readonly string dir = "Order/";
 
-        public OrderController():base() { }
+        public OrderController(IFirebaseServices firebaseServices):base(firebaseServices) { }
 
         #region Create Order Item
 
