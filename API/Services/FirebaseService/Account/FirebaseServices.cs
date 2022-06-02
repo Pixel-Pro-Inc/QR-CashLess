@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -21,7 +22,7 @@ namespace API.Services
     // REFACTOR: Consider using types here so that we don't have to be specific
     public partial class FirebaseServices : IFirebaseServices
     {
-        // TODO: Since this is the only place where we expect to do the deserialization, it is here where we will make sure the extention works for the JsonConverter
+        // TODO: Add this in every controller so that we have less repeating code
         public readonly FirebaseDataContext _firebaseDataContext;
 
         public FirebaseServices()
@@ -32,7 +33,7 @@ namespace API.Services
         public async Task<AppUser> GetUser(string username) 
         {
             var response = await _firebaseDataContext.GetData("Account");
-            List<AppUser> items = getResponseList<AppUser>(response);
+            List<AppUser> items = response.FromJsonToObject<AppUser>();
 
             // This is so we have either a null value returned or the actual user
             AppUser user = null;
@@ -43,7 +44,7 @@ namespace API.Services
         public async Task<List<AppUser>> GetAdminAccounts()
         {
             var response = await _firebaseDataContext.GetData("Account");
-            List<AppUser> Users = getResponseList<AppUser>(response);
+            List<AppUser> Users = response.FromJsonToObject<AppUser>();
 
             // Removes any one who isn't an admin user
             foreach (var user in Users)
@@ -58,30 +59,13 @@ namespace API.Services
         {
             var response = await _firebaseDataContext.GetData("Account/BilledAccounts");
             // REFACTOR: Consider just using the isbilled bool and return those with true. So you don't have to make another node
-            return getResponseList<BilledUser>(response);
+            return response.FromJsonToObject<BilledUser>();
         }
        
 
         //TODO: Add other account firebase calls here please
 
-        // REFACTOR: This should be in the JsonConverterExtension
-       /// <summary>
-       ///  Gives the response from the firebase context in the expected format
-       /// </summary>
-       /// <typeparam name="T"> This should be any thing that the base entity is a parent of</typeparam>
-       /// <param name="response"> This respons is to come from the firebaseDatacontext get method</param>
-       /// <returns>List of type <typeparamref name="T"/></returns>
-        List<T> getResponseList<T>(List<object> response)where T : BaseEntity
-        {
-            List<T> items = new List<T>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                // This adds the deserialized list in the format into the type we are returning
-                items.Add(JsonConvert.DeserializeObject<T>(((JObject)response[i]).ToString()));
-            }
-            return items;
-
-        }
+      
 
 
     }

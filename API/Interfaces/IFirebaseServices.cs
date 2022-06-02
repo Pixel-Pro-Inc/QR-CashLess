@@ -9,8 +9,6 @@ namespace API.Interfaces
     public interface IFirebaseServices
     {
         // TODO: Have all the firebase methods that are called throughout the project defined here
-        // Even though there will be many partial classes, I think it would be wiser to put all the methods here cause there will
-        // be alot of methods but it would be good to track them all in regions representing each partial class
 
         /// <summary>
         /// Gets the specific user from the database
