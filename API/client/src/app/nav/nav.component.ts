@@ -30,7 +30,8 @@ export class NavComponent implements OnInit {
             this.admin = true;
           }
           else if(this.user.developer) {
-            this.developer = true;  
+            // This is so when ever we need to access the developer boolean it will be set
+            this.accountService.developer=this.developer = true;  
           }
           else{
             this.kitchenStaff = true;

@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        /*
+        This is a config so that you can launch chrome. The profile is synced and you don't
+        have to fire ng first. It does that automatically
+         */
+        {
+            "name": "Launch ng s & Chrome",
+            "type": "chrome",
+            "request": "launch",
+            // Make sure you configure task.json for this to work properly
+            "preLaunchTask": "npm: start",
+            "url": "https://localhost:4200/billing",
+            //We use userProfile cause we want our changes to be saved
+            "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
+            "webRoot": "${workspaceFolder}"
+        },
+        /*
+        This is a config so that you can launch edge. The profile is synced
+         */
+        {
+            "type": "pwa-msedge",
+            "request": "launch",
+            "name": "Launch Edge against localhost- Please start serving first",
+            "url": "https://localhost:4200/billing",
+            "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
+            "webRoot": "${workspaceFolder}"
+          },
+          /*
+          This is a config so that you can just launch chrome, nothing special, no profiles after restart
+          */
+          {
+            "name": "Non-sync clear Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "https://localhost:4200/billing",
+            "webRoot": "${workspaceFolder}"
+        },
+        
+    ]
+}

@@ -9,34 +9,25 @@
       <div class="dropdown-menu mt-3" *dropdownMenu>
         <ng-container class="mr-5">
           <div class="dropdown-divider"></div>
-          <ng-container>
-            <a class="dropdown-item" routerLink="/menu/edit">
-              Menu
-            </a>
-            <a class="dropdown-item" routerLink="/register/user">
-              Register Staff
-            </a>
-            <a class="dropdown-item" routerLink="/">
-              Switch Branch
-            </a>
-            <a class="dropdown-item" routerLink="/dashboard">
-              Dashboard
-            </a>
-            <a class="dropdown-item" *ngIf="!developer" routerLink="/billing">
-              Billing & Payments
-            </a>
-          </ng-container>
-          <ng-container *ngIf="developer">
-            <a class="dropdown-item" routerLink="/register/admin">
-              Register Admin
-            </a>
-            <a class="dropdown-item" routerLink="/register/branch">
-              Register Branch
-            </a>
-          </ng-container>
+          <a class="dropdown-item" routerLink="/menu/edit">
+            Menu
+          </a>
+          <a class="dropdown-item" routerLink="/">
+            Switch Branch
+          </a>
+          <a class="dropdown-item" routerLink="/dashboard">
+            Dashboard
+          </a>
+          <a class="dropdown-item" *ngIf="!developer" routerLink="/billing">
+            Billing & Payments
+          </a>
+          <a class="dropdown-item" *ngIf="developer" routerLink="/accountmanagement">
+            Account Management
+          </a>
           <a class="dropdown-item" (click)="logout()">
             Logout
           </a>
+          <div class="dropdown-divider"></div>
         </ng-container>        
       </div>
     </div>

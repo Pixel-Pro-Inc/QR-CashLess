@@ -10,12 +10,21 @@ Each of the branches should be clickable and it will show more details about the
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+            <li class="breadcrumb-item active"><a routerLink="/accountmanagement">Account Management</a></li>
             <li class="breadcrumb-item active">Billing & Payments</li>
           </ol>
         </nav>
     </div>
+    <!-- This below should be in the customer div-->
+    <button (click)="GetBranches()"> GetBranches</button>
     <script > showdetail:Boolean=false; //This is so when you click the branch it will flip to show or not the payment details</script>
-    <div class="list-group ml-2 mr-5">
+    
+    <!-- This is supposed to show all the admin users so that we can try to set them to BilledUsers-->
+    <div class="list-group ml-2 mr-5" *ngIf="developer">
+        
+    </div>
+    <!--
+ <div class="list-group ml-2 mr-5" *ngIf="!developer">
         <ng-container *ngFor="let branch of BilledBranches">
             <a (click)="!showdetail" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
                 <img *ngIf="branch.img != null" src="{{branch.img}}" width="100" alt="location">
@@ -23,7 +32,7 @@ Each of the branches should be clickable and it will show more details about the
                     <div>
                         <h4 class="mb-0">{{branch.name}}</h4>
                         <p class="mb-0 opacity-75">{{branch.location}}</p>
-                        <!--TODO: Mark the status of the branch unavailable when the developer turns it off-->
+                        TODO: Mark the status of the branch unavailable when the developer turns it off
                         <ng-container *ngIf="showdetail">
                             <b class="text-success opacity-50 text-nowrap">
                                 Next due payment date: 
@@ -48,8 +57,10 @@ Each of the branches should be clickable and it will show more details about the
                 </div>
               </a>
         </ng-container>    
-        <!-- TODO: This doesn't give the string as it is supposed to -->
-        <h4> Total payment due: {{GetTotalPaymentDue()}}</h4>
+         TODO: This doesn't give the string as it is supposed to
+     <h4> Total payment due: {{GetTotalPaymentDue()}}</h4>
     </div>
+    -->
+   
    
 </div>

@@ -13,6 +13,9 @@ export class AccountService extends BaseServiceService{
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
+  // I need to use the developer boolean in several components so its only smart to use it in a service
+  developer = false;
+
   constructor(http: HttpClient) {
     super(http);
   }
@@ -47,4 +50,14 @@ export class AccountService extends BaseServiceService{
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
   }
+  // TODO: Try to get the Admin Users so that we can chose from there as developers which ones can be billed
+  getAdminUsers(){
+    throw Error("You didn't implement this method in the API");
+    return this.http.get(this.baseUrl + "account/getadminusers").pipe(
+      map((response: User[]) => {
+        return response;
+      })
+    );
+  }
+
 }

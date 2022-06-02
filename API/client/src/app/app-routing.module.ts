@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AccountmanagementComponent } from './accountmanagement/accountmanagement.component';
 import { AdminComponent } from './admin/admin.component';
 import { BillingComponent } from './billing/billing.component';
 import { CheckoutComponent } from './checkout/checkout.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent},
   { path: 'billing', component: BillingComponent},
+  { path: 'accountmanagement', component: AccountmanagementComponent},
   { path: '**', component: NotfoundComponent, pathMatch: 'full'}
 ];
 
