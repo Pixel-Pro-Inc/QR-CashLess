@@ -30,5 +30,11 @@ namespace API.Interfaces
         /// <returns></returns>
         public Task<List<BilledUser>> GetBilledAccounts();
 
+        /// <summary>
+        /// Returns all accounts that are adminstrator level
+        /// </summary>
+        /// <returns> A list of administator users in type <see cref="AppUser"/></returns>
+        public Task<List<AppUser>> GetAdminAccounts();
+
     }
 }

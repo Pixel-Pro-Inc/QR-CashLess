@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Entities
 {
-    public class OrderItem
+    public class OrderItem:BaseEntity
     {
         public string OrderNumber { get; set; }
         public int Id { get; set; }

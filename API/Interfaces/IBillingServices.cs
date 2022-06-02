@@ -8,7 +8,7 @@ namespace API.Interfaces
 {
     /// <summary>
     /// Interface for the BillingService. 
-    /// Will state the required methods and actions needed to perform the billing 
+    /// It states the required methods and actions needed to perform the billing 
     /// </summary>
     public interface IBillingServices
     {

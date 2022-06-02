@@ -86,9 +86,10 @@ namespace API.Services
 
         // TODO: This is to be called by the automatic call. I'm thinking maybe it should be done by the hosting, azure and only 4 times a month
         /// <summary>
-        /// Checks for the Users with overdue branches and sends them the bill while also sending the developers an email
-        /// about the option of disabling functionality temporally.
+        /// Checks for the Users with overdue branches and reports the findings
         /// </summary>
+        /// <remarks>It does this by sending them the bill while also sending the developers an email
+        /// about the option of disabling functionality temporally.</remarks>
         /// <returns></returns>
         private async Task ReportOverDueStatements()
         {

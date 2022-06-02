@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Entities
 {
-    public class MenuItem
+    public class MenuItem:BaseEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }

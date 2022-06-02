@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Entities
 {
-    public class Branch
+    public class Branch:BaseEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }

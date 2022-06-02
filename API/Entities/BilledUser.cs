@@ -7,9 +7,10 @@ namespace API.Entities
 {
     /// <summary>
     /// This is a User who is expected to be Billed at the end of every month
-    /// 
-    /// This will either be Managers or whoever is representing the franchansiee
     /// </summary>
+    /// <remarks>
+    /// This will either be Managers or whoever is representing the franchansiee
+    /// </remarks>
     public class BilledUser:AppUser
     {
         public DateTime LastPaidDate { get; set; }

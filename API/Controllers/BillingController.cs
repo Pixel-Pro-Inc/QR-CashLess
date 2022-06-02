@@ -14,9 +14,12 @@ namespace API.Controllers
     /// <summary>
     /// This sends emails to the debtors and confirmation messages when paid.
     /// 
-    /// I don't expect to put any if only a little of the business logic here.
-    /// It will have very little to no business logic. 
+    /// 
     /// </summary>
+    /// <remarks>
+    /// It will have very little to no business logic. Any computation should be service by
+    /// <see cref="BillingServices"/>
+    /// </remarks>
     public class BillingController:BaseApiController
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
@@ -30,13 +33,15 @@ namespace API.Controllers
             _firebaseServices = firebaseServices;
         }
 
-        // REFACTOR: Within BillingServices there is a method that is to be called automatically that calls this method.
+        // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.
         /// <summary>
-        /// This will be an automatic sender that will send the bill email.
-        /// It will be given the date of the client, and client info and if it is past due it will send this method
-        /// 
-        /// It doesn't need to be public, cause its called automatically, and noone should really tamper with it. Its internal cause Services need to use it
+        /// This will be an automatic sender that will send the bill as an email.
         /// </summary>
+        /// <remarks> It will be given the client info and if it is past due it will send this method
+        /// <para>
+        /// Its internal cause <see cref="BillingServices"/> need to use it, but its not public cause I don't want anyone to just tamper with it
+        /// </para>
+        /// </remarks>
         /// <param name="BillInfo"></param>
         /// <returns></returns>
         [HttpGet("sendbill/{BillInfo}")]
@@ -59,6 +64,9 @@ namespace API.Controllers
 
         }
 
+        /// <summary>
+        /// Send email to developers about the ability to stop the branches functionality.
+        /// </summary>
         private void InformBillToDeveloper()
         {
             // TODO: Send email to developers about the ability to send Emails.
@@ -101,8 +109,8 @@ namespace API.Controllers
         public string GetDueDate() => _billingServices.DueDate().ToString();
 
 
-        [HttpGet("getbranches")]
-        public async Task<List<BilledUser>> GetUsersBilledBranches() => await _firebaseServices.GetBilledAccounts();
+        [HttpGet("getbilledusers")]
+        public async Task<List<BilledUser>> GetBilledUsers() => await _firebaseServices.GetBilledAccounts();
 
 
 
@@ -110,13 +118,13 @@ namespace API.Controllers
         /// This is an Billing exclusive method that was extracted to set the user
         /// </summary>
         /// <param name="User"></param>
-        private void SetParameters(UserDto UserDto)
+        private async void SetParameters(UserDto UserDto)
         {
-            // TODO: Have the firebaseService gibe the user that it is looking for
+
+            AppUser appUser = await _firebaseServices.GetUser(UserDto.Username);
             try 
             { 
-                // FIXME: This should be got from the database as a user from the UserDto 
-                //_billingServices.SetUser(BillInfoDto.User);
+                _billingServices.SetUser(appUser);
                 _billingServices.SetCurrentDate(System.DateTime.Today);
             }
             catch (UnBillableUserException)
