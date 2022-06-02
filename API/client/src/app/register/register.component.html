@@ -5,8 +5,18 @@
     width="300"
     class="mt-5"/>
 </div>
+<div class="pagetitle" style="margin-left: 100px; margin-right: 100px;">
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/accountmanagement" >Account Management</a></li>
+      <li class="breadcrumb-item active">Register</li>
+    </ol>
+  </nav>
+</div>
 
   <h3>Register</h3>
+ 
   <form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
     <hr>
     <div class="form-group">
