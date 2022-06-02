@@ -24,13 +24,11 @@ namespace API.Controllers
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
         private IBillingServices _billingServices;
-        private IFirebaseServices _firebaseServices;
 
         // I haven't tested the injection but it should work
         public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _billingServices = billingServices;
-            _firebaseServices = firebaseServices;
         }
 
         // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.

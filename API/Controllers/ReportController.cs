@@ -20,11 +20,9 @@ namespace API.Controllers
     {
         private readonly string dir = "CompletedOrders/";
         private readonly IWebHostEnvironment _env;
-        private readonly IFirebaseServices _firebaseService;
 
         public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService) :base(firebaseService)
         {
-            _firebaseService = firebaseService;
             _env = env;
         }
         
@@ -594,7 +592,7 @@ namespace API.Controllers
 
             }
 
-            return await new ExcelController(_env, _firebaseService).ExportData(orderfiltered);
+            return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
 
         }
 
