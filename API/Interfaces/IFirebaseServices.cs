@@ -10,12 +10,7 @@ namespace API.Interfaces
     {
         // TODO: Have all the firebase methods that are called throughout the project defined here
 
-        /// <summary>
-        /// Gets the specific user from the database
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public Task<AppUser> GetUser(string username);
+       
 
         /// <summary>
         /// This gets all the Billed Users from the database.
@@ -34,5 +29,31 @@ namespace API.Interfaces
         /// <returns> A list of administator users in type <see cref="AppUser"/></returns>
         public Task<List<AppUser>> GetAdminAccounts();
 
+        /// <summary>
+        /// Gets all the users under the firebase directory 'Account'
+        /// </summary>
+        /// <returns> List of <see cref="AppUser"/></returns>
+        public Task<List<AppUser>> GetAllUsers();
+
+        /// <summary>
+        /// Gets the specific user from the database
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Task<AppUser> GetUser(string username);
+
+        /// <summary>
+        /// Checks if the username exists
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns> <see cref="bool"/> true or false</returns>
+        public Task<bool> isUserTaken(string username);
+
+        /// <summary>
+        /// Creates the user id for the first time. 
+        /// <para> We don't expect to use this too much but of course everytime a User is made </para>
+        /// </summary>
+        /// <returns> an <see cref="int"/> that hasn't been used before</returns>
+        public Task<int> CreateId();
     }
 }

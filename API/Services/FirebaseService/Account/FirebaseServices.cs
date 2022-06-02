@@ -30,10 +30,17 @@ namespace API.Services
             _firebaseDataContext = new FirebaseDataContext();
         }
 
-        public async Task<AppUser> GetUser(string username) 
+        #region User calls
+
+        public async Task<List<AppUser>> GetAllUsers()
         {
             var response = await _firebaseDataContext.GetData("Account");
             List<AppUser> items = response.FromJsonToObject<AppUser>();
+            return items;
+        }
+        public async Task<AppUser> GetUser(string username)
+        {
+            List<AppUser> items = await GetAllUsers();
 
             // This is so we have either a null value returned or the actual user
             AppUser user = null;
@@ -41,10 +48,28 @@ namespace API.Services
             user = items.SingleOrDefault(x => x.UserName == username.ToLower());
             return (user);
         }
+        public async Task<bool> isUserTaken(string username)
+        {
+            List<AppUser> items = await GetAllUsers();
+            return items.Any(x => x.UserName == username.ToLower());
+        }
+        public async Task<int> CreateId()
+        {
+            List<AppUser> items = await GetAllUsers();
+
+            int ran = new Random().Next(10000, 99999);
+
+            while (items.Any(x => x.Id == ran))
+            {
+                ran = new Random().Next(10000, 99999);
+            }
+
+            return ran;
+        }
+
         public async Task<List<AppUser>> GetAdminAccounts()
         {
-            var response = await _firebaseDataContext.GetData("Account");
-            List<AppUser> Users = response.FromJsonToObject<AppUser>();
+            List<AppUser> Users = await GetAllUsers();
 
             // Removes any one who isn't an admin user
             foreach (var user in Users)
@@ -61,11 +86,14 @@ namespace API.Services
             // REFACTOR: Consider just using the isbilled bool and return those with true. So you don't have to make another node
             return response.FromJsonToObject<BilledUser>();
         }
-       
 
         //TODO: Add other account firebase calls here please
 
-      
+        #endregion
+
+
+
+
 
 
     }

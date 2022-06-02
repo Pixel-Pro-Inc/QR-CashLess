@@ -21,15 +21,16 @@ namespace API.Controllers
         private readonly ITokenService _tokenService;
         private string dir = "Account";
 
-        public AccountController(ITokenService tokenService):base()
+        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices) :base(firebaseServices)
         {
             _tokenService = tokenService;
+            // UPDATE: I removed all references to firebaseDatacontext and replaces it with _firebaseServices
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserTaken(registerDto.Username))
+            if (await _firebaseServices.isUserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
             using var hmac = new HMACSHA512();
@@ -49,7 +50,7 @@ namespace API.Controllers
             // _firebaseDataContext.StoreData("Account/BilledAccounts" + "/" + user.Id.ToString(), user);
 
 
-            user.Id = await GetNum();
+            user.Id = await _firebaseServices.CreateId();
 
             _firebaseDataContext.StoreData(dir + "/" + user.Id.ToString(), user);
 
@@ -63,10 +64,10 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            if ((await GetUser(loginDto.Username)) == null)
+            if ((await _firebaseServices.GetUser(loginDto.Username)) == null)
                 return Unauthorized("Username doesn't exist");
 
-            AppUser user = (await GetUser(loginDto.Username));
+            AppUser user = (await _firebaseServices.GetUser(loginDto.Username));
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             Byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -88,58 +89,7 @@ namespace API.Controllers
                 SuperUser = user.SuperUser
             };
         }
-        
-        // REFACTOR: Have the repeating code extracted and made into a service all controllers can use
-        public async Task<bool> UserTaken(string username)
-        {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
 
-                items.Add(item);
-            }
-
-            return items.Any(x => x.UserName == username.ToLower());
-        }
-        public async Task<AppUser> GetUser(string username)
-        {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-
-                AppUser data = JsonConvert.DeserializeObject<AppUser>(((JObject)item).ToString());
-
-                items.Add(data);
-            }
-
-            AppUser user = null;
-
-            user = items.SingleOrDefault(x => x.UserName == username.ToLower());
-            return (user);
-        }
-        public async Task<int> GetNum()
-        {
-            var response = await _firebaseDataContext.GetData(dir);
-            List<AppUser> items = new List<AppUser>();
-            for (int i = 0; i < response.Count; i++)
-            {
-                AppUser item = JsonConvert.DeserializeObject<AppUser>(((JObject)response[i]).ToString());
-
-                items.Add(item);
-            }
-
-            int ran = new Random().Next(10000, 99999);
-
-            while (items.Any(x => x.Id == ran))
-            {
-                ran = new Random().Next(10000, 99999);
-            }
-
-            return ran;
-        }
+       
     }
 }
