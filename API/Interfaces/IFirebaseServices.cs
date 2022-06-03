@@ -55,5 +55,14 @@ namespace API.Interfaces
         /// </summary>
         /// <returns> an <see cref="int"/> that hasn't been used before</returns>
         public Task<int> CreateId();
+
+        /// <summary>
+        /// Gets the branches in the database under the node 'Branch'
+        /// 
+        /// <para>
+        /// The list of objects is Converted with <see cref="JsonConvertExtensions"/> into the return type</para>
+        /// </summary>
+        /// <returns> List of <see cref="Branch"/></returns>
+        public Task<List<Branch>> GetBranchesFromDatabase();
     }
 }

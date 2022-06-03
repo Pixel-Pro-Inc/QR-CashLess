@@ -30,6 +30,12 @@ namespace API.Services
             _firebaseDataContext = new FirebaseDataContext();
         }
 
+        #region General
+
+
+
+        #endregion
+
         #region User calls
 
         public async Task<List<AppUser>> GetAllUsers()
@@ -88,6 +94,18 @@ namespace API.Services
         }
 
         //TODO: Add other account firebase calls here please
+
+        #endregion
+
+        #region Branch calls
+
+        public async Task<List<Branch>> GetBranchesFromDatabase()
+        {
+            var response = await _firebaseDataContext.GetData("Branch");
+            List<Branch> branches = response.FromJsonToObject<Branch>();
+
+            return branches;
+        }
 
         #endregion
 
