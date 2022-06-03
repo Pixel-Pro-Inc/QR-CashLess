@@ -52,7 +52,7 @@ namespace API.Controllers
 
             user.Id = await _firebaseServices.CreateId();
 
-            _firebaseDataContext.StoreData(dir + "/" + user.Id.ToString(), user);
+            _firebaseServices.StoreData(dir + "/" + user.Id.ToString(), user);
 
             return new UserDto()
             {

@@ -31,16 +31,7 @@ namespace API.Controllers
         [HttpGet("getmenu/{branchId}")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
         {
-            List<MenuItem> items = new List<MenuItem>();
-
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menu);
-            }
+            List<MenuItem> items = await _firebaseServices.GetMenu(branchId);
 
             return items;
         }
@@ -79,21 +70,13 @@ namespace API.Controllers
 
             menuItem.Id = n;
 
-            _firebaseDataContext.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
 
             return menuItemDto;
         }
         public async Task<int> GetId(string branchId)
         {
-            List<MenuItem> items = new List<MenuItem>();
-
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            foreach (var item in response)
-            {
-                MenuItem data = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(data);
-            }
+            List<MenuItem> items = await _firebaseServices.GetMenu(branchId);
 
             if (items.Count != 0)
             {
@@ -141,14 +124,7 @@ namespace API.Controllers
             //Detect change in image
             List<MenuItem> items = new List<MenuItem>();
 
-            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
-
-            for (int i = 0; i < response.Count; i++)
-            {
-                var item = response[i];
-                MenuItem menu = JsonConvert.DeserializeObject<MenuItem>(((JObject)item).ToString());
-                items.Add(menu);
-            }
+            var response = await _firebaseServices.GetMenu( branchId);
 
             var mItem = items.Where(i => i.Id == menuItem.Id);
 
@@ -182,8 +158,8 @@ namespace API.Controllers
             }            
 
             //Updates firebase
-
-            _firebaseDataContext.EditData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
+            // UPDATE: I noticed that StoreData and edit have the same function so I reuse them
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
 
             return menuItemDto;
         }
@@ -195,7 +171,7 @@ namespace API.Controllers
             await _photoService.DeletePhotoAsync(menuItemDto.publicId);
 
             //Delete Item from Firebase
-            _firebaseDataContext.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
+            _firebaseServices.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
 
             return menuItemDto;
         }

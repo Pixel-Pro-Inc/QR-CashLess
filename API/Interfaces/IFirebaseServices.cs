@@ -10,7 +10,20 @@ namespace API.Interfaces
     {
         // TODO: Have all the firebase methods that are called throughout the project defined here
 
-       
+        /// <summary>
+        /// This is to write in an object an a path, even if it has to overwrite. 
+        /// <para> This takes in the <paramref name="thing"/> and the <paramref name="path"/> that it will be stored in </para>
+        /// <para> NOTE: This doubles for both storing and editing data in the database cause both overwrite whatever is in the database</para>
+        /// </summary>
+        /// <returns></returns>
+        public void StoreData(string path, object thing);
+
+        /// <summary>
+        /// This is to remove anything that is within the <paramref name="fullpath"/> in the database including subfolders
+        /// <para>I'm assuming it does it by overwriting anything in there with null</para>
+        /// </summary>
+        /// <param name="path"></param>
+        public void DeleteData(string fullpath);
 
         /// <summary>
         /// This gets all the Billed Users from the database.
@@ -64,5 +77,30 @@ namespace API.Interfaces
         /// </summary>
         /// <returns> List of <see cref="Branch"/></returns>
         public Task<List<Branch>> GetBranchesFromDatabase();
+
+        /// <summary>
+        /// This takes one of three paths ( "CompletedOrders", "CancelledOrders", "UnCompletedOrders") and the branchId
+        /// <para> then it combines them to make the node path to get the orders within that node</para>
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="branchId"></param>
+        /// <returns> List of 'Orders' as a List of a List of <see cref="OrderItem"/></returns>
+        public Task<List<List<OrderItem>>> GetOrders(string path , string branchId);
+
+        /// <summary>
+        /// An overload of <see cref="GetOrders(string, string)"/>
+        /// <para> This one just takes the branch Id and returns a single list of orders in that "Order/"<paramref name="branchId"/></para>
+        /// </summary>
+        /// <param name="branchId"></param>
+        /// <returns> 'Orders' as a List of <see cref="OrderItem"/></returns>
+        public Task<List<OrderItem>> GetOrders(string branchId);
+
+        /// <summary>
+        /// This takes the branch Id and gets the menu items that are available in that branch 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="branchId"></param>
+        /// <returns> List of <see cref="MenuItem"/></returns>
+        public Task<List<MenuItem>> GetMenu(string branchId);
     }
 }

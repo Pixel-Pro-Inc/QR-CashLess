@@ -30,9 +30,39 @@ namespace API.Services
             _firebaseDataContext = new FirebaseDataContext();
         }
 
-        #region General
+        public void StoreData(string path, object thing)=> _firebaseDataContext.StoreData(path, thing);
+        public void DeleteData(string fullpath) => _firebaseDataContext.DeleteData(fullpath);
 
+        #region Order calls
 
+        public async Task<List<List<OrderItem>>> GetOrders(string path, string branchId)
+        {
+            var response = await _firebaseDataContext.GetData(path + branchId);
+            List<List<OrderItem>> items = response.FromJsonToObject<List<OrderItem>>();
+
+            return items;
+        }
+
+        //NOTE: This is an overload of the above method
+        public async Task<List<OrderItem>> GetOrders(string branchId)
+        {
+            var response = await _firebaseDataContext.GetData("Order/" + branchId);
+            List<OrderItem> items = response.FromJsonToObject<OrderItem>();
+
+            return items;
+        }
+
+        #endregion
+
+        #region Menu calls
+
+        public async Task<List<MenuItem>> GetMenu(string branchId)
+        {
+            var response = await _firebaseDataContext.GetData("Menu/" + branchId);
+            List<MenuItem> items = response.FromJsonToObject<MenuItem>();
+
+            return items;
+        }
 
         #endregion
 

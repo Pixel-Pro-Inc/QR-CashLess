@@ -26,6 +26,9 @@ namespace API.Controllers
             _env = env;
         }
         
+        //REFACTOR: We might need a Report Service
+        // TODO: Make a report Service
+
         [HttpPost("sales/total")]
         public async Task<ActionResult<List<SalesDto>>> GetTotalSales(ReportDto reportDto)
         {
@@ -70,6 +73,8 @@ namespace API.Controllers
 
             List<Hashtable> hashtables = new List<Hashtable>();            
 
+
+            // REFACTOR: Please please, there has to be another way
             foreach (var order in ordersgiven)
             {
                 foreach (var item in order)
@@ -134,6 +139,7 @@ namespace API.Controllers
             return hashtables;
         }
 
+        // TODO: Put this in the report service
         bool FilterByCategory(ReportDto reportDto)
         {
             if (reportDto.Category != null)
@@ -145,6 +151,7 @@ namespace API.Controllers
             return false;           
         }
 
+        // TODO: put this in the report service
         bool FilterByName(ReportDto reportDto)
         {
             if (reportDto.Name != null)
@@ -163,6 +170,7 @@ namespace API.Controllers
 
             List<List<OrderItem>> temp = new List<List<OrderItem>>();
 
+            // REFACTOR: Please please, there has to be another way
             foreach (var item in results)
             {
                 string x = item[0].OrderNumber;
@@ -238,6 +246,7 @@ namespace API.Controllers
             float card = 0;
             float online = 0;
 
+            // REFACTOR: Please please, there has to be another way
             foreach (var item in ordersgiven)
             {
                 foreach (var order in item)
@@ -300,7 +309,7 @@ namespace API.Controllers
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now
             };
-
+            // TODO: Put this in the Report Service
             reportDto.BranchId = id;
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
@@ -340,6 +349,7 @@ namespace API.Controllers
                 EndDate = DateTime.Now
             };
 
+            // TODO: Put this in the report Service
             reportDto.BranchId = id;
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
@@ -439,6 +449,7 @@ namespace API.Controllers
 
             return hashtable;
         }
+        // TODO: put this in the report service
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
@@ -478,6 +489,7 @@ namespace API.Controllers
 
             return eligibleOrders;
         }
+        // TODO: put this in the report service
         public async Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto)
         {
             List<BranchDto> branches = new List<BranchDto>();
@@ -596,13 +608,16 @@ namespace API.Controllers
 
         }
 
+        // TODO: put this in the report service
         string GetOrderNumber(string OrderNumber)
         {
             return OrderNumber.Substring(OrderNumber.IndexOf('_') + 1, 4);
         }
+        // TODO: put this in the report service
         string FormatAmountString(float amount) // format 1,000,000.00
         {
             return String.Format("{0:n}", amount);
         }
+
     }
 }

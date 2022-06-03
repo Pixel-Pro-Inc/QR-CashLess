@@ -62,6 +62,7 @@ namespace API.Controllers
 
         }
 
+        // TODO: put this in the report service
         /// <summary>
         /// Send email to developers about the ability to stop the branches functionality.
         /// </summary>
@@ -71,6 +72,7 @@ namespace API.Controllers
             throw new NotImplementedException();
         }
 
+        // TODO: put this in the report service
         /// <summary>
         /// Sends the bill as an Email to the debtor
         /// </summary>
