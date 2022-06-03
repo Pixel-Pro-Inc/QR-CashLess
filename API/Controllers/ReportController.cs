@@ -453,15 +453,8 @@ namespace API.Controllers
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
-            var result = await _firebaseDataContext.GetData(dir + reportDto.BranchId);
 
-            List<List<OrderItem>> orders = new List<List<OrderItem>>();
-
-            foreach (var item in result)
-            {
-                var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-                orders.Add(pain);
-            }
+            List<List<OrderItem>> orders = await _firebaseServices.GetOrders(dir, reportDto.BranchId);
 
             foreach (var order in orders)
             {
@@ -494,23 +487,21 @@ namespace API.Controllers
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData("Branch");
+            var response = await _firebaseServices.GetBranchesFromDatabase();
 
             foreach (var item in response)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
-
-                TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
+                TimeSpan timeSpan = DateTime.UtcNow - item.LastActive;
 
                 float x = (float)(timeSpan.TotalMinutes);
 
                 BranchDto branchDto = new BranchDto()
                 {
-                    Id = branch.Id,
-                    Img = branch.ImgUrl,
+                    Id = item.Id,
+                    Img = item.ImgUrl,
                     LastActive = x,
-                    Location = branch.Location,
-                    Name = branch.Name
+                    Location = item.Location,
+                    Name = item.Name
                 };
 
                 branches.Add(branchDto);
@@ -521,13 +512,7 @@ namespace API.Controllers
 
             for (int i = 0; i < branches.Count; i++)
             {
-                var result = await _firebaseDataContext.GetData(dir + branches[i].Id);
-
-                foreach (var item in result)
-                {
-                    var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-                    orders.Add(pain);
-                }
+                orders.Add( await _firebaseServices.GetOrders(branches[i].Id));
             }
 
             foreach (var order in orders)

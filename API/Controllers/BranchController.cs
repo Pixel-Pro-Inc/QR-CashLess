@@ -67,7 +67,7 @@ namespace API.Controllers
                 branch.PublicId = result.PublicId;
             }        
 
-            _firebaseDataContext.StoreData("Branch/" + dto.Id, branch);
+            _firebaseServices.StoreData("Branch/" + dto.Id, branch);
 
             return dto;
         }

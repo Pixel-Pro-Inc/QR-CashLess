@@ -21,7 +21,8 @@ namespace API.Controllers
     public class BaseApiController : Controller
     {
         // OBSOLETE: We are phasing this out to use firebaseServices
-        protected readonly FirebaseDataContext _firebaseDataContext;
+        //protected readonly FirebaseDataContext _firebaseDataContext;
+
         protected readonly IFirebaseServices _firebaseServices;
         protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
         protected static readonly HttpClient client = new HttpClient();
@@ -30,7 +31,7 @@ namespace API.Controllers
         {
             // NOTE: The below comment is independent of of the firebase refactor
             // @Yewo: NOTE: It appears we use legacy deprecated credentials and we should switch to Admin SDK, so that's why it is throwing the No host exception ........prolly
-            _firebaseDataContext = new FirebaseDataContext();
+            //_firebaseDataContext = new FirebaseDataContext();
             _firebaseServices = firebaseServices;
         }
 
