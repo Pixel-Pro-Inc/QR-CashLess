@@ -52,7 +52,7 @@ export class AccountService extends BaseServiceService{
   }
   // TODO: Try to get the Admin Users so that we can chose from there as developers which ones can be billed
   getAdminUsers(){
-    throw Error("You didn't implement this method in the API");
+    
     return this.http.get(this.baseUrl + "account/getadminusers").pipe(
       map((response: User[]) => {
         return response;

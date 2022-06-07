@@ -106,15 +106,14 @@ namespace API.Services
         public async Task<List<AppUser>> GetAdminAccounts()
         {
             List<AppUser> Users = await GetAllUsers();
-
-            // Removes any one who isn't an admin user
+            List<AppUser> AdminUsers = new List<AppUser>();
             foreach (var user in Users)
             {
-                if (user.Admin == false)
-                    Users.Remove(user);
+                if (user.Admin) AdminUsers.Add(user);
+
             }
 
-            return Users;
+            return AdminUsers;
         }
         public async Task<List<BilledUser>> GetBilledAccounts()
         {

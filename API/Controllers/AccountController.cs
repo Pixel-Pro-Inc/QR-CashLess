@@ -90,8 +90,8 @@ namespace API.Controllers
             };
         }
 
-        //REFACTOR: Consider putting a call like getadminusers(). The alternative is to just get all the users and then filter in the view
-        // TODO: getting the admin users for the billing view
+        [HttpGet("getadminusers")]
+        public async Task<List<AppUser>> GetAdminUsers() => await _firebaseServices.GetAdminAccounts();
 
     }
 }

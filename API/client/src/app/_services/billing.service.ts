@@ -66,10 +66,10 @@ export class BillingService extends BaseServiceService {
     );
   }
   /**
-   * This method compares the billedUsers in the database to the current user 
-   * and sets the current user to the billedUser equivalent.
+   * This method compares the billedUsers in the database to the given user 
+   * and sets the user to the billedUser equivalent if there is no equivalent.
    */
-  setCurrentUserasBilledUser(){
+  setSelectedUserasBilledUser(selectedUser: User){
     var users:Billeduser[];
      //gets all the billed users
      this.GetBilledUsers().subscribe(
@@ -77,10 +77,13 @@ export class BillingService extends BaseServiceService {
         users=response;
       }
     );
+
+    //#region  This should be replaced with the selected logic
+
     // This is to make sure we start on a fresh variable
     this.CurrentUser==null
     // sets the single user
-    const currentUser= this.accountService.currentUser$.subscribe(
+    this.accountService.currentUser$.subscribe(
       response=>{
         users.forEach(_user => {
           // Checks if the current user matchs any of the billed users
@@ -93,9 +96,12 @@ export class BillingService extends BaseServiceService {
         if(this.CurrentUser==null)throw new UnBillableUserException(403,"You aren't a user that Pixel Pro bills");
       }
     );
+
+    //#endregion
+    
   }
   /**
-   * filteres collected branches to match what the user has
+   * filteres collected branches to match what the user manages
    */
   filterBranches():Branch[]{
     // UPDATE: so we put the filtering mechanism inside the filter branches

@@ -16,12 +16,52 @@ Each of the branches should be clickable and it will show more details about the
         </nav>
     </div>
     <!-- This below should be in the customer div-->
-    <button (click)="GetBranches()"> GetBranches</button>
+    <button (click)="GetAdminUsers()"> GetBranches</button>
     <script > showdetail:Boolean=false; //This is so when you click the branch it will flip to show or not the payment details</script>
+    <script >   </script>
     
     <!-- This is supposed to show all the admin users so that we can try to set them to BilledUsers-->
-    <div class="list-group ml-2 mr-5" *ngIf="developer">
+    <div class="list-group ml-5 mr-5" *ngIf="developer">
+        <div *ngIf="!this.showUser">
+            <ng-container *ngFor="let user of adminUsers">
+                <a class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true"
+                (click)="FlipshowUserinView()">
+                    <div class="d-flex gap-2 w-100 justify-content-between">
+                      <div>
+                        <h6 class="mb-0">{{user.userName}}</h6>
+                        <p class="mb-0 opacity-75">{{user.branchId}}</p>
+                      </div>
+                      <!-- There is no billed boolean here so it will always come up false-->
+                      <small class="opacity-50 text-nowrap" *ngIf="user.billed">Billed</small>
+                      <small class="opacity-50 text-nowrap" *ngIf="!user.billed">Not Billed</small>
+                    </div>
+                  </a>
+                  <div *ngIf="this.showUser">
+                    <div class="modal modal-sheet position-static d-block bg-secondary py-5" tabindex="-1" role="dialog" id="modalSheet">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content rounded-6 shadow">
+                            <div class="modal-header border-bottom-0">
+                              <h5 class="modal-title">{{user.userName}}</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="FlipshowUserinView()"></button>
+                            </div>
+                            <div class="modal-body py-0">
+                              <p>Are you sure you want to change the billing setting of this user, 
+                                  make sure that the person is in agreement with the terms
+                              </p>
+                            </div>
+                            <div class="modal-footer flex-column border-top-0">
+                              <button *ngIf="!user.billed" type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Make billed user</button>
+                              <button *ngIf="user.billed" type="button" class="btn btn-lg btn-primary w-100 mx-0 mb-2">Make Non billed user</button>
+                              <button type="button" class="btn btn-lg btn-light w-100 mx-0" data-bs-dismiss="modal" (click)="FlipshowUserinView()">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+            </ng-container>
+        </div>
         
+
     </div>
     <!--
  <div class="list-group ml-2 mr-5" *ngIf="!developer">
