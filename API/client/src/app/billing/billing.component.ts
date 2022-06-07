@@ -16,9 +16,6 @@ export class BillingComponent implements OnInit {
   BilledBranches: Branch[];
   adminUsers: User[];
 
-  //This is so when you click the user it will flip to show them and the option to make them
-  showUser:Boolean=false;
-
   constructor(private billingService: BillingService, private accountService: AccountService) { }
 
   ngOnInit(): void {
@@ -38,21 +35,17 @@ export class BillingComponent implements OnInit {
    * To give the view the total due for the user
    * @returns String
    */
-  GetTotalPaymentDue=()=>this.billingService.GetTotalPaymentDue().subscribe(
-    response=>{
-      return response
-    }
-  );
+  GetTotalPaymentDue=()=>this.billingService.GetTotalPaymentDue().subscribe(response=>{return response});
 
   GetAdminUsers=()=>this.accountService.getAdminUsers().subscribe( response=>{this.adminUsers= response});
 
 
   //#region   View
-    ChangeUserBillingState(model:User){
-      this.billingService.setSelectedUserasBilledUser(model);
-      this.FlipshowUserinView();
-    }
-  FlipshowUserinView=()=>!this.showUser;
+    // OBSOLETE: We can't Change Users back and forth to billing state
+    // ChangeUserBillingState(model:User){
+    //   this.billingService.setSelectedUserasBilledUser(model);
+    // }
+
   //#endregion
 
 }

@@ -41,6 +41,7 @@
       <input type="checkbox" name="admin"
              [(ngModel)]="model.admin">
       <label class="ml-2">Admin Account</label>
+      <!-- TODO: Have the other Admin traits show up-->
     </div>
     <div *ngIf="isDeveloper && !model.admin" class="form-group">
       <input type="checkbox" name="superUser"

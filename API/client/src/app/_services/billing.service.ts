@@ -24,87 +24,15 @@ export class BillingService extends BaseServiceService {
    * This is to return the billed branches from the current user
    * @return Branch[]
    * 
-   * It does this by Getting all the billed users, 
-   * then matching with the current user,
-   * then getting all the branches ,
-   * and returns the ones that match
+   * It does this by getting all the branches ,
+   * and returns the ones that match with the ones that the users list contains
    * 
    */
   GetBilledBranches(){
-    
-    //Checks and sets the CurrentUser if it is billable
-    try {
-      // FIXME: Remove this comment when youre done
-      //this.setCurrentUserasBilledUser();
-    } catch (exception) {
-      if(exception instanceof UnBillableUserException) 
-      {
-        console.log(exception.name+" was thrown with this message: "+exception.message);
-        // TODO: You were supposed to add the message that you arent billed yada yada, see exception descripiton for more details
-        //throw new Error('Function not implemented. You were supposed to add the message that you arent billed yada yada');
-      }
+    // UPDATE: We removed the selectedUser method cause admin come in as default    
+     // UPDATE: so we put the filtering mechanism inside the filter branches
 
-    }
-    
-    // what we will use to find the billed branches
-   return this.filterBranches()
-
-  }
-  /**Gets the billed users from the database */
-  GetBilledUsers(){
-    return this.http.get(this.baseUrl + "billing/getbilledusers").pipe(
-      map((response: AdminUser[]) => {
-        return response;
-      })
-    );
-  }
-  GetTotalPaymentDue(){
-    return this.http.get(this.baseUrl + "billing/paymentamount").pipe(
-      map((response: string) => {
-        return response;
-      })
-    );
-  }
-  /**
-   * This method compares the billedUsers in the database to the given user 
-   * and sets the user to the billedUser equivalent if there is no equivalent.
-   */
-  setSelectedUserasBilledUser(selectedUser: User){
-    var users:AdminUser[];
-     //gets all the billed users
-     this.accountService.getAdminUsers().subscribe(
-      response=>{
-        users=response;
-      }
-    );
-
-    //#region  This should be replaced with the selected logic
-
-    // This is to make sure we start on a fresh variable
-    this.CurrentUser==null
-    // sets the single user
-    this.accountService.currentUser$.subscribe(
-      response=>{
-        users.forEach(_user => {
-          // Checks if the current user matchs any of the billed users
-          if(_user.username=response.username){
-            this.CurrentUser= response as AdminUser;
-            console.log(this.CurrentUser);
-          } 
-        })
-        // If even after checking if the user is a BilledUser it comes up null it throws this expection
-        if(this.CurrentUser==null)throw new UnBillableUserException(403,"You aren't a user that Pixel Pro bills");
-      }
-    );
-
-    //#endregion
-    
-  }
-  /**
-   * filteres collected branches to match what the user manages
-   */
-  filterBranches():Branch[]{
-    // UPDATE: so we put the filtering mechanism inside the filter branches
+     // filteres collected branches to match what the user manages
   this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
     this.branches=response;
     console.log(response+"so it got the branches");
@@ -118,11 +46,18 @@ export class BillingService extends BaseServiceService {
     console.log(this.branches+"Now it filtered them");
 
     return this.branches;
-  }
-    
-  
-  
 
+  }
+  
+  GetTotalPaymentDue(){
+    return this.http.get(this.baseUrl + "billing/paymentamount").pipe(
+      map((response: string) => {
+        return response;
+      })
+    );
+  }
+  // UPDATE: Since admin by default there is no need to be able to switch users to and fro billed users
+ 
 
 }
 

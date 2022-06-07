@@ -2,16 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities;
 
 namespace API.Exceptions
 {
     /// <summary>
-    /// This is thrown when a User is found to be to be a AdminUser type.
+    /// This is thrown when a <see cref="AppUser"/> is found not to be a <see cref="AdminUser"/> type.
     /// 
     /// We can only bill people who are to be billed, not employees and the like, so a new class was created to inherit from
-    /// Appuser and hopefully we can have all Billed Users reregistered under the Billed User tag
+    /// <see cref="AppUser"/> and hopefully we can have all Billed Users reregistered under the <see cref="AdminUser"/> tag
     /// </summary>
     [Serializable]
+    [Obsolete]
     public class UnBillableUserException : Exception
     {
         public UnBillableUserException() { }
