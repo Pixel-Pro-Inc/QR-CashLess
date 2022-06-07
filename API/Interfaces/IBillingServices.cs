@@ -20,6 +20,9 @@ namespace API.Interfaces
 
         /// <summary>
         /// Finds the total payment due for the user
+        /// <para> It does this by finding the number of the overdue months and multiplying them by how much we are charging for that branch. 
+        /// <para>This is to be changed cause we have a different way of calculating this now</para>
+        /// </para>
         /// </summary>
         /// <returns></returns>
         public double CalculateTotalPaymentDue();

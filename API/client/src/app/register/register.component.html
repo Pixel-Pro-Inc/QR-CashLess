@@ -40,9 +40,15 @@
     <div *ngIf="isDeveloper && !model.superUser" class="form-group">
       <input type="checkbox" name="admin"
              [(ngModel)]="model.admin">
-      <label class="ml-2">Admin Account</label>
+      <label class="ml-2">Admin Account</label> 
+      <hr>
       <!-- TODO: Have the other Admin traits show up-->
+      <label>First payment date</label>
+      <input type="date" class="form-control" name="DuePaymentDate" [(ngModel)]="model.DuePaymentDate">
     </div>
+     <div class="form-group">
+       
+     </div>
     <div *ngIf="isDeveloper && !model.admin" class="form-group">
       <input type="checkbox" name="superUser"
              [(ngModel)]="model.superUser">

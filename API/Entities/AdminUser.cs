@@ -15,6 +15,7 @@ namespace API.Entities
     /// </remarks>
     public class AdminUser:AppUser
     {
+        // TODO: Set this value when the user pays. Which means we need an automatic way of confirming that a payment has come through
         public DateTime LastPaidDate { get; set; }
 
         // The assumption is the regardless of how many branches you have they we will all be paid at the same time so one date is enough

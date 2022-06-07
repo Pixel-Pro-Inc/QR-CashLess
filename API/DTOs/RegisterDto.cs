@@ -18,5 +18,8 @@ namespace API.DTOs
         public bool SuperUser { get; set; }
         public List<string> branchId { get; set; }
         public bool Admin { get; set; }
+
+        // UPDATE: This is so the AdminUser trait can be set if admin is true
+        public DateTime DuePaymentDate { get; set; }
     }
 }

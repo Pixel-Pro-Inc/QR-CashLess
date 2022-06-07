@@ -52,6 +52,15 @@ namespace API.Controllers
 
             user.Id = await _firebaseServices.CreateId();
 
+            // Here I want to set the user to an AdminUser if admin=true
+            if (user.Admin)
+            {
+                user = new AdminUser()
+                {
+                    DuePaymentDate = registerDto.DuePaymentDate
+                };
+            }
+
             _firebaseServices.StoreData(dir + "/" + user.Id.ToString(), user);
 
             return new UserDto()
