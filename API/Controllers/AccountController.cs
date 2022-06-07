@@ -91,7 +91,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getadminusers")]
-        public async Task<List<AppUser>> GetAdminUsers() => await _firebaseServices.GetAdminAccounts();
+        public async Task<List<AdminUser>> GetAdminUsers() => await _firebaseServices.GetAdminAccounts();
 
     }
 }

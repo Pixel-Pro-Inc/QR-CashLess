@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AdminUser } from '../_models/billeduser';
 import { User } from '../_models/user';
 import { BaseServiceService } from './-base-service.service';
 
@@ -54,7 +55,7 @@ export class AccountService extends BaseServiceService{
   getAdminUsers(){
     
     return this.http.get(this.baseUrl + "account/getadminusers").pipe(
-      map((response: User[]) => {
+      map((response: AdminUser[]) => {
         return response;
       })
     );

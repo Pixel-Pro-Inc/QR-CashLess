@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { UnBillableUserException } from '../_exceptions/UnBillableUserException';
-import { Billeduser } from '../_models/billeduser';
+import { AdminUser } from '../_models/billeduser';
 import { Branch } from '../_models/branch';
 import { User } from '../_models/user';
 import { BaseServiceService } from './-base-service.service';
@@ -14,7 +14,7 @@ import { BranchService } from './branch.service';
 })
 export class BillingService extends BaseServiceService {
   branches: Branch[];
-  CurrentUser: Billeduser;
+  CurrentUser: AdminUser;
 
   constructor(http: HttpClient,private branchService: BranchService,private accountService: AccountService) { 
     super(http);
@@ -53,7 +53,7 @@ export class BillingService extends BaseServiceService {
   /**Gets the billed users from the database */
   GetBilledUsers(){
     return this.http.get(this.baseUrl + "billing/getbilledusers").pipe(
-      map((response: Billeduser[]) => {
+      map((response: AdminUser[]) => {
         return response;
       })
     );
@@ -70,9 +70,9 @@ export class BillingService extends BaseServiceService {
    * and sets the user to the billedUser equivalent if there is no equivalent.
    */
   setSelectedUserasBilledUser(selectedUser: User){
-    var users:Billeduser[];
+    var users:AdminUser[];
      //gets all the billed users
-     this.GetBilledUsers().subscribe(
+     this.accountService.getAdminUsers().subscribe(
       response=>{
         users=response;
       }
@@ -88,7 +88,7 @@ export class BillingService extends BaseServiceService {
         users.forEach(_user => {
           // Checks if the current user matchs any of the billed users
           if(_user.username=response.username){
-            this.CurrentUser= response as Billeduser;
+            this.CurrentUser= response as AdminUser;
             console.log(this.CurrentUser);
           } 
         })

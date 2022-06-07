@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace API.Exceptions
 {
     /// <summary>
-    /// This is thrown when a User is found to be to be a BilledUser type.
+    /// This is thrown when a User is found to be to be a AdminUser type.
     /// 
     /// We can only bill people who are to be billed, not employees and the like, so a new class was created to inherit from
     /// Appuser and hopefully we can have all Billed Users reregistered under the Billed User tag

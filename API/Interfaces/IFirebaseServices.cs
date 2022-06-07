@@ -25,22 +25,24 @@ namespace API.Interfaces
         /// <param name="path"></param>
         public void DeleteData(string fullpath);
 
+
+        // OBSOLETE: BilledUsers are now simply adminUsers so this is removed
         /// <summary>
-        /// This gets all the Billed Users from the database.
+        /// This gets all accounts that are adminstrator level. This also mean everyone who is sent the billing invoice
         /// </summary>
         /// <remarks>
         /// It also seems too much to have a method to get the billed branches from the branch node,
-        /// cause that would require us to change the brannch entity (again).
-        /// <para> So as it stands it gets them from "Account/BilledAccounts"</para>
+        /// cause that would require us to change the branch entity (again).
+        /// <para> So as it stands it gets them from "Account/AdminAccounts"</para>
         /// </remarks>
-        /// <returns></returns>
-        public Task<List<BilledUser>> GetBilledAccounts();
+        /// <returns>A list of administator users in type <see cref="AdminUser"/></returns>
+        //public Task<List<AdminUser>> GetBilledAccounts();
 
         /// <summary>
-        /// Returns all accounts that are adminstrator level
+        /// Returns 
         /// </summary>
         /// <returns> A list of administator users in type <see cref="AppUser"/></returns>
-        public Task<List<AppUser>> GetAdminAccounts();
+        public Task<List<AdminUser>> GetAdminAccounts();
 
         /// <summary>
         /// Gets all the users under the firebase directory 'Account'

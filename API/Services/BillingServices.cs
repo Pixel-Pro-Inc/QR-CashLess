@@ -35,7 +35,7 @@ namespace API.Services
         /// The user will be set by whatever calls Billingservices, but it should not be accessed by anyone outside Billing. Since all the information
         /// needed that will be possible to get from billing will be handed off by the methods themselves
         /// </remarks>
-        internal BilledUser _User { private get; set; }
+        internal AdminUser _User { private get; set; }
 
         // This is the date only used for by the Services but it indeed should be the current date
         DateTime Today { get; set; }
@@ -75,9 +75,9 @@ namespace API.Services
 
         // Since this will be automatic, I expect this method to be fired everytime a user logs in, but that should be changed in the future
         // That is why the commented thrown exception is relevant and wasn't deleted
-        // We also explicity cast to (BilledUser) cause we have it specifically set as (BilledUser) in this services
-        // we also won't use isBilled in the Appuser to determine if we should use these services because if it is billed we should already have the user as a BilledUser type.
-        public void SetUser(AppUser user) => _User = user is BilledUser? (BilledUser)user : (BilledUser)user/*throw new UnBillableUserException("This user isn't billed at the end of the month")*/;
+        // We also explicity cast to (AdminUser) cause we have it specifically set as (AdminUser) in this services
+        // we also won't use isBilled in the Appuser to determine if we should use these services because if it is billed we should already have the user as a AdminUser type.
+        public void SetUser(AppUser user) => _User = user is AdminUser? (AdminUser)user : (AdminUser)user/*throw new UnBillableUserException("This user isn't billed at the end of the month")*/;
        
         public void CreateInvoice(float payment)
         {
@@ -93,16 +93,16 @@ namespace API.Services
         /// <returns></returns>
         private async Task ReportOverDueStatements()
         {
-            List<BilledUser> OwingUsers = new List<BilledUser>();
+            List<AdminUser> OwingUsers = new List<AdminUser>();
 
             // TODO: It appears that you need to define the extension in the class that it should work on here.
             // I was thinking of defining an interface for the JsonConvertExtension and having that implemented in a Base Entity
             // Because the error it is throwing is saying that it needs to be defined in the class
-            //List<BilledUser> billedUsers= await _firebaseDataContext.GetData("Account/BilledAccounts").FromJsonToObject<BilledUser>();
+            //List<AdminUser> billedUsers= await _firebaseDataContext.GetData("Account/BilledAccounts").FromJsonToObject<AdminUser>();
 
-            List<BilledUser> billedUsers = await _IFirebaseServices.GetBilledAccounts();
+            List<AdminUser> adminUsers = await _IFirebaseServices.GetAdminAccounts();
             // Collects all the users who owe 
-            foreach (var user in billedUsers)
+            foreach (var user in adminUsers)
             {
 
                 // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning

@@ -103,24 +103,26 @@ namespace API.Services
             return ran;
         }
 
-        public async Task<List<AppUser>> GetAdminAccounts()
+        public async Task<List<AdminUser>> GetAdminAccounts()
         {
             List<AppUser> Users = await GetAllUsers();
-            List<AppUser> AdminUsers = new List<AppUser>();
+            List<AdminUser> AdminUsers = new List<AdminUser>();
             foreach (var user in Users)
             {
-                if (user.Admin) AdminUsers.Add(user);
+                if (user.Admin) AdminUsers.Add((AdminUser)user);
 
             }
 
             return AdminUsers;
         }
-        public async Task<List<BilledUser>> GetBilledAccounts()
-        {
-            var response = await _firebaseDataContext.GetData("Account/BilledAccounts");
-            // REFACTOR: Consider just using the isbilled bool and return those with true. So you don't have to make another node
-            return response.FromJsonToObject<BilledUser>();
-        }
+
+        // OBSOLETE: BilledUsers are now simply adminUsers so this is removed
+        //public async Task<List<AdminUser>> GetBilledAccounts()
+        //{
+        //    var response = await _firebaseDataContext.GetData("Account/BilledAccounts");
+        //    // REFACTOR: Consider just using the isbilled bool and return those with true. So you don't have to make another node
+        //    return response.FromJsonToObject<AdminUser>();
+        //}
 
         //TODO: Add other account firebase calls here please
 

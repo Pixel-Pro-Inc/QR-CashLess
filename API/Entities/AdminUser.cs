@@ -7,11 +7,13 @@ namespace API.Entities
 {
     /// <summary>
     /// This is a User who is expected to be Billed at the end of every month
+    /// <para>They are essentially admin, or any one with admin priviledge. 
+    /// The Idea is that all admin in a branch will get the invoice and between them they will decide who gets to pay</para>
     /// </summary>
     /// <remarks>
     /// This will either be Managers or whoever is representing the franchansiee
     /// </remarks>
-    public class BilledUser:AppUser
+    public class AdminUser:AppUser
     {
         public DateTime LastPaidDate { get; set; }
 

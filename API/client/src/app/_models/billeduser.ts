@@ -1,7 +1,7 @@
 import { User } from "./user";
 
-// The Billeduser extends user here cause it is the working model and needs to reflect things in the API
-export interface Billeduser extends User {
+// The AdminUser extends user here cause it is the working model and needs to reflect things in the API
+export interface AdminUser extends User {
 
   LastPaidDate:Date;
   DuePaymentDate:Date;

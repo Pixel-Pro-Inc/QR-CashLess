@@ -108,9 +108,10 @@ namespace API.Controllers
         [HttpGet("duedate")]
         public string GetDueDate() => _billingServices.DueDate().ToString();
 
-
-        [HttpGet("getbilledusers")]
-        public async Task<List<BilledUser>> GetBilledUsers() => await _firebaseServices.GetBilledAccounts();
+        // OBSOLETE: BilledUsers are now simply adminUsers so this is removed
+        //[Obsolete]
+        //[HttpGet("getbilledusers")]
+        //public async Task<List<AdminUser>> GetBilledUsers() => await _firebaseServices.GetBilledAccounts();
 
 
 
