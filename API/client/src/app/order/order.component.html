@@ -29,9 +29,9 @@
 
               <p class="text-muted" *ngIf="order.subCategory == 'Steak'">Readiness: {{order.meatTemperature}}</p>
 
-              <p class="text-muted" *ngIf="order.category == 'Meat'">Sauces: {{order.sauces}}</p>
+              <p class="text-muted" *ngIf="order.category == 'Meat' && !(order.subCategory == 'Platter' && order.name.toLowerCase().includes('chicken'))">Sauces: {{order.sauces}}</p>
 
-              <span *ngIf="order.category == 'Meat'" class="text-muted">{{order.weight}}</span>
+              <span *ngIf="order.category == 'Meat' && (order.weight != '0.00 grams')" class="text-muted">{{order.weight}}</span>
             </div>
           </div>
 

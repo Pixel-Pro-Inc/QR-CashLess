@@ -538,7 +538,10 @@
                         </div>
                     </div>
 
-                    <div class="card-bar">
+                    <button class="form-btn" *ngIf="!showGraphs" (click)="showGraphs = !showGraphs" style="width: max-content;">Show Graphs</button>
+                    <button class="form-btn" *ngIf="showGraphs" (click)="showGraphs = !showGraphs" style="width: max-content;">Hide Graphs</button>
+
+                    <div class="card-bar" *ngIf="showGraphs">
                         <div class="dash-card-graph">
                             <div class="dash-card-body">
                                 <div class="dash-card-header">
@@ -557,7 +560,7 @@
                             
                                 <hr>
                             
-                                <div>
+                                <div *ngIf="orderSource != null">
                                     <app-pie-chart-advanced [single]="orderSource"></app-pie-chart-advanced>
                                 </div>
                             </div>

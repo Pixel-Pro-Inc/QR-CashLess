@@ -451,13 +451,13 @@ namespace API.Controllers
             var lastMonthOrders = await GetOrdersByDate(reportDto);
             #endregion
 
-            int avgOrdersCurrent = orders.Count / GetNumberOfDaysElapsed(orders);
-            int avgOrdersPast = lastMonthOrders.Count / GetNumberOfDaysElapsed(lastMonthOrders);
+            float avgOrdersCurrent = (float)orders.Count / (float)GetNumberOfDaysElapsed(orders);
+            float avgOrdersPast = (float)lastMonthOrders.Count / (float)GetNumberOfDaysElapsed(lastMonthOrders);
 
-            int difference = avgOrdersCurrent - avgOrdersPast;
-            int absDifference = Math.Abs(difference);
+            float difference = avgOrdersCurrent - avgOrdersPast;
+            float absDifference = Math.Abs(difference);
 
-            float percentageChange = (float)absDifference / (float)avgOrdersPast;
+            float percentageChange = absDifference / avgOrdersPast;
 
             Hashtable hashtable = new Hashtable();
             hashtable.Add("averagesales", FormatAmountString(avgOrdersCurrent));

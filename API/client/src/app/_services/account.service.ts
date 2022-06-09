@@ -23,9 +23,11 @@ export class AccountService extends BaseServiceService{
   login(model: any, dir: string) {
     this.busyService.busy();
 
-    return this.http.post(this.baseUrl + dir, model).pipe(
-      map((response: User) => {
-        const user = response;
+    return this.http.post(this.baseUrl + dir, model).subscribe(
+      response => {
+        let user: any = response;
+
+        console.log(user);
 
         if(!user.admin && !user.developer && !user.superUser){
           this.toastr.error('You cannot login to this platform');
@@ -40,7 +42,11 @@ export class AccountService extends BaseServiceService{
 
         this.busyService.idle();
         return response;
-      })
+
+      },
+      error => {
+        this.toastr.error(error.error);
+      }
     )
   }
 
@@ -97,7 +103,7 @@ export class AccountService extends BaseServiceService{
 
   setCurrentUser(mod: User){
     this.currentUserSource.next(mod);
-    localStorage.removeItem('user');
+    localStorage.setItem('user', JSON.stringify(mod));
   }
 
   getCurrentUser(){

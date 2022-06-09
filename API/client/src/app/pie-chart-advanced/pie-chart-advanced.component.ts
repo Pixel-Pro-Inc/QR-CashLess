@@ -7,9 +7,27 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
   templateUrl: './pie-chart-advanced.component.html',
   styleUrls: ['./pie-chart-advanced.component.css']
 })
-export class PieChartAdvancedComponent{
+export class PieChartAdvancedComponent{  
 
-  @Input() single: any[] = [];
+  @Input() single; 
+  /*single: any[] = [
+    {
+      "name" : "Walk in",
+      "value" : 0
+    },
+    {
+      "name" : "Call in",
+      "value" : 0
+    },
+    {
+      "name" : "Online",
+      "value" : 0
+    },
+    {
+      "name" : "Delivery",
+      "value" : 0
+    }
+  ];*/
   
   view: any[] = [600, 400];
 
@@ -18,6 +36,12 @@ export class PieChartAdvancedComponent{
   showLegend: boolean = true;
   showLabels: boolean = true;
   isDoughnut: boolean = true;
+
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
 
   colorScheme = {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']

@@ -18,6 +18,8 @@ export class AdminPortalComponent implements OnInit {
   model3: any = {};
   model4: any = {};
 
+  showGraphs = false;
+
   showDash = true;
   showTotal = false;
   showDetailedTotal = false;

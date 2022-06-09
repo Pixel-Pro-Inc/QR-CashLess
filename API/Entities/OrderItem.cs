@@ -23,7 +23,7 @@ namespace API.Entities
         public int Quantity { get; set; }        
         public bool Collected { get; set; }
         public string PhoneNumber { get; set; }
-        public string Category { get; set; }
+        public string Category { get; set; } = "";
         public DateTime OrderDateTime { get; set; }
         public string User { get; set; }
         public int PrepTime { get; set; }
@@ -33,6 +33,6 @@ namespace API.Entities
         public string Flavour { get; set; }
         public string MeatTemperature { get; set; }
         public List<string> Sauces { get; set; }
-        public string SubCategory { get; set; }
+        public string SubCategory { get; set; } = "";
     }
 }

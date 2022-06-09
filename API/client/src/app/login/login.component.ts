@@ -29,6 +29,6 @@ export class LoginComponent implements OnInit {
   }
 
   signin(){
-    this.accountService.login(this.signinForm.value, 'account/login').subscribe();
+    this.accountService.login(this.signinForm.value, 'account/login');
   }
 }
