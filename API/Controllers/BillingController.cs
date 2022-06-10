@@ -89,7 +89,7 @@ namespace API.Controllers
 
             #endregion
 
-            // TODO: Send email/ SMS wrapped in paypal intergration logic
+            // TODO: Send email/ SMS wrapped in paypal intergration logic or just the email
 
         }
 

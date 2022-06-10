@@ -51,7 +51,11 @@ export class AccountService extends BaseServiceService{
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
   }
-  // TODO: Try to get the Admin Users so that we can chose from there as developers which ones can be billed
+  
+  /**
+   * Try to get the Admin Users so that we can chose from there as developers which ones can be billed
+   * @returns list of @see AdminUser
+   */
   getAdminUsers(){
     
     return this.http.get(this.baseUrl + "account/getadminusers").pipe(

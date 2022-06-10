@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../_services/account.service';
 
 @Component({
   selector: 'app-accountmanagement',
@@ -7,8 +8,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AccountmanagementComponent implements OnInit {
 
-  developer:boolean=true;// TODO: have this get brough in from the nav component
-  constructor() { }
+  developer:boolean=this.accountService.developer
+  
+  constructor(private accountService: AccountService) { }
 
   ngOnInit(): void {
   }

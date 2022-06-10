@@ -95,11 +95,6 @@ namespace API.Services
         {
             List<AdminUser> OwingUsers = new List<AdminUser>();
 
-            // TODO: It appears that you need to define the extension in the class that it should work on here.
-            // I was thinking of defining an interface for the JsonConvertExtension and having that implemented in a Base Entity
-            // Because the error it is throwing is saying that it needs to be defined in the class
-            //List<AdminUser> billedUsers= await _firebaseDataContext.GetData("Account/BilledAccounts").FromJsonToObject<AdminUser>();
-
             List<AdminUser> adminUsers = await _IFirebaseServices.GetAdminAccounts();
             // Collects all the users who owe 
             foreach (var user in adminUsers)

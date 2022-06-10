@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using AutoMapper;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,10 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private string dir = "Account";
+
+        // This is here so we can make AppUser into AdminUser without losing any data
+        static MapperConfiguration mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<AppUser, AdminUser>());
+        private Mapper _objectMapper = new Mapper(mapperConfig);
 
         public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices) :base(firebaseServices)
         {
@@ -45,20 +51,21 @@ namespace API.Controllers
                 SuperUser = registerDto.SuperUser
             };
 
-            // TODO: add logic for if that person is a billable user
-            // which means the registerDto has to include isBillable
-            // _firebaseDataContext.StoreData("Account/BilledAccounts" + "/" + user.Id.ToString(), user);
-
-
             user.Id = await _firebaseServices.CreateId();
 
             // Here I want to set the user to an AdminUser if admin=true
             if (user.Admin)
             {
-                user = new AdminUser()
-                {
-                    DuePaymentDate = registerDto.DuePaymentDate
-                };
+                // This is to ensure that the user is going to have all the properties that were previously set
+                // FIXME: We need to test if this actually works 
+                AdminUser adminuser= _objectMapper.Map<AppUser, AdminUser>(user);
+
+                //Setting of the AdminUser properties
+                // NOTE: I don't think anything else need to be set here, since everything else will be done in computing logic
+                adminuser.DuePaymentDate = registerDto.DuePaymentDate;
+
+                // This is so the user is stored as an AdminUser with the properties it needs
+                user = adminuser;
             }
 
             _firebaseServices.StoreData(dir + "/" + user.Id.ToString(), user);
