@@ -21,15 +21,15 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
-        private string dir = "Account";
+        private readonly IMapper _mapper;
+        // OBSOLETE: We don't use dir anymore as its done in
+        //private string dir = "Account";
 
-        // This is here so we can make AppUser into AdminUser without losing any data
-        static MapperConfiguration mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<AppUser, AdminUser>());
-        private Mapper _objectMapper = new Mapper(mapperConfig);
 
-        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices) :base(firebaseServices)
+        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IMapper mapper) :base(firebaseServices)
         {
             _tokenService = tokenService;
+            _mapper = mapper;
             // UPDATE: I removed all references to firebaseDatacontext and replaces it with _firebaseServices
         }
 
@@ -53,12 +53,10 @@ namespace API.Controllers
 
             user.Id = await _firebaseServices.CreateId();
 
-            // Here I want to set the user to an AdminUser if admin=true
+            // Here I want to set the user to an AdminUser with the appropriate properties if admin=true
             if (user.Admin)
             {
-                // This is to ensure that the user is going to have all the properties that were previously set
-                // FIXME: We need to test if this actually works 
-                AdminUser adminuser= _objectMapper.Map<AppUser, AdminUser>(user);
+                AdminUser adminuser= _mapper.Map<AdminUser>(user);
 
                 //Setting of the AdminUser properties
                 // NOTE: I don't think anything else need to be set here, since everything else will be done in computing logic
@@ -68,7 +66,7 @@ namespace API.Controllers
                 user = adminuser;
             }
 
-            _firebaseServices.StoreData(dir + "/" + user.Id.ToString(), user);
+            _firebaseServices.StoreData("Account" + "/" + user.Id.ToString(), user);
 
             return new UserDto()
             {

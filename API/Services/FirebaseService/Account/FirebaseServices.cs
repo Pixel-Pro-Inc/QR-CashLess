@@ -25,16 +25,13 @@ namespace API.Services
     {
 
         public readonly FirebaseDataContext _firebaseDataContext;
+        private readonly IMapper _mapper;
 
-        public FirebaseServices()
+        public FirebaseServices(IMapper mapper)
         {
             _firebaseDataContext = new FirebaseDataContext();
+            _mapper = mapper;
         }
-        // @Abel: Start with the fix me
-        // FIXME: This comes in as null. I think cause this has to be set in the ctor. 
-        // This is here so we can make AppUser into AdminUser without losing any data it is also used in AccountController for reference
-        static MapperConfiguration mapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<AppUser, AdminUser>());
-        private Mapper _objectMapper = new Mapper(mapperConfig);
 
         public void StoreData(string path, object thing)=> _firebaseDataContext.StoreData(path, thing);
         public void DeleteData(string fullpath) => _firebaseDataContext.DeleteData(fullpath);
@@ -115,10 +112,8 @@ namespace API.Services
             List<AdminUser> AdminUsers = new List<AdminUser>();
             foreach (var user in Users)
             {
-                // TODO: Fix this so that you can turn this properly cause an error is being thrown, then do the same with AccountController line: 61
-
-                var testAdmin = _objectMapper.Map<AppUser, AdminUser>(user); 
-                if (user.Admin) AdminUsers.Add(_objectMapper.Map<AppUser, AdminUser>(user));
+                var testAdmin = _mapper.Map<AdminUser>(user); 
+                if (testAdmin.Admin) AdminUsers.Add(testAdmin);
 
             }
 
