@@ -35,40 +35,63 @@ namespace API.Controllers
         /// <summary>
         /// This will be an automatic sender that will send the bill as an email.
         /// </summary>
-        /// <remarks> It will be given the client info and if it is past due it will send this method
+        /// <remarks> 
+        /// <para>
+        /// It will be given the <see cref="BilledUserDto"/> checks if they are past due,
+        /// </para>
+        /// <para>
+        /// fires <see cref="_billingServices.CalculateTotalPaymentDue()"/>,
+        /// </para> 
+        /// <para>
+        /// Then sends the bill to the user and developer and resets the billingService properties
+        /// </para>
         /// <para>
         /// Its internal cause <see cref="BillingServices"/> need to use it, but its not public cause I don't want anyone to just tamper with it
         /// </para>
         /// </remarks>
-        /// <param name="BillInfo"></param>
         /// <returns></returns>
         [HttpGet("sendbill/{BillInfo}")]
-        internal void /*async Task<IActionResult>*/ BillSender (UserDto UserDto)
+        internal async Task<IActionResult> BillSender (BilledUserDto BillingDto)
         {
             //Sets the parameters to do the billing logic with
-            SetParameters(UserDto);
+             await SetParameters(BillingDto);
 
             // Checks if the time to send is not now
-            // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
-            if (!_billingServices.isPastDueDate(System.DateTime.Today)){  /*Should display a message $"You don't need to pay anything just yet. The due date is {Bill.DueDate()}"*/ }
+            if (!_billingServices.isPastDueDate(System.DateTime.Now))
+            {
+                // in case this was requested by a user
+                return Ok($"You don't need to pay anything just yet. The due date is {_billingServices.DueDate()}");
+            }
+
+            //Calculates how much is due
+            float payment = _billingServices.CalculateTotalPaymentDue();
+
+            // Creates a pdf to attach to the email
+            _billingServices.CreateInvoice(payment);
 
             SendBillToUser();
             InformBillToDeveloper();
            
             // Now that you are finished with the logic it will set it back to nothing
-            SetParameters(null);
+            await SetParameters(null);
 
-            //return 
+            return Ok();
 
         }
 
         // TODO: put this in the report service
         /// <summary>
-        /// Send email to developers about the ability to stop the branches functionality.
+        /// Send email to developers about the ability to stop the branches functionality. Since the bill had already informed them it can terminate
         /// </summary>
         private void InformBillToDeveloper()
         {
-            // TODO: Send email to developers about the ability to send Emails.
+            // get word document from billingservices
+
+            // turn it into a pdf
+
+            // add pdf to an email
+
+            // TODO: Send email to developers informing of sent bills.
             throw new NotImplementedException();
         }
 
@@ -78,26 +101,21 @@ namespace API.Controllers
         /// </summary>
         private void SendBillToUser()
         {
-            //Calculates how much is due
-            double payment=_billingServices.CalculateTotalPaymentDue();
 
-            // TODO: Create message in the bill format we want
+            // get word document from billingservices
 
-            #region Invoice Logic
+            // turn it into a pdf
 
-             //Bill.CreateInvoice(payment);
+            // add pdf to an email
 
-            #endregion
-
-            // TODO: Send email/ SMS wrapped in paypal intergration logic or just the email
+            // TODO: Send email/ SMS 
+            // TODO: Try merging work from the emailService branch since recent work was done in it
 
         }
 
         // Updates the database on payment made
 
         // Could send SMS to the debtor
-
-        // Could send Invoice Email to the debtor
 
         // REFACTOR: These two methods could have their information sent up with a simple dto that fits a model that gives the view everything it needs
         //Tells the debtor how much is due
@@ -108,29 +126,30 @@ namespace API.Controllers
         [HttpGet("duedate")]
         public string GetDueDate() => _billingServices.DueDate().ToString();
 
-        // OBSOLETE: BilledUsers are now simply adminUsers so this is removed
-        //[Obsolete]
-        //[HttpGet("getbilledusers")]
-        //public async Task<List<AdminUser>> GetBilledUsers() => await _firebaseServices.GetBilledAccounts();
-
-
-
+      
         /// <summary>
-        /// This is an Billing exclusive method that was extracted to set the user
+        /// This is an Billing exclusive method that was extracted to set all the properties <see cref="BillingServices"/> will use
         /// </summary>
         /// <param name="User"></param>
-        private async void SetParameters(UserDto UserDto)
+        private async Task SetParameters(BilledUserDto BillingDto)
         {
+            // Gets the user by the username
+            AppUser appUser = await _firebaseServices.GetUser(BillingDto.Username);
 
-            AppUser appUser = await _firebaseServices.GetUser(UserDto.Username);
+            // REFACTOR: Figure out a way to coalesce the parameter setting in the service to include Sms as well I could put in the service but it was easier to put it here
+            // Gets the sms sent by the branch.
+            List<SMS> Smses = await _firebaseServices.GetSMSinBranch();
+
             try 
             { 
                 _billingServices.SetUser(appUser);
                 _billingServices.SetCurrentDate(System.DateTime.Today);
+                _billingServices.SetSalesinUsersBranch();
+                _billingServices.SetSMSSent(Smses);
             }
             catch (UnBillableUserException)
             {
-                // Should display a message $"You aren't properly set up to be billed by Pixel Pro. Please contact them to recover Services"
+
                 throw;
             }
         }

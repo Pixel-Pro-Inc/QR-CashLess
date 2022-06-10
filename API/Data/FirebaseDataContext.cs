@@ -33,6 +33,11 @@ namespace API.Data
 
             var response = await client.SetAsync(path, data);
         }
+
+        // UNDONE: DO NOT SWITCH TO YEWO'S version on Development. The problem with that version is that you have to make a type for everything you want from the database
+        // like flavour and shit. We dont need that. Just have this work as is and then the extension will change the type where it is needed
+        // @Yewo: Here is my reason. Don't fight and delete unless you consult with me
+        // NOTE: You don't need to refactor this to work with the JsonConvertExtension. But you could clean up with Yewo after discussing it
         public async Task<List<object>> GetData(string path)
         {
             List<object> objects = new List<object>();

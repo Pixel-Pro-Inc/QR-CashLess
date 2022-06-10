@@ -21,6 +21,7 @@ namespace API.Extensions
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBillingServices, BillingServices>();
+            services.AddScoped<IReportServices, ReportServices>();
             services.AddScoped<IFirebaseServices, FirebaseServices>();
 
             // NOTE: This sets up AutoMapper in our project. It will need a Profile class that defines named configurations

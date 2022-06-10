@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +26,12 @@ namespace API.Controllers
         {
             int x = await GetOrderNum(branchId);
 
-            string d = DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/"
-                    + DateTime.Now.Year.ToString("0000");
 
             for (int i = 0; i < orderItems.Count; i++)
             {
                 var orderItem = orderItems[i];
 
-                orderItem.OrderNumber = d + "_" + x;
+                orderItem.OrderNumber = DateTime.Now.ToPixelProForwardSlashFormat() + "_" + x;
                 orderItem.OrderNumber = orderItem.OrderNumber.Replace('/', '-');
 
                 orderItem.OrderDateTime = DateTime.UtcNow;
@@ -69,10 +68,7 @@ namespace API.Controllers
 
                 string number = orderNum.Remove(0, n + 1);
 
-                string dateToday =
-                    DateTime.Now.Day.ToString("00") + "-"
-                    + DateTime.Now.Month.ToString("00") + "-"
-                    + DateTime.Now.Year.ToString("0000");
+                string dateToday = DateTime.Now.ToPixelProDashFormat();
 
                 if (date == dateToday)
                 {

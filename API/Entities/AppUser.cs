@@ -18,7 +18,5 @@ namespace API.Entities
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
-        // If this person gets billed because they represent the branch/ franchisee
-        //public bool isBilled { get; set; }
     }
 }

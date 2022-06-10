@@ -104,5 +104,11 @@ namespace API.Interfaces
         /// <param name="branchId"></param>
         /// <returns> List of <see cref="MenuItem"/></returns>
         public Task<List<MenuItem>> GetMenu(string branchId);
+
+        /// <summary>
+        /// This is to get all the SMS in the branch that has been sent
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<SMS>> GetSMSinBranch();
     }
 }

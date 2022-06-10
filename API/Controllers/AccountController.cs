@@ -22,8 +22,6 @@ namespace API.Controllers
     {
         private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        // OBSOLETE: We don't use dir anymore as its done in
-        //private string dir = "Account";
 
 
         public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IMapper mapper) :base(firebaseServices)
@@ -60,6 +58,7 @@ namespace API.Controllers
 
                 //Setting of the AdminUser properties
                 // NOTE: I don't think anything else need to be set here, since everything else will be done in computing logic
+                // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
                 adminuser.DuePaymentDate = registerDto.DuePaymentDate;
 
                 // This is so the user is stored as an AdminUser with the properties it needs

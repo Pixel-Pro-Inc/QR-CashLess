@@ -142,6 +142,15 @@ namespace API.Services
             return branches;
         }
 
+        public async Task<List<SMS>> GetSMSinBranch()
+        {
+            // NOTE: Yewo created SMS types in development so we might have to switch over to his work. For now just pull the data raw
+            var response = await _firebaseDataContext.GetData("SMS");
+            List<SMS> sms = response.FromJsonToObject<SMS>();
+
+            return sms;
+        }
+
         #endregion
 
 

@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,10 +21,12 @@ namespace API.Controllers
     {
         private readonly string dir = "CompletedOrders/";
         private readonly IWebHostEnvironment _env;
+        private readonly IReportServices _reportServices;
 
-        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService) :base(firebaseService)
+        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService, IReportServices reportServices) :base(firebaseService)
         {
             _env = env;
+            _reportServices = reportServices;
         }
         
         //REFACTOR: We might need a Report Service
@@ -35,7 +38,7 @@ namespace API.Controllers
             //returns order number and amount earned
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
 
-            eligibleOrders = await GetOrdersByDate(reportDto);
+            eligibleOrders = await _reportServices.GetOrdersByDate(reportDto);
 
             List<float> totals = new List<float>();
             List<string> OrderNumbers = new List<string>();
@@ -69,7 +72,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<Hashtable>>> GetSalesByItem(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             List<Hashtable> hashtables = new List<Hashtable>();            
 
@@ -166,7 +169,7 @@ namespace API.Controllers
         [HttpPost("sales/invoice")]//This is so you can get the order with the quantity got and the revenue by invoice
         public async Task<ActionResult<List<List<OrderItem>>>> GetOrderItemByinvoice(ReportDto reportDto)
         {
-            var results = await GetOrdersByDate(reportDto);
+            var results = await _reportServices.GetOrdersByDate(reportDto);
 
             List<List<OrderItem>> temp = new List<List<OrderItem>>();
 
@@ -215,19 +218,8 @@ namespace API.Controllers
         [HttpPost("sales/summary")]//This gets a flat out total in a period of time
         public async Task<ActionResult<SalesDto>> GetSummarySales(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
-
-            SalesDto SalesByItem = new SalesDto();
-            foreach (var order in ordersgiven)
-            {
-                foreach (var item in order)
-                {
-                    SalesByItem.SummaryTotal += float.Parse(item.Price);
-                }
-            }
-
-            string total = FormatAmountString(SalesByItem.SummaryTotal);
+            //Gets the total Sales in the time period set in the ReportDto
+            string total = FormatAmountString( await _reportServices.GetSalesAmountinTimePeriod(reportDto));
 
             SalesDto sales = new SalesDto()
             {
@@ -240,7 +232,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<PaymentDto>>> GetPaymentBalance(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             float cash = 0;
             float card = 0;
@@ -314,7 +306,7 @@ namespace API.Controllers
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
 
-            var orders = await GetOrdersByDate(reportDto);
+            var orders = await _reportServices.GetOrdersByDate(reportDto);
 
             reportDto.BranchId = id;
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
@@ -323,7 +315,7 @@ namespace API.Controllers
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
 
-            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
 
             int difference = orders.Count - lastMonthOrders.Count;
             int absDifference = Math.Abs(difference);
@@ -354,7 +346,7 @@ namespace API.Controllers
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
 
-            var orders = await GetOrdersByDate(reportDto);
+            var orders = await _reportServices.GetOrdersByDate(reportDto);
             float revenue = 0f;
             foreach (var item in orders)
             {
@@ -371,7 +363,7 @@ namespace API.Controllers
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
 
-            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
             float lastRevenue = 0f;
             foreach (var item in lastMonthOrders)
             {
@@ -449,39 +441,7 @@ namespace API.Controllers
 
             return hashtable;
         }
-        // TODO: put this in the report service
-        public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
-        {
-            List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
-
-            List<List<OrderItem>> orders = await _firebaseServices.GetOrders(dir, reportDto.BranchId);
-
-            foreach (var order in orders)
-            {
-                for (int i = 0; i < order.Count; i++)
-                {
-                    var orderItem = order[i];
-
-                    string orderDate = orderItem.OrderNumber.Substring(0, 10);
-                    string real = orderDate.Replace("-", "/");
-                    int day = Int32.Parse(real.Substring(0, 2));
-                    int month = Int32.Parse(real.Substring(3, 2));
-                    int year = Int32.Parse(real.Substring(6, 4));
-                    DateTime orderTime = new DateTime(year, month, day);
-
-                    DateTime startDate = reportDto.StartDate;
-                    DateTime endDate = reportDto.EndDate;
-
-                    if (orderTime >= startDate && orderTime <= endDate)
-                    {
-                        eligibleOrders.Add(order);
-                        i = order.Count;
-                    }
-                }
-            }
-
-            return eligibleOrders;
-        }
+       
         // TODO: put this in the report service
         public async Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto)
         {
@@ -546,7 +506,7 @@ namespace API.Controllers
         public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
 

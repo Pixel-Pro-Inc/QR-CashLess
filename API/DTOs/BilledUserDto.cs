@@ -11,9 +11,13 @@ namespace API.DTOs
     /// </summary>
     public class BilledUserDto
     {
-        // We expect any kind of user to come through here
+        /// <summary>
+        /// We expect any kind of user to go out from here
+        /// </summary>
         public AppUser User { get; set; }
+        public string Username { get; set; }
         public DateTime Date { get; set; }
+        public float Sales { get; set; }
 
     }
 }
