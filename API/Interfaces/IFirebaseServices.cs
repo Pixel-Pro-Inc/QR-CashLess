@@ -58,6 +58,13 @@ namespace API.Interfaces
         public Task<AppUser> GetUser(string username);
 
         /// <summary>
+        /// Usually the accountId should be past into this but the conflicting......ah Yewo should explain
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public Task<AppUser> GetUserByNumber(string phoneNumber);
+
+        /// <summary>
         /// Checks if the username exists
         /// </summary>
         /// <param name="username"></param>
@@ -110,5 +117,15 @@ namespace API.Interfaces
         /// </summary>
         /// <returns></returns>
         public Task<List<SMS>> GetSMSinBranch();
+
+        /// <summary>
+        /// This is Yewo's refactoring that would take in any generic class and the <paramref name="path"/> and then get the data
+        /// I fuse it in with my own logic so that it uses the JsonConvertExtension.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public Task<List<T>> GetData<T>(string path) where T : class, new();
+
     }
 }

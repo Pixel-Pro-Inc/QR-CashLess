@@ -134,7 +134,7 @@ namespace API.Controllers
         [HttpPost("setclosingtime")]
         public async Task<ActionResult<DateTime>> CreateClosingTime(CloseTimeDto closeTimeDto)
         {
-            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+            var response = (await _firebaseServices.GetData<ClosingTime>("ClosingTime"));
 
             if (response.Count == 0)
                 response.Add(new ClosingTime());
@@ -147,13 +147,13 @@ namespace API.Controllers
             response[0].EffectiveDate = DateTime.UtcNow.AddHours(2);
 
 
-            _firebaseDataContext.StoreData("ClosingTime/" + 0, response[0]);
+            _firebaseServices.StoreData("ClosingTime/" + 0, response[0]);
 
             return response[0].ClosingTimeToday;
         }
         public async Task<DateTime> GetClosingTime()
         {
-            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+            var response = (await _firebaseServices.GetData<ClosingTime>("ClosingTime"));
 
             if (response.Count == 0)
                 return new DateTime();
@@ -301,11 +301,6 @@ namespace API.Controllers
 
             return 0;
         }
-        public async Task<List<Branch>> GetBranches2()
-        {
-            var result = await _firebaseDataContext.GetData<Branch>("Branch");
 
-            return result;
-        }
     }
 }

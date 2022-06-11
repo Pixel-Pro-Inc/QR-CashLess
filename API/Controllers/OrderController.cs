@@ -49,7 +49,7 @@ namespace API.Controllers
         }
         public async Task<int> GetOrderNum(string branchId)
         {
-            List<OrderNumber> ordersNumbersResult = await _firebaseDataContext.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
+            List<OrderNumber> ordersNumbersResult = await _firebaseServices.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
 
             List<string> oNumbersAssigned = new List<string>();
 
@@ -82,7 +82,7 @@ namespace API.Controllers
 
             oNumbersAssigned.Add(d + "_" + candidateNumber);
 
-            _firebaseDataContext.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
+            _firebaseServices.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
 
             return candidateNumber;
         }

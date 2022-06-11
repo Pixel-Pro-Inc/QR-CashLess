@@ -88,6 +88,15 @@ namespace API.Services
             user = items.SingleOrDefault(x => x.UserName == username.ToLower());
             return (user);
         }
+        public async Task<AppUser> GetUserByNumber(string phoneNumber)
+        {
+            List<AppUser> items = await GetAllUsers();
+
+            AppUser user = null;
+
+            user = items.SingleOrDefault(x => x.PhoneNumber == phoneNumber);
+            return (user);
+        }
         public async Task<bool> isUserTaken(string username)
         {
             List<AppUser> items = await GetAllUsers();
@@ -154,10 +163,20 @@ namespace API.Services
 
         #endregion
 
+        // TODO: Have an overload that does for a single type and then remove most of all the methods above. This works beautifully
+        // This is so Yewo's code can run in parrellel with mine. I don't want too much work
+        // if anything it streamlines our work and removes alot of useless methods. The problem comes in when we have alot of types. Are they all really necessary?
+        // REFACTOR: Consider using this for all the methods
+        public async Task<List<T>> GetData<T>(string path) where T : class, new()
+        {
+            List<T> objects = new List<T>();
 
+            var response = await _firebaseDataContext.GetData(path);
 
+           objects= response.FromJsonToObject<T>();
 
-
+            return objects;
+        }
 
     }
 }

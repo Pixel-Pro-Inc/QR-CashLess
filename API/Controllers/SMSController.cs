@@ -18,7 +18,6 @@ namespace API.Controllers
         private readonly string apiKeySecret = Configuration["twillosettings:apiKeySecret"];
         public SMSController(IFirebaseServices firebaseServices): base(firebaseServices){ }
 
-        public SMSController() { }
 
         [HttpPost("send/complete/{phoneNumber}/{orderNumber}")]
         public async Task<ActionResult<string>> SendOrderCompleteSMS(string phoneNumber, string orderNumber)
@@ -76,9 +75,9 @@ namespace API.Controllers
 
         public async void StoreSMS(string origin)
         {
-            int Id = (await _firebaseDataContext.GetData<SMS>("SMS")).Count;
+            int Id = (await _firebaseServices.GetData<SMS>("SMS")).Count;
 
-            _firebaseDataContext.StoreData("SMS/" + Id, new SMS()
+            _firebaseServices.StoreData("SMS/" + Id, new SMS()
             {
                 Id = Id,
                 Origin = origin,

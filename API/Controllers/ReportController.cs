@@ -725,7 +725,7 @@ namespace API.Controllers
 
             }
 
-            return await new ExcelController(_env).ExportData(orderfiltered);
+            return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
         }
 
         [Authorize]
@@ -735,7 +735,7 @@ namespace API.Controllers
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
             ordersgiven = await GetOrdersByDate(reportDto);
 
-            return await new ExcelController(_env).ExportTotalSalesData(ordersgiven);
+            return await new ExcelController(_env, _firebaseServices).ExportTotalSalesData(ordersgiven);
         }
 
 
@@ -796,7 +796,7 @@ namespace API.Controllers
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
-            List<List<OrderItem>> orders = await _firebaseDataContext.GetData<List<OrderItem>>(dir + reportDto.BranchId);
+            List<List<OrderItem>> orders = await _firebaseServices.GetData<List<OrderItem>>(dir + reportDto.BranchId);
 
             foreach (var order in orders)
             {

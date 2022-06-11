@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace API.DTOs
 {
@@ -19,7 +20,6 @@ namespace API.DTOs
 
         // UPDATE: These are in the case that the user is an admin
         public string Fullname { get; set; }
-        public string Email { get; set; }
         public string Address { get; set; }
         public DateTime DuePaymentDate { get; set; }
 
