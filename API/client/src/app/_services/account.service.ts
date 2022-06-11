@@ -18,12 +18,10 @@ export class AccountService extends BaseServiceService{
   currentUser$ = this.currentUserSource.asObservable();
 
   constructor(http: HttpClient, public busyService: BusyService, private router: Router, private toastr: ToastrService) {
-  // I need to use the developer boolean in several components so its only smart to use it in a service
-  developer = false;
-
-  constructor(http: HttpClient) {
     super(http);
   }
+  // I need to use the developer boolean in several components so its only smart to use it in a service
+  developer = false;
 
   login(model: any, dir: string) {
     this.busyService.busy();

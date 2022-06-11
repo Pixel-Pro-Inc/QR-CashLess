@@ -63,17 +63,17 @@ namespace API.Data
             {
                 foreach (var item in data)
                 {
+                    object _object = new object();
+
                     if (item != null)
                     {
-                        var _object = new T();
-
                         if (item.GetType() == typeof(JProperty))
                         {
-                            _object = JsonConvert.DeserializeObject<T>(((JProperty)item).Value.ToString());
+                            _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
                         }
                         else
                         {
-                            _object = JsonConvert.DeserializeObject<T>(((JObject)item).ToString());
+                            _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
                         }
 
                         objects.Add(_object);
