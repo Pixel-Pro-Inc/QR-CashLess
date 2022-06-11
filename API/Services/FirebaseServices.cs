@@ -37,9 +37,10 @@ namespace API.Services
         public void DeleteData(string fullpath) => _firebaseDataContext.DeleteData(fullpath);
 
         #region Order calls
-
+        // FIXME: The GetData is coming up null
         public async Task<List<List<OrderItem>>> GetOrders(string path, string branchId)
         {
+            // It thows an error when the number of objects are about 655
             var response = await _firebaseDataContext.GetData(path + branchId);
             List<List<OrderItem>> items = response.FromJsonToObject<List<OrderItem>>();
 

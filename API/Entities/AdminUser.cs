@@ -25,12 +25,16 @@ namespace API.Entities
         // The assumption is the regardless of how many branches you have they we will all be paid at the same time so one date is enough
         public DateTime DuePaymentDate { get; set; }
 
+        [Obsolete]
         /// <summary>
         /// This is a list of the Branches that the user will be charged for and the Current Charge expected from it.
+        /// <para> 
+        /// The original list should come naturally from <see cref="AppUser.branchId"/></para>
         /// <para>
         ///  <remarks>
         /// The Key is the Branchid, the float is the CurrentCharge for that branch. We use float cause we don't need that much precision for price
-        /// </remarks> </para>
+        /// </remarks> 
+        /// </para>
         /// </summary>
         public Dictionary<string, float> BilledBranchIds { get; set; }
 

@@ -54,10 +54,14 @@ namespace API.Controllers
             // Here I want to set the user to an AdminUser with the appropriate properties if admin=true
             if (user.Admin)
             {
+
                 AdminUser adminuser= _mapper.Map<AdminUser>(user);
 
+                //FIXME: Add these properties to the view
                 //Setting of the AdminUser properties
-                // NOTE: I don't think anything else need to be set here, since everything else will be done in computing logic
+                adminuser.Fullname = registerDto.Fullname;
+                adminuser.Email = registerDto.Email;
+                adminuser.Address = registerDto.Address;
                 // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
                 adminuser.DuePaymentDate = registerDto.DuePaymentDate;
 

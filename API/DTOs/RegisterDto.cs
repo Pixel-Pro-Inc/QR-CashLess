@@ -19,7 +19,11 @@ namespace API.DTOs
         public List<string> branchId { get; set; }
         public bool Admin { get; set; }
 
-        // UPDATE: This is so the AdminUser trait can be set if admin is true
+        // UPDATE: These are in the case that the user is an admin
+        public string Fullname { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
         public DateTime DuePaymentDate { get; set; }
+
     }
 }

@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace API.Controllers
 {
+    // TODO: Have the Git commit explain why we fixed it and also add it to the error list we have in Notes
+    // GITRACK: look up
+
     /// <summary>
     /// This sends emails to the debtors and confirmation messages when paid.
     /// 
@@ -32,12 +35,13 @@ namespace API.Controllers
         }
 
         // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.
+
         /// <summary>
         /// This will be an automatic sender that will send the bill as an email.
         /// </summary>
         /// <remarks> 
         /// <para>
-        /// It will be given the <see cref="BilledUserDto"/> checks if they are past due,
+        /// It will be given the <see cref="BilledUserDto"/>, checks if they are past due,
         /// </para>
         /// <para>
         /// fires <see cref="_billingServices.CalculateTotalPaymentDue()"/>,
@@ -49,9 +53,10 @@ namespace API.Controllers
         /// Its internal cause <see cref="BillingServices"/> need to use it, but its not public cause I don't want anyone to just tamper with it
         /// </para>
         /// </remarks>
+        /// <param name="BillingDto"></param>
         /// <returns></returns>
-        [HttpGet("sendbill/{BillInfo}")]
-        internal async Task<IActionResult> BillSender (BilledUserDto BillingDto)
+        [HttpPost("sendbill/{BillingDto}")]
+        public async Task<IActionResult> BillSender (BilledUserDto BillingDto)
         {
             //Sets the parameters to do the billing logic with
              await SetParameters(BillingDto);
@@ -64,13 +69,16 @@ namespace API.Controllers
             }
 
             //Calculates how much is due
-            float payment = _billingServices.CalculateTotalPaymentDue();
+            // REFACTOR: You could just remove the calculatePaymentDue() here, or at least extract it to work within CreateInvoice
+            //float payment = _billingServices.CalculateTotalPaymentDue();
 
+            //FIXME: Throws error here
             // Creates a pdf to attach to the email
-            _billingServices.CreateInvoice(payment);
+            _billingServices.CreateInvoice();
 
-            SendBillToUser();
-            InformBillToDeveloper();
+            // TESTING: When done testing the invoice creation remove this
+            //SendBillToUser();
+            //InformBillToDeveloper();
            
             // Now that you are finished with the logic it will set it back to nothing
             await SetParameters(null);
@@ -92,7 +100,7 @@ namespace API.Controllers
             // add pdf to an email
 
             // TODO: Send email to developers informing of sent bills.
-            throw new NotImplementedException();
+            throw new NotImplementedException("InformBillToDeveloper() not done");
         }
 
         // TODO: put this in the report service
@@ -111,6 +119,8 @@ namespace API.Controllers
             // TODO: Send email/ SMS 
             // TODO: Try merging work from the emailService branch since recent work was done in it
 
+            throw new NotImplementedException("SendBillToUser() not done");
+
         }
 
         // Updates the database on payment made
@@ -126,11 +136,10 @@ namespace API.Controllers
         [HttpGet("duedate")]
         public string GetDueDate() => _billingServices.DueDate().ToString();
 
-      
         /// <summary>
-        /// This is an Billing exclusive method that was extracted to set all the properties <see cref="BillingServices"/> will use
-        /// </summary>
-        /// <param name="User"></param>
+            /// This is an Billing exclusive method that was extracted to set all the properties <see cref="BillingServices"/> will use
+            /// </summary>
+            /// <param name="User"></param>
         private async Task SetParameters(BilledUserDto BillingDto)
         {
             // Gets the user by the username
@@ -144,7 +153,8 @@ namespace API.Controllers
             { 
                 _billingServices.SetUser(appUser);
                 _billingServices.SetCurrentDate(System.DateTime.Today);
-                _billingServices.SetSalesinUsersBranch();
+                // FIXME: 655 orders is too large so I will dealwith this later
+                //_billingServices.SetSalesinUsersBranch();
                 _billingServices.SetSMSSent(Smses);
             }
             catch (UnBillableUserException)
@@ -153,6 +163,15 @@ namespace API.Controllers
                 throw;
             }
         }
+
+        // We were using this to test in post man
+        //[HttpPost("testing/{BillingDto}")]
+        //public async Task<IActionResult> Testing(BilledUserDto BillingDto)
+        //{
+        //    await _firebaseServices.GetAdminAccounts();
+        //    Console.WriteLine(BillingDto.Username + "the syntax is wrong");
+        //    return Ok("sO THE actrion result isn't the problemds");
+        //}
 
     }
 }

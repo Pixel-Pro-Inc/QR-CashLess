@@ -24,14 +24,30 @@ namespace API.Extensions
         public static List<T> FromJsonToObject<T>(this List<object> source)
        where T : class, new()
         {
+            int count =source.Count;
             List<T> results = new List<T>();
-
-            for (int i = 0; i < source.Count; i++)
+            try
             {
-                T item = JsonConvert.DeserializeObject<T>(((JObject)source[i]).ToString());
-                // This adds the deserialized list in the format into the type we are returning
-                results.Add(item);
+                for (int i = 0; i < source.Count; i++)
+                {
+                    T item = JsonConvert.DeserializeObject<T>(((JObject)source[i]).ToString());
+                    // This adds the deserialized list in the format into the type we are returning
+                    results.Add(item);
+                }
             }
+            catch (JsonSerializationException jsEx)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}",jsEx);
+            }
+            catch(ArgumentOutOfRangeException argEx)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}", argEx);
+            }
+            catch (InvalidCastException inEx)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}", inEx);
+            }
+
             return results;
         }
 
@@ -44,7 +60,21 @@ namespace API.Extensions
         public static T FromJsonToObject<T>(this object source)
       where T : class, new()
         {
-            return JsonConvert.DeserializeObject<T>(((JObject)source).ToString()); 
+            T result = new T();
+            try
+            {
+                result= JsonConvert.DeserializeObject<T>(((JObject)source).ToString());
+            }
+            catch (JsonSerializationException jsEx)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", jsEx);
+            }
+            catch (InvalidCastException inEx)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", inEx);
+            }
+
+            return result;
         }
 
     }

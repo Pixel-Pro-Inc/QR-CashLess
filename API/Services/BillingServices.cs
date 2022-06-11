@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -100,6 +101,7 @@ namespace API.Services
         //I thought, we could just store the value but then how will we accomodate for changes, We would have to have logic
         //to calculate those changes. It would be easier to simply calculate how much is due, each time, assuming a change has been made, (eg date,
         // ammount, number of branches being managed)
+        // FIXME: This isn't how we calculate payment anymore. check the create invoice for the logic
         public float CalculateTotalPaymentDue()
         {
             // calculates the overdue span by finding how much longer Today is after due date
@@ -130,7 +132,8 @@ namespace API.Services
         public bool isPastDueDate(DateTime Today) => Today > DueDate();
         public void SetUser(AppUser user)
         {
-            if (!(user is AdminUser))
+            // We could find a way to check if the user is an admin as a subclass but this is more effective and shorter
+            if (!user.Admin)
             {
                 throw new UnBillableUserException("You aren't properly set up to be billed by Pixel Pro. Please contact them to recover Services",
                   new InvalidCastException("This user isn't billed at the end of the month/ isn't a AdminUser"));
@@ -140,7 +143,7 @@ namespace API.Services
         }
        
         // FIXME: Please test to see if the Document is produced as anticipate
-        public void CreateInvoice(float payment)
+        public void CreateInvoice()
         {
             // takes in the word document and replaces the necessary variables
             CreateDocFromTemplate();
@@ -157,18 +160,20 @@ namespace API.Services
         /// </summary>
         private Microsoft.Office.Interop.Word.Document CreateDocFromTemplate()
         {
+            // Creates word application to make word doc
             Microsoft.Office.Interop.Word.Application wordApp = null;
             wordApp = new Microsoft.Office.Interop.Word.Application();
             wordApp.Visible = true;
 
             // This opens the document using the one within the specified path
+            // TODO: Use environment variables here
             Microsoft.Office.Interop.Word.Document wordDoc = wordApp.Documents
                 .Open(@"C:\Users\cash\OneDrive\business\PixelPro\Products\QRCashless\QRCashlessInvoiceTemplate.docx");
 
             // Make a document we can work and edit with
             Microsoft.Office.Interop.Word.Document workingDoc = wordDoc;
 
-            // this was supposed to be the 0000 in the invoice but that is too much work for now
+            // this was supposed to be the variable "0000" in the invoice but that is too much work for now
             //int invoicesToday= 0;
 
             SetWordValues(workingDoc);
@@ -176,13 +181,25 @@ namespace API.Services
             // We don't know what kind of error could be thrown like, directory doesn't exist or corrupted file or any of the sort
             try
             {
-                workingDoc.SaveAs($"PixelPro Invoice-{DateTime.Now.ToPixelProInvoiceFormat() + "0000" + "-00"}");
+                // TESTING: This is where I expect a file to be generated and analysed for accuracy
+                string folderpath = @"C:\Users\cash\Documents";
+                string date = DateTime.Today.ToString("dd.MM.yyyy");
+                string fileName = Path.Combine(folderpath, $"PixelPro Invoice-{DateTime.Now.ToPixelProInvoiceFormat() + "0000" + "-00"}", date);
+
+                Directory.CreateDirectory(fileName);
+
+                workingDoc.SaveAs2(fileName);
+                workingDoc.Close();
             }
             catch (Exception)
             {
                 // TODO: Add a logger here
                 throw;
             }
+
+            // closes word application
+            wordApp.Quit();
+            wordApp = null;
 
             return workingDoc;
         }
@@ -196,6 +213,7 @@ namespace API.Services
         {
             AdminUser recipient = _mapper.Map<AdminUser>(_User);
 
+            // REFACTOR: This is a good place to put the calculate values
             //Calculating properties
             float _licensingcost=0f;
             float _SupportCost=0f;
@@ -241,7 +259,6 @@ namespace API.Services
                         setBookmarkValue(bookmark, String.Format("{0:0.##}", LicensingPercent));
                         break;
                     case "_LicensingCost":
-                        // FIXME: Bring in the sales
                         float sales = branchSales;
                         _licensingcost = sales * LicensingPercent;
                         setBookmarkValue(bookmark, String.Format("{0:0.##}", _licensingcost));
@@ -374,7 +391,10 @@ namespace API.Services
             // tries to get the sales. If it fails it should not change the next due date and should throw an error
             try
             {
-                branchSales = await _reportServices.GetSalesAmountinTimePeriod(new ReportDto() { StartDate = Firstday, EndDate = LastDay });
+                foreach (string branch in _User.branchId)
+                {
+                    branchSales += await _reportServices.GetSalesAmountinTimePeriod(new ReportDto() { StartDate = Firstday, EndDate = LastDay, BranchId = branch });
+                }
             }
             catch(IncorrectPeriodInputException)
             {
@@ -383,6 +403,7 @@ namespace API.Services
             }
             catch (Exception)
             {
+                // this in the case the the database call flops or whatever unexpected
                 throw;
             }
 

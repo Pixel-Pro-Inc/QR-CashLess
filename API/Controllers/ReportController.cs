@@ -302,17 +302,19 @@ namespace API.Controllers
                 EndDate = DateTime.Now
             };
             // TODO: Put this in the Report Service
+            // TRACK: Whats going on here
             reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            reportDto.StartDate = reportDto.StartDate.FirstDayOfMonth();
+            reportDto.EndDate = reportDto.EndDate.LastDayOfMonth();
 
             var orders = await _reportServices.GetOrdersByDate(reportDto);
 
             reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            // @Yewo: Why the duplicate code, this is frustrating
+            // reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
 
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            //reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
 
             var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
@@ -320,6 +322,8 @@ namespace API.Controllers
             int difference = orders.Count - lastMonthOrders.Count;
             int absDifference = Math.Abs(difference);
 
+            // TODO: This should be a %change for the same particular day, and not between the months, otherwise its only accurate once a month
+            // @Yewo: I'm going to change this
             float percentageChange = (float)absDifference / (float)lastMonthOrders.Count;
 
             Hashtable hashtable = new Hashtable();

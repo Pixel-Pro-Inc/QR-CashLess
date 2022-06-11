@@ -36,7 +36,10 @@
         </ng-container>     
       </select>
     </div>
-
+    <!-- 
+      TODO: The isDeveloper has to be changed to !isDeveloper 
+      TODO: We need to add the fullname and email properties here
+    -->
     <div *ngIf="isDeveloper && !model.superUser" class="form-group">
       <input type="checkbox" name="admin"
              [(ngModel)]="model.admin">

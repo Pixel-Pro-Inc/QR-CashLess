@@ -34,8 +34,7 @@ namespace API.Interfaces
         /// 
         /// As its stands it void, but I expect it to return something
         /// </summary>
-        /// <param name="payment"></param>
-        public void CreateInvoice(float payment);
+        public void CreateInvoice();
 
         /// <summary>
         /// Sets the current date so that BillingServices can use it to work the logic
@@ -68,7 +67,7 @@ namespace API.Interfaces
         /// <returns> The date Today</returns>
         public DateTime DueDate();
         /// <summary>
-        /// This is so we have the sales the the users branch generated
+        /// This is so we have the sales the the users branch generated. This needs to be called when the rest of the parameters are 'initialized'
         /// 
         /// <para>
         /// I expect this to get the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> it needs from the billingServices properties. </para>
