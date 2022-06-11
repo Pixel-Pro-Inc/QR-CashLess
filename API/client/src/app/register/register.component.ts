@@ -65,6 +65,7 @@ export class RegisterComponent implements OnInit {
     this.cancelRegister.emit(false);
   }
   
+  // @Yewo: Why is this here
   resetBranches(){
     this.model.branchId = null;
   }

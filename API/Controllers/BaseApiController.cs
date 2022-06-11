@@ -1,6 +1,7 @@
 ﻿using API.Data;
 using API.Entities;
 using API.Helpers;
+using API.Interfaces;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
@@ -19,14 +20,19 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class BaseApiController : Controller
     {
-        protected readonly FirebaseDataContext _firebaseDataContext;
-        // REFACTOR: yet another instance of config that may need changing. This one is kinda important since this is the base API config used in all other controllers
+        // OBSOLETE: We are phasing this out to use firebaseServices
+        //protected readonly FirebaseDataContext _firebaseDataContext;
+
+        protected readonly IFirebaseServices _firebaseServices;
         protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
         protected static readonly HttpClient client = new HttpClient();
 
-        public BaseApiController()
+        public BaseApiController(IFirebaseServices firebaseServices)
         {
-            _firebaseDataContext = new FirebaseDataContext();
+            // NOTE: The below comment is independent of of the firebase refactor
+            // @Yewo: NOTE: It appears we use legacy deprecated credentials and we should switch to Admin SDK, so that's why it is throwing the No host exception ........prolly
+            //_firebaseDataContext = new FirebaseDataContext();
+            _firebaseServices = firebaseServices;
         }
 
 

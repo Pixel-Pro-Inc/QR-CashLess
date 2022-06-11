@@ -23,7 +23,7 @@ namespace API.Controllers
     {
         private IPhotoService _photoService;
 
-        public MenuController(IPhotoService photoService):base()
+        public MenuController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }
@@ -31,7 +31,9 @@ namespace API.Controllers
         [HttpGet("getmenu/{branchId}")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
         {
-            return await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
+            List<MenuItem> items = await _firebaseServices.GetMenu(branchId);
+
+            return items;
         }
 
         [Authorize]
@@ -102,7 +104,7 @@ namespace API.Controllers
 
             menuItem.Id = n;
 
-            _firebaseDataContext.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
 
             return menuItemDto;
         }
@@ -307,7 +309,9 @@ namespace API.Controllers
                     }
                 }
 
-            //Update firebase
+            //Updates firebase
+            // UPDATE: I noticed that StoreData and edit have the same function so I reuse them
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + menuItem.Id, menuItem);
 
             _firebaseDataContext.EditData("Menu/" + branchId + "/" + oldMenuItem.Id, oldMenuItem);
 
@@ -322,7 +326,7 @@ namespace API.Controllers
             await _photoService.DeletePhotoAsync(menuItemDto.publicId);
 
             //Delete Item from Firebase
-            _firebaseDataContext.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
+            _firebaseServices.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
 
             return menuItemDto;
         }

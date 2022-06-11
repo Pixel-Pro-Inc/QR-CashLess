@@ -1,6 +1,9 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
+using API.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -20,10 +23,16 @@ namespace API.Controllers
     {
         private readonly string dir = "CompletedOrders/";
         private readonly IWebHostEnvironment _env;
-        public ReportController(IWebHostEnvironment env) //:base()
+        private readonly IReportServices _reportServices;
+
+        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService, IReportServices reportServices) :base(firebaseService)
         {
             _env = env;
+            _reportServices = reportServices;
         }
+        
+        //REFACTOR: We might need a Report Service
+        // TODO: Make a report Service
 
         [Authorize]        
         [HttpPost("sales/total")]
@@ -32,7 +41,7 @@ namespace API.Controllers
             //returns order number and amount earned
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
 
-            eligibleOrders = await GetOrdersByDate(reportDto);
+            eligibleOrders = await _reportServices.GetOrdersByDate(reportDto);
 
             List<float> totals = new List<float>();
             List<string> OrderNumbers = new List<string>();
@@ -67,10 +76,12 @@ namespace API.Controllers
         public async Task<ActionResult<List<Hashtable>>> GetSalesByItem(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             List<Hashtable> hashtables = new List<Hashtable>();            
 
+
+            // REFACTOR: Please please, there has to be another way
             foreach (var order in ordersgiven)
             {
                 foreach (var item in order)
@@ -139,6 +150,7 @@ namespace API.Controllers
             return hashtable;
         } 
 
+        // TODO: Put this in the report service
         bool FilterByCategory(ReportDto reportDto)
         {
             if (reportDto.Category != null)
@@ -150,6 +162,7 @@ namespace API.Controllers
             return false;           
         }
 
+        // TODO: put this in the report service
         bool FilterByName(ReportDto reportDto)
         {
             if (reportDto.Name != null)
@@ -165,10 +178,11 @@ namespace API.Controllers
         [HttpPost("sales/invoice")]//This is so you can get the order with the quantity got and the revenue by invoice
         public async Task<ActionResult<List<List<OrderItem>>>> GetOrderItemByinvoice(ReportDto reportDto)
         {
-            var results = await GetOrdersByDate(reportDto);
+            var results = await _reportServices.GetOrdersByDate(reportDto);
 
             List<List<OrderItem>> temp = new List<List<OrderItem>>();
 
+            // REFACTOR: Please please, there has to be another way
             foreach (var item in results)
             {
                 string x = item[0].OrderNumber;
@@ -239,19 +253,8 @@ namespace API.Controllers
         [HttpPost("sales/summary")]//This gets a flat out total in a period of time
         public async Task<ActionResult<SalesDto>> GetSummarySales(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
-
-            SalesDto SalesByItem = new SalesDto();
-            foreach (var order in ordersgiven)
-            {
-                foreach (var item in order)
-                {
-                    SalesByItem.SummaryTotal += float.Parse(item.Price);
-                }
-            }
-
-            string total = FormatAmountString(SalesByItem.SummaryTotal);
+            //Gets the total Sales in the time period set in the ReportDto
+            string total = FormatAmountString( await _reportServices.GetSalesAmountinTimePeriod(reportDto));
 
             SalesDto sales = new SalesDto()
             {
@@ -266,12 +269,13 @@ namespace API.Controllers
         public async Task<ActionResult<List<PaymentDto>>> GetPaymentBalance(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             float cash = 0;
             float card = 0;
             float online = 0;
 
+            // REFACTOR: Please please, there has to be another way
             foreach (var item in ordersgiven)
             {
                 foreach (var order in item)
@@ -335,25 +339,29 @@ namespace API.Controllers
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now
             };
+            // TODO: Put this in the Report Service
+            // TRACK: Whats going on here
+            reportDto.BranchId = id;
+            reportDto.StartDate = reportDto.StartDate.FirstDayOfMonth();
+            reportDto.EndDate = reportDto.EndDate.LastDayOfMonth();
+
+            var orders = await _reportServices.GetOrdersByDate(reportDto);
 
             reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
-
-            var orders = await GetOrdersByDate(reportDto);
-
-            reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            // @Yewo: Why the duplicate code, this is frustrating
+            // reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
 
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            //reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
 
-            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
 
             int difference = orders.Count - lastMonthOrders.Count;
             int absDifference = Math.Abs(difference);
 
+            // TODO: This should be a %change for the same particular day, and not between the months, otherwise its only accurate once a month
+            // @Yewo: I'm going to change this
             float percentageChange = (float)absDifference / (float)lastMonthOrders.Count;
 
             Hashtable hashtable = new Hashtable();
@@ -377,11 +385,12 @@ namespace API.Controllers
                 EndDate = DateTime.Now
             };
 
+            // TODO: Put this in the report Service
             reportDto.BranchId = id;
             reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
 
-            var orders = await GetOrdersByDate(reportDto);
+            var orders = await _reportServices.GetOrdersByDate(reportDto);
             float revenue = 0f;
             foreach (var item in orders)
             {
@@ -398,7 +407,7 @@ namespace API.Controllers
             reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
 
-            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
             float lastRevenue = 0f;
             foreach (var item in lastMonthOrders)
             {
@@ -815,27 +824,28 @@ namespace API.Controllers
 
             return eligibleOrders;
         }
+       
+        // TODO: put this in the report service
         public async Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto)
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData<Branch>("Branch");
+            var response = await _firebaseServices.GetBranchesFromDatabase();
 
             foreach (var item in response)
             {
                 Branch branch = item;
-
-                TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
+                TimeSpan timeSpan = DateTime.UtcNow - item.LastActive;
 
                 float x = (float)(timeSpan.TotalMinutes);
 
                 BranchDto branchDto = new BranchDto()
                 {
-                    Id = branch.Id,
-                    Img = branch.ImgUrl,
+                    Id = item.Id,
+                    Img = item.ImgUrl,
                     LastActive = x,
-                    Location = branch.Location,
-                    Name = branch.Name
+                    Location = item.Location,
+                    Name = item.Name
                 };
 
                 branches.Add(branchDto);
@@ -846,13 +856,7 @@ namespace API.Controllers
 
             for (int i = 0; i < branches.Count; i++)
             {
-                var result = await _firebaseDataContext.GetData<List<OrderItem>>(dir + branches[i].Id);
-
-                foreach (var item in result)
-                {
-                    var pain = item;
-                    orders.Add(pain);
-                }
+                orders.Add( await _firebaseServices.GetOrders(branches[i].Id));
             }
 
             foreach (var order in orders)
@@ -881,13 +885,68 @@ namespace API.Controllers
 
             return eligibleOrders;
         }
+
+        [HttpPost("excel/export")] 
+        public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
+        {
+            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
+
+            List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
+
+            // REFACTOR: Theres a better way, have the total and remove instead of adding
+            foreach (var order in ordersgiven)
+            {
+                orderfiltered.Add(new List<OrderItem>());
+                foreach (var item in order)
+                {
+                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                            if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                            {
+                                orderfiltered[orderfiltered.Count-1].Add(item);
+                            }
+                    }
+                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        orderfiltered[orderfiltered.Count - 1].Add(item);
+                    }
+                }
+
+                if (orderfiltered[orderfiltered.Count - 1].Count==0)
+                    orderfiltered[orderfiltered.Count - 1].RemoveAt(orderfiltered.Count - 1);
+
+            }
+
+            return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
+
+        }
+
+        // TODO: put this in the report service
         string GetOrderNumber(string OrderNumber)
         {
             return OrderNumber.Substring(OrderNumber.IndexOf('_') + 1, 4);
         }
+        // TODO: put this in the report service
         string FormatAmountString(float amount) // format 1,000,000.00
         {
             return String.Format("{0:n}", amount);
         }
+
     }
 }

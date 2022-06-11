@@ -15,16 +15,20 @@ using Microsoft.AspNetCore.Hosting;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using API.Interfaces;
 
 namespace API.Controllers
 {
     public class ExcelController : BaseApiController
     {
         private readonly string _rootPath;
-        public ExcelController(IWebHostEnvironment env)
+        public ExcelController(IWebHostEnvironment env, IFirebaseServices firebaseServices) :base (firebaseServices)
         {
             _rootPath = env.WebRootPath;
         }
+
+        //TODO: This need to be refactored so an Excel Service should be made
+        // REFACTOR: Extract alot of the excel logic out of here
 
         [HttpGet("export/{branchId}")]//This is used as reference for http calls that is api/excel/export will call the ExportData() method
         public async /*Task<HttpResponseMessage>*/ Task<IActionResult> ExportData(string branchId)
@@ -46,7 +50,7 @@ namespace API.Controllers
             {
                 //Gets Orders from the Database
                 string dir = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
-                List<List<OrderItem>> orderItems = await GetOrders(dir + "/", branchId);
+                List<List<OrderItem>> orderItems = await _firebaseServices.GetOrders(dir + "/", branchId);
 
                 if (orderItems.Count <= 0) //Checks to see if the result from the database actually has data
                 {
@@ -358,11 +362,9 @@ namespace API.Controllers
             return contentType;
         }
 
-        string savePath(string fileName) { return Path.Combine(_rootPath, fileName); }
+        string savePath(string fileName) => Path.Combine(_rootPath, fileName);
 
-        private async Task<List<List<OrderItem>>> GetOrders(string path, string branchId)
-        {
-            return await _firebaseDataContext.GetData<List<OrderItem>>(path + branchId);
-        }
+
+
     }
 }

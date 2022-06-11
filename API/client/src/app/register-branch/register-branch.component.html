@@ -5,6 +5,15 @@
     width="300"
     class="mt-5"/>
   </div>
+  <div class="pagetitle" style="margin-left: 100px; margin-right: 100px;">
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item"><a routerLink="/accountmanagement" >Account Management</a></li>
+        <li class="breadcrumb-item active">Register Branch</li>
+      </ol>
+    </nav>
+  </div>
 
   <form #branchForm="ngForm" (ngSubmit)="register()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
     <h3>Create Branch</h3>

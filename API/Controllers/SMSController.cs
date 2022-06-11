@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+﻿using API.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -14,6 +16,7 @@ namespace API.Controllers
         private readonly string accountSid = Configuration["twillosettings:accountSid"];
         private readonly string apiKeySid = Configuration["twillosettings:apiKeySid"];
         private readonly string apiKeySecret = Configuration["twillosettings:apiKeySecret"];
+        public SMSController(IFirebaseServices firebaseServices): base(firebaseServices){ }
 
         public SMSController() { }
 

@@ -22,16 +22,23 @@ namespace API.Controllers
     public class BranchController : BaseApiController
     {
         private IPhotoService _photoService;
-        public BranchController(IPhotoService photoService):base()
+        public BranchController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }
+
+        /// <summary>
+        /// Takes in a <see cref="BranchDto"/> from the client so that the controller method have something to work with.
+        /// <para> Then creates a branch if it meets the criteria and stores it in the database</para>
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("register")]
         public async Task<ActionResult<BranchDto>> CreateBranch(BranchDto dto)
         {
             List<Branch> branches = new List<Branch>();
-            branches = await GetBranches2();
+            branches = await _firebaseServices.GetBranchesFromDatabase();
 
             for (int i = 0; i < branches.Count; i++)
             {
@@ -67,7 +74,7 @@ namespace API.Controllers
                 branch.PublicId = result.PublicId;
             }        
 
-            _firebaseDataContext.StoreData("Branch/" + branch.Id, branch);
+            _firebaseServices.StoreData("Branch/" + dto.Id, branch);
 
             return dto;
         }
@@ -157,18 +164,25 @@ namespace API.Controllers
             return response[0].ClosingTimeToday;
         }
 
+
+        /// <summary>
+        /// This is called from the client to get all the branches in the database
+        /// 
+        /// <para> The branches will come in as <see cref="BranchDto"/> instead of just the branch types</para>
+        /// <para> NOTE: The branchDtos are made within the method</para>
+        /// </summary>
+        /// <returns> IEnumerable <see cref="BranchDto"/></returns>
         [HttpGet("getbranches")]
         public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches()
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData<Branch>("Branch");
+            var response = await _firebaseServices.GetBranchesFromDatabase();
 
             foreach (var item in response)
             {
                 Branch branch = item;
-
-                TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
+                TimeSpan timeSpan = DateTime.UtcNow - item.LastActive;
 
                 float x = (float)(timeSpan.TotalMinutes);
 
@@ -176,8 +190,8 @@ namespace API.Controllers
 
                 BranchDto branchDto = new BranchDto()
                 {
-                    Id = branch.Id,
-                    Img = branch.ImgUrl,
+                    Id = item.Id,
+                    Img = item.ImgUrl,
                     LastActive = x,
                     Location = branch.Location,
                     Name = branch.Name,

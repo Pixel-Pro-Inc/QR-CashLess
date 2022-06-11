@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using AutoMapper;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,19 +26,21 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
-        private string dir = "Account";
         private readonly SMSController smsSender;
 
-        public AccountController(ITokenService tokenService)//, UserManager<AppUser> userManager) :base()
+
+        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IMapper mapper) :base(firebaseServices)
         {
             _tokenService = tokenService;
+            _mapper = mapper;
+            // UPDATE: I removed all references to firebaseDatacontext and replaces it with _firebaseServices
             smsSender = new SMSController();
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserTaken(registerDto.Username))
+            if (await _firebaseServices.isUserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
             TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
@@ -53,14 +57,32 @@ namespace API.Controllers
                 Developer = registerDto.Developer,
                 branchId = registerDto.branchId,
                 Admin = registerDto.Admin,
-                SuperUser = registerDto.SuperUser,
+                SuperUser = registerDto.SuperUser
                 Email = registerDto.Email,
                 NationalIdentityNumber = registerDto.NationalIdentityNumber
             };            
 
-            user.Id = await GetNum();
+            user.Id = await _firebaseServices.CreateId();
 
-            _firebaseDataContext.StoreData(dir + "/" + user.Id.ToString(), user);
+            // Here I want to set the user to an AdminUser with the appropriate properties if admin=true
+            if (user.Admin)
+            {
+
+                AdminUser adminuser= _mapper.Map<AdminUser>(user);
+
+                //FIXME: Add these properties to the view
+                //Setting of the AdminUser properties
+                adminuser.Fullname = registerDto.Fullname;
+                adminuser.Email = registerDto.Email;
+                adminuser.Address = registerDto.Address;
+                // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
+                adminuser.DuePaymentDate = registerDto.DuePaymentDate;
+
+                // This is so the user is stored as an AdminUser with the properties it needs
+                user = adminuser;
+            }
+
+            _firebaseServices.StoreData("Account" + "/" + user.Id.ToString(), user);
 
             return new UserDto()
             {
@@ -72,10 +94,10 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            if ((await GetUser(loginDto.Username)) == null)
+            if ((await _firebaseServices.GetUser(loginDto.Username)) == null)
                 return Unauthorized("Username doesn't exist");
 
-            AppUser user = (await GetUser(loginDto.Username));
+            AppUser user = (await _firebaseServices.GetUser(loginDto.Username));
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             Byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -213,6 +235,9 @@ namespace API.Controllers
 
             return "success";
         }
+
+        [HttpGet("getadminusers")]
+        public async Task<List<AdminUser>> GetAdminUsers() => await _firebaseServices.GetAdminAccounts();
 
     }
 }

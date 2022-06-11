@@ -17,6 +17,8 @@ namespace API.Data
         // REFACTOR: Another instance of config that we may need to modify to use environment variaables
         protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
+       
+        // NOTE: The configuration works properly
         IFirebaseConfig config = new FirebaseConfig
         {
             AuthSecret = Configuration["FirebaseDataBaseSettings:AuthSecret"],
@@ -43,10 +45,14 @@ namespace API.Data
 
             var response = await client.SetAsync(path, data);
         }
-        public async Task<List<T>> GetData<T>(string path) where T : class, new()
-        {
-            List<T> objects = new List<T>();
 
+        // UNDONE: DO NOT SWITCH TO YEWO'S version on Development. The problem with that version is that you have to make a type for everything you want from the database
+        // like flavour and shit. We dont need that. Just have this work as is and then the extension will change the type where it is needed
+        // @Yewo: Here is my reason. Don't fight and delete unless you consult with me
+        // NOTE: You don't need to refactor this to work with the JsonConvertExtension. But you could clean up with Yewo after discussing it
+        public async Task<List<object>> GetData(string path)
+        {
+            List<object> objects = new List<object>();
             client = new FireSharp.FirebaseClient(config);
 
             FirebaseResponse response = await client.GetAsync(path);

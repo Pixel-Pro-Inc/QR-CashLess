@@ -239,7 +239,12 @@
                     <button class="btn btn-success" (click)="exportDetailReportToExcel()"> <span class="fa fa-file-excel-o mr-1"></span>Export To Excel</button>
                   </div>
                 </form>
-
+                  
+               <!-- NOTE: As long as the button is in the form it keeps calling the same endpoint for Detailed Reports
+              It did this when we weren't subscribed to the dashservice but we were subscribed to the DetailedReports service.
+            Once you subscribed to the right service inside reportToExcel then it managed-->
+                
+               
                 <h3 class="ml-2 mt-3 mb-4">Total Detailed Sales Report</h3>
                 <h4 *ngIf="model1.searched && model1.empty" class="text-warning text-center mb-5">No results match your query. Adjust your parameters and try again.</h4>
                 <table *ngIf="!model1.empty" class="table mb-5">
