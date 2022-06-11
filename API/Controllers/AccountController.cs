@@ -132,7 +132,7 @@ namespace API.Controllers
 
         //When you have set up the Identity roles thing then you can remove the below line to get access to the code
 
-        public async Task<string> GetResetToken()
+        public string GetResetToken()
         {
             string token = "R";
 
@@ -148,7 +148,7 @@ namespace API.Controllers
         [HttpPost("forgotpassword/{accountID}")]
         public async Task<string> ForgotPassword(string accountID)
         {
-            string token = await GetResetToken();
+            string token =  GetResetToken();
 
             int result = 0;
 
@@ -170,7 +170,7 @@ namespace API.Controllers
         [HttpPost("forgotpassword/desktop/{accountID}")]
         public async Task<ActionResult<string>> ForgotPasswordDesktop(string accountID)
         {
-            string token = await GetResetToken();
+            string token = GetResetToken();
 
             int result = 0;
 
