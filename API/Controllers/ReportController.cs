@@ -86,7 +86,7 @@ namespace API.Controllers
             {
                 foreach (var item in order)
                 {
-                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    if (_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                             if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
@@ -95,14 +95,14 @@ namespace API.Controllers
                                 hashtables.Add(GetHashtable(item));
                             }
                     }
-                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                         {
                             hashtables.Add(GetHashtable(item));
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
                                 item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
@@ -110,7 +110,7 @@ namespace API.Controllers
                             hashtables.Add(GetHashtable(item));
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         hashtables.Add(GetHashtable(item));
                     }
@@ -150,29 +150,6 @@ namespace API.Controllers
             return hashtable;
         } 
 
-        // TODO: Put this in the report service
-        bool FilterByCategory(ReportDto reportDto)
-        {
-            if (reportDto.Category != null)
-                if (reportDto.Category != "None" && reportDto.Category != "")
-                {
-                    return true;
-                }
-
-            return false;           
-        }
-
-        // TODO: put this in the report service
-        bool FilterByName(ReportDto reportDto)
-        {
-            if (reportDto.Name != null)
-                if (reportDto.Name !="")
-                {
-                    return true;
-                }
-
-            return false;
-        }
         
         [Authorize]
         [HttpPost("sales/invoice")]//This is so you can get the order with the quantity got and the revenue by invoice
@@ -337,43 +314,33 @@ namespace API.Controllers
             ReportDto reportDto = new ReportDto()
             {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now
+                EndDate = DateTime.Now,
+                BranchId = id
             };
             // TODO: Put this in the Report Service
-            // TRACK: Whats going on here
-            reportDto.BranchId = id;
-            reportDto.StartDate = reportDto.StartDate.FirstDayOfMonth();
-            reportDto.EndDate = reportDto.EndDate.LastDayOfMonth();
 
-            var orders = await _reportServices.GetOrdersByDate(reportDto);
+            // A tuple of orders of this month and the last
+            var TwoMonthOrders = await _reportServices.GetTwoMonthOrders(reportDto);
 
-            reportDto.BranchId = id;
-            // @Yewo: Why the duplicate code, this is frustrating
-            // reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
-            reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
+            //Gets the specific timepspan between the start and end date for each month
+            TimeSpan daysOrdering = reportDto.StartDate.Subtract(reportDto.EndDate);
+            TimeSpan PreviousMpnthdaysOrdering = reportDto.StartDate.Subtract(reportDto.EndDate);
 
-            //reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
-            reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
+            // Gets the rate of orders per day
+            float thisMonthratePerDay = TwoMonthOrders.ThisMonthorders.Count / daysOrdering.Days;
+            float lastMonthratePerDay = TwoMonthOrders.LastMonthOrders.Count / PreviousMpnthdaysOrdering.Days;
 
-            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
+            // Sets the variable names for the hashtable
+            string metricname = "sales";
+            int sales = TwoMonthOrders.ThisMonthorders.Count;
+            float difference = thisMonthratePerDay - lastMonthratePerDay;
+            string change = FormatAmountString(Math.Abs(thisMonthratePerDay / lastMonthratePerDay) * 100f);
 
-            int difference = orders.Count - lastMonthOrders.Count;
-            int absDifference = Math.Abs(difference);
-
-            // TODO: This should be a %change for the same particular day, and not between the months, otherwise its only accurate once a month
-            // @Yewo: I'm going to change this
-            float percentageChange = (float)absDifference / (float)lastMonthOrders.Count;
-
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("sales", orders.Count);
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable(metricname, sales, difference, change);
         }
+
+       
+
 
         [Authorize]
         [HttpGet("sales/thismonth/revenue/{id}")]
@@ -382,56 +349,27 @@ namespace API.Controllers
             ReportDto reportDto = new ReportDto()
             {
                 StartDate = DateTime.Now,
-                EndDate = DateTime.Now
+                EndDate = DateTime.Now,
+                BranchId = id
             };
 
             // TODO: Put this in the report Service
-            reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
 
-            var orders = await _reportServices.GetOrdersByDate(reportDto);
-            float revenue = 0f;
-            foreach (var item in orders)
-            {
-                foreach (var order in item)
-                {
-                    revenue += float.Parse(order.Price);
-                }
-            }
+            var TwoMonthOrders = await _reportServices.GetTwoMonthOrders(reportDto);
 
-            reportDto.BranchId = id;
-            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
-            reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
-
-            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
-            reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
-
-            var lastMonthOrders = await _reportServices.GetOrdersByDate(reportDto);
-            float lastRevenue = 0f;
-            foreach (var item in lastMonthOrders)
-            {
-                foreach (var order in item)
-                {
-                    lastRevenue += float.Parse(order.Price);
-                }
-            }
+            // Find the revenue of both months
+            float revenue = _reportServices.FindRevenueinMonth(TwoMonthOrders.ThisMonthorders);
+            float lastRevenue= _reportServices.FindRevenueinMonth(TwoMonthOrders.LastMonthOrders);
 
             float difference = revenue - lastRevenue;
             float absDifference = Math.Abs(difference);
 
             float percentageChange = (float)absDifference / (float)lastRevenue;
 
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("revenue", FormatAmountString(revenue));
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable("revenue", revenue, absDifference, FormatAmountString(percentageChange* 100f));
         }
+
+        
 
         [Authorize]
         [HttpGet("sales/thismonth/averagevolume/{id}")]
@@ -468,15 +406,7 @@ namespace API.Controllers
 
             float percentageChange = absDifference / avgOrdersPast;
 
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("averagesales", FormatAmountString(avgOrdersCurrent));
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable("averagesales", avgOrdersCurrent, absDifference, FormatAmountString(percentageChange * 100f));
         }
 
         [Authorize]
@@ -533,15 +463,7 @@ namespace API.Controllers
 
             float percentageChange = (float)absDifference / (float)avgRevOrdersPast;
 
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("averagerevenue", FormatAmountString(avgRevOrdersCurrent));
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable("averagerevenue", avgRevOrdersCurrent, absDifference, FormatAmountString(percentageChange * 100f));
         }
 
         [Authorize]
@@ -592,15 +514,7 @@ namespace API.Controllers
 
             float percentageChange = (float)absDifference / (float)avgItemsOrdersPast;
 
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("averageitems", FormatAmountString(avgItemsOrdersCurrent));
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable("averageitems", avgItemsOrdersCurrent, absDifference, FormatAmountString(percentageChange * 100f));
         }
 
         [Authorize]
@@ -693,7 +607,7 @@ namespace API.Controllers
                 orderfiltered.Add(new List<OrderItem>());
                 foreach (var item in order)
                 {
-                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    if (_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                             if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
@@ -702,14 +616,14 @@ namespace API.Controllers
                                 orderfiltered[orderfiltered.Count - 1].Add(item);
                             }
                     }
-                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                         {
                             orderfiltered[orderfiltered.Count - 1].Add(item);
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
                                 item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
@@ -717,7 +631,7 @@ namespace API.Controllers
                             orderfiltered[orderfiltered.Count - 1].Add(item);
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         orderfiltered[orderfiltered.Count - 1].Add(item);
                     }
@@ -727,17 +641,6 @@ namespace API.Controllers
 
             return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
         }
-
-        [Authorize]
-        [HttpPost("excel/export-totalsales")]
-        public async Task<IActionResult> ExportTotalSales(ReportDto reportDto)
-        {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await GetOrdersByDate(reportDto);
-
-            return await new ExcelController(_env, _firebaseServices).ExportTotalSalesData(ordersgiven);
-        }
-
 
         [Authorize]
         [HttpGet("sales/thismonth/allrevenue")]
@@ -783,15 +686,7 @@ namespace API.Controllers
 
             float percentageChange = (float)absDifference / (float)lastRevenue;
 
-            Hashtable hashtable = new Hashtable();
-            hashtable.Add("revenue", FormatAmountString(revenue));
-
-            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
-            hashtable.Add("change", change);
-
-            hashtable.Add("positive", difference < 0 ? false : true);
-
-            return hashtable;
+            return _reportServices.GenerateReportHashtable("revenue", revenue, absDifference, FormatAmountString(percentageChange * 100f));
         }
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
@@ -886,6 +781,16 @@ namespace API.Controllers
             return eligibleOrders;
         }
 
+        [Authorize]
+        [HttpPost("excel/export-totalsales")]
+        public async Task<IActionResult> ExportTotalSales(ReportDto reportDto)
+        {
+            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            ordersgiven = await GetOrdersByDate(reportDto);
+
+            return await new ExcelController(_env, _firebaseServices).ExportTotalSalesData(ordersgiven);
+        }
+
         [HttpPost("excel/export")] 
         public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
         {
@@ -900,7 +805,7 @@ namespace API.Controllers
                 orderfiltered.Add(new List<OrderItem>());
                 foreach (var item in order)
                 {
-                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    if (_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                             if (reportDto.Name.ToUpper() == item.Name.ToUpper())
@@ -908,21 +813,21 @@ namespace API.Controllers
                                 orderfiltered[orderfiltered.Count-1].Add(item);
                             }
                     }
-                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                         {
                             orderfiltered[orderfiltered.Count - 1].Add(item);
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && _reportServices.FilterByName(reportDto))
                     {
                         if (reportDto.Name.ToUpper() == item.Name.ToUpper())
                         {
                             orderfiltered[orderfiltered.Count - 1].Add(item);
                         }
                     }
-                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    else if (!_reportServices.FilterByCategory(reportDto) && !_reportServices.FilterByName(reportDto))
                     {
                         orderfiltered[orderfiltered.Count - 1].Add(item);
                     }
