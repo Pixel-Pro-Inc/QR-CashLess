@@ -8,7 +8,8 @@ import { AccountService } from '../_services/account.service';
 })
 export class AccountmanagementComponent implements OnInit {
 
-  developer:boolean=this.accountService.developer
+  developer:boolean=this.accountService.developer;
+  superUser:boolean=this.accountService.superUser;
   
   constructor(private accountService: AccountService) { }
 

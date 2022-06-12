@@ -37,21 +37,28 @@
       </select>
     </div>
     <!-- 
-      TODO: The isDeveloper has to be changed to !isDeveloper 
-      TODO: We need to add the fullname and email properties here
+      TODO: The isDeveloper is so a developer can register in Admin or superUsers or staff
+      and isSuperUser so the can register only admin and staff
     -->
-    <div *ngIf="isDeveloper && !model.superUser" class="form-group">
+      <hr class="mt-3">
+    <div *ngIf="isDeveloper || isSuperUser" class="form-group">
+      <h5> Only Admin get sent invoices:</h5><h6>Fill in the below to complete the invoice information</h6>
+      <ng-container *ngIf="model.admin">
+        <input type="text" class="form-control" name="Address"
+             [(ngModel)]="model.Address" placeholder="Address">
+        <label>First payment date</label>
+      <input  type="date" class="form-control" name="DuePaymentDate" [(ngModel)]="model.DuePaymentDate">
+      </ng-container>
+      
       <input type="checkbox" name="admin"
-             [(ngModel)]="model.admin">
+             [(ngModel)]="model.admin" >
       <label class="ml-2">Admin Account</label> 
-      <hr>
-      <label>First payment date</label>
-      <input type="date" class="form-control" name="DuePaymentDate" [(ngModel)]="model.DuePaymentDate">
     </div>
      <div class="form-group">
        
      </div>
-    <div *ngIf="isDeveloper && !model.admin" class="form-group">
+     <hr class="mt-3">
+    <div *ngIf="isDeveloper " class="form-group">
       <input type="checkbox" name="superUser"
              [(ngModel)]="model.superUser">
              <ng-container>{{resetBranches()}}</ng-container>

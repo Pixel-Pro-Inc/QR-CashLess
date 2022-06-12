@@ -14,8 +14,12 @@ export class AccountService extends BaseServiceService{
   private currentUserSource = new ReplaySubject<User>(1);
   currentUser$ = this.currentUserSource.asObservable();
 
-  // I need to use the developer boolean in several components so its only smart to use it in a service
+  constructor(http: HttpClient, public busyService: BusyService, private router: Router, private toastr: ToastrService) {
+    super(http);
+  }
+  // I need to use the developer and superUser boolean in several components so its only smart to use it in a service
   developer = false;
+  superUser=false;
 
   constructor(http: HttpClient) {
     super(http);
