@@ -39,6 +39,8 @@ export class BillingComponent implements OnInit {
 
   GetAdminUsers=()=>this.accountService.getAdminUsers().subscribe( response=>{this.adminUsers= response});
 
+  //SendBill=()=>this.billingService.SendBill(model?).subscribe(response=>{return response});
+
 
   //#region   View
     // OBSOLETE: We can't Change Users back and forth to billing state

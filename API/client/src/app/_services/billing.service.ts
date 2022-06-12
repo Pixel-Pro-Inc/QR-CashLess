@@ -13,6 +13,7 @@ import { BranchService } from './branch.service';
   providedIn: 'root'
 })
 export class BillingService extends BaseServiceService {
+ 
   branches: Branch[];
   CurrentUser: AdminUser;
 
@@ -58,6 +59,16 @@ export class BillingService extends BaseServiceService {
   }
   // UPDATE: Since admin by default there is no need to be able to switch users to and fro billed users
  
+  /**This is supposed to be an automatic sender of the bill to the users and the developers
+   * But as its stands I don't know if it belongs here or not
+   */
+  SendBill(model: any) {
+    return this.http.post(this.baseUrl + "billing/sendbill/", model).pipe(
+      map((response: string) => {
+        return response;
+      })
+    )
+  }
 
 }
 
