@@ -38,7 +38,7 @@ namespace API.Services
 
         #region Order calls
         // FIXME: The GetData is coming up null
-        public async Task<List<List<OrderItem>>> GetOrders(string path, string branchId)
+        public async Task<List<List<OrderItem>>> GetAllOrders(string path, string branchId)
         {
             // It thows an error when the number of objects are about 655
             var response = await _firebaseDataContext.GetData(path + branchId);

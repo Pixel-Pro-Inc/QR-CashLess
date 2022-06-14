@@ -50,7 +50,7 @@ namespace API.Controllers
             {
                 //Gets Orders from the Database
                 string dir = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
-                List<List<OrderItem>> orderItems = await _firebaseServices.GetOrders(dir + "/", branchId);
+                List<List<OrderItem>> orderItems = await _firebaseServices.GetAllOrders(dir + "/", branchId);
 
                 if (orderItems.Count <= 0) //Checks to see if the result from the database actually has data
                 {
@@ -289,7 +289,7 @@ namespace API.Controllers
 
                         if (data.Key == "Chefs" || data.Key == "Sauces")
                         {
-                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : Helpers.Formatting.ListToString((List<string>)data.Value), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : Helpers.Format.ListToString((List<string>)data.Value), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                             continue;
                         }
 

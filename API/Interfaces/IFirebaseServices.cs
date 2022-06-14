@@ -89,16 +89,15 @@ namespace API.Interfaces
 
         /// <summary>
         /// This takes one of three paths ( "CompletedOrders", "CancelledOrders", "UnCompletedOrders") and the branchId
-        /// <para> then it combines them to make the node path to get the orders within that node</para>
+        /// <para> then it combines them to make the node path to get the all orders within that node</para>
         /// </summary>
         /// <param name="path"></param>
         /// <param name="branchId"></param>
         /// <returns> List of 'Orders' as a List of a List of <see cref="OrderItem"/></returns>
-        public Task<List<List<OrderItem>>> GetOrders(string path , string branchId);
+        public Task<List<List<OrderItem>>> GetAllOrders(string path , string branchId);
 
         /// <summary>
-        /// An overload of <see cref="GetOrders(string, string)"/>
-        /// <para> This one just takes the branch Id and returns a single list of orders in that "Order/"<paramref name="branchId"/></para>
+        /// <para> Takes the branch Id and returns a single list of orders in that "Order/"<paramref name="branchId"/></para>
         /// </summary>
         /// <param name="branchId"></param>
         /// <returns> 'Orders' as a List of <see cref="OrderItem"/></returns>

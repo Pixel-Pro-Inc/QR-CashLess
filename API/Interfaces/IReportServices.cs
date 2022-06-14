@@ -26,38 +26,66 @@ namespace API.Interfaces
         /// <param name="orders"></param>
         /// <returns> revenue as a <see cref="float"/></returns>
         public float FindRevenueinMonth(List<List<OrderItem>> orders);
+        /// <summary>
+        /// Give it a reportDto and it will cough up the revenue of the orders of this month and last month but it only uses the <see cref="IReportServices.GetAllOrdersByDate(ReportDto)"/>
+        /// </summary>
+        /// <param name="reportDto"></param>
+        /// <returns>A <see cref="Tuple{T1, T2}"/> where <see cref="ValueTuple{T1}"/> is revenue this month and <see cref="ValueTuple{T2}"/> is from last month</returns>
+        public Task<(float ThisMonthRevenue, float LastMonthRevenue)> GetTwoMonthsRevenue(ReportDto reportDto);
+        /// <summary>
+        /// This gets a List of Orders and finds the balance of which payment types each order was made with
+        /// </summary>
+        /// <param name="ordersgiven"></param>
+        /// <param name="paymentTypes"></param>
+        /// <param name="amountList"></param>
+        /// <returns> A list of paymentdto's so the client can use them</returns>
+        public List<PaymentDto> GetpaymentTypeBalances(List<List<OrderItem>> ordersgiven, string[] paymentTypes, float[] amountList);
 
 
         /// <summary>
-        /// Give it a reportDto and it will cough up the orders of this month and last month
+        /// Give it a reportDto and it will cough up the orders of this month and last month 
+        /// <para> If <see cref="ReportDto.BranchId"/> == null ( it wasn't set), it will get all the orders in all the branches</para>
         /// </summary>
         /// <param name="reportDto"></param>
         /// <returns>A <see cref="Tuple{T1, T2}"/> where <see cref="ValueTuple{T1}"/> is orders this month and <see cref="ValueTuple{T2}"/> is from last month</returns>
         public Task<(List<List<OrderItem>> ThisMonthorders, List<List<OrderItem>> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto);
         /// <summary>
         /// Takes the gets all the orders from the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> 
-        /// <para> It doesn't need any other properties of the <see cref="ReportDto"/></para>
+        /// <para> It also needs the <see cref="ReportDto"/> to have <see cref="ReportDto.BranchId"/> not null</para>
         /// </summary>
         /// <param name="reportDto"></param>
         /// <returns></returns>
         public Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto);
+        /// <summary>
+        /// Takes the gets all the orders from the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> 
+        /// <para> It does this for all the branches and not just the ones provided</para>
+        /// </summary>
+        /// <param name="reportDto"></param>
+        /// <returns></returns>
+        public Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <returns>the number of days where the <paramref name="orders"/> where made</returns>
+        public int GetNumberOfDaysElapsed(List<List<OrderItem>> orders);
 
         /// <summary>
-        /// Returns If the <see cref="ReportDto"/> coming in is required to be filtered by Name. 
-        /// <para>
-        /// Does this by checking if the property is null</para>
+        /// Mutiplies the weight of each item by the quality ordered  to get the Total weight
         /// </summary>
-        /// <param name="reportDto"></param>
-        /// <returns></returns>
-        public bool FilterByCategory(ReportDto reportDto);
+        /// <param name="items"></param>
+        /// <returns>The orders with total weight</returns>
+        public List<OrderItem> GetWeightByQuantity(List<OrderItem> items);
+        // REFACTOR: We should change item Category and name to an enum for convience
         /// <summary>
-        /// Returns If the <see cref="ReportDto"/> coming in is required to be filtered by Catergory. 
-        /// <para>
-        /// Does this by checking if the property is null</para>
+        /// This checks the type of object it wants to return and filters the orderitem based on only the filtertype, including if there was no <paramref name="FilterType"/> set
+        /// <para> This is, it will return an object if it matchs the conditions, else it will return null to the list</para>
         /// </summary>
-        /// <param name="reportDto"></param>
-        /// <returns></returns>
-        public bool FilterByName(ReportDto reportDto);
+        /// <typeparam name="T"></typeparam>
+        /// <param name="FilterType"></param>
+        /// <param name="item"></param>
+        /// <returns> Only single orderItems not whole order aggregates</returns>
+        public object OrderItemFilter<T>(string FilterType, OrderItem item);
 
         /// <summary>
         /// This create a <see cref="Hashtable"/> for the view in the client of the report metric you desire. You have to provide:
@@ -73,6 +101,13 @@ namespace API.Interfaces
         /// <param name="rateOfchangePerDay"></param>
         /// <returns></returns>
         public ActionResult<Hashtable> GenerateReportHashtable(string metricname, float metric, float rawdifference, string rateOfchangePerDay);
+        /// <summary>
+        /// Makes a hastable for each of the sources you put into it and another for the value of that source metric
+        /// </summary>
+        /// <param name="sourceNames"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public List<Hashtable> GenerateSourcesHashtable(string[] sourceNames, int[] values);
 
     }
 }

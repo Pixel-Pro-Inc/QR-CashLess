@@ -59,7 +59,7 @@ namespace API.Controllers
         public async Task<IActionResult> BillSender (BilledUserDto BillingDto)
         {
             //Sets the parameters to do the billing logic with
-             await SetParameters(BillingDto);
+            await SetParameters(BillingDto);
 
             // Checks if the time to send is not now
             if (!_billingServices.isPastDueDate(System.DateTime.Now))
@@ -147,7 +147,8 @@ namespace API.Controllers
 
             // REFACTOR: Figure out a way to coalesce the parameter setting in the service to include Sms as well I could put in the service but it was easier to put it here
             // Gets the sms sent by the branch.
-            List<SMS> Smses = await _firebaseServices.GetSMSinBranch();
+            // TESTING: Removing this to test the doc creation proper
+            //List<SMS> Smses = await _firebaseServices.GetSMSinBranch();
 
             try 
             { 
@@ -155,7 +156,7 @@ namespace API.Controllers
                 _billingServices.SetCurrentDate(System.DateTime.Today);
                 // FIXME: 655 orders is too large so I will dealwith this later
                 //_billingServices.SetSalesinUsersBranch();
-                _billingServices.SetSMSSent(Smses);
+                //_billingServices.SetSMSSent(Smses);
             }
             catch (UnBillableUserException)
             {
