@@ -124,6 +124,7 @@ namespace API.Services
 
             var response = await _firebaseServices.GetBranchesFromDatabase();
 
+            // Makes a branchDto for every Branch
             foreach (var item in response)
             {
                 TimeSpan timeSpan = DateTime.UtcNow - item.LastActive;
@@ -142,33 +143,15 @@ namespace API.Services
                 branches.Add(branchDto);
             }
 
-            List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
             List<List<OrderItem>> orders = new List<List<OrderItem>>();
-
+            // Gets orders for every branch
             for (int i = 0; i < branches.Count; i++)
             {
                 orders.Add(await _firebaseServices.GetOrders(branches[i].Id));
             }
 
-            foreach (var order in orders)
-            {
-                for (int i = 0; i < order.Count; i++)
-                {
+            return FilterByDate(reportDto, orders);
 
-                    DateTime orderTime = order[i].OrderNumber.FromPixelProOrderNumbertoDateFormat();
-
-                    DateTime startDate = reportDto.StartDate;
-                    DateTime endDate = reportDto.EndDate;
-
-                    if (orderTime >= startDate && orderTime <= endDate)
-                    {
-                        eligibleOrders.Add(order);
-                        i = order.Count;
-                    }
-                }
-            }
-
-            return eligibleOrders;
         }
         /// <summary>
         /// Filters whole order aggregates by date and coughs up the remainder orders that fit the condition
