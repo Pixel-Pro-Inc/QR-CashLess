@@ -19,11 +19,13 @@ namespace API.Controllers
     {
         private readonly IWebHostEnvironment _env;
         private readonly IReportServices _reportServices;
+        private readonly IExcelService _excelService;
 
-        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService, IReportServices reportServices) :base(firebaseService)
+        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService, IReportServices reportServices, IExcelService excelService) :base(firebaseService)
         {
             _env = env;
             _reportServices = reportServices;
+            _excelService = excelService;
         }
         
         
@@ -342,6 +344,20 @@ namespace API.Controllers
             return _reportServices.GenerateReportHashtable("revenue", TwoMonthRevenue.ThisMonthRevenue, absDifference, Format.AmountToString(percentageChange * 100f));
         }
 
+
+        [HttpGet("excel/export/{branchId}")]
+        public async Task<IActionResult> ExportData(string branchId)
+        {
+            try
+            {
+                return await _excelService.ExportDataFromDatabase(branchId);
+            }
+            catch (NullReferenceException)
+            {
+                return BadRequest("There is no data to export");
+                throw;
+            }
+        }
         [Authorize]
         [HttpPost("excel/export-detailedsales")]
         public async Task<IActionResult> ExportDetailedSales(ReportDto reportDto)
@@ -361,7 +377,7 @@ namespace API.Controllers
 
             }
 
-            return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
+            return await _excelService.ExportDataFromDatabase(orderfiltered);
         }
         [Authorize]
         [HttpPost("excel/export-totalsales")]
@@ -370,13 +386,12 @@ namespace API.Controllers
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
             ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
-            return await new ExcelController(_env, _firebaseServices).ExportTotalSalesData(ordersgiven);
+            return await _excelService.ExportDataFromDatabase(ordersgiven);
         }
         [HttpPost("excel/export")] 
         public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
-            ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
+            List<List<OrderItem>> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
 
@@ -393,7 +408,7 @@ namespace API.Controllers
                     orderfiltered[orderfiltered.Count - 1].RemoveAt(orderfiltered.Count - 1);
             }
 
-            return await new ExcelController(_env, _firebaseServices).ExportData(orderfiltered);
+            return await _excelService.ExportDataFromDatabase(orderfiltered);
 
         }
 

@@ -115,7 +115,7 @@ export class DashService extends BaseServiceService{
   }
 
   exportToExcel(branchId: string){
-    window.open(this.baseUrl + 'excel/export/' + branchId);
+    window.open(this.baseUrl + 'report/excel/export/' + branchId);
   }
 
   exportDetailReportToExcel(model: any){

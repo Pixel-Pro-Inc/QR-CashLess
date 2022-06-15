@@ -25,12 +25,14 @@ namespace API.Services
         IFirebaseServices _IFirebaseServices;
         private readonly IMapper _mapper;
         private readonly IReportServices _reportServices;
+        private readonly IAccountService _accountService;
 
-        public BillingServices(IFirebaseServices firebaseServices, IMapper mapper, IReportServices reportServices)
+        public BillingServices(IFirebaseServices firebaseServices, IMapper mapper, IReportServices reportServices, IAccountService accountService)
         {
             _IFirebaseServices = firebaseServices;
             _mapper = mapper;
             _reportServices = reportServices;
+            _accountService = accountService;
         }
 
         #region Properties
@@ -358,7 +360,7 @@ namespace API.Services
         {
             List<AdminUser> OwingUsers = new List<AdminUser>();
 
-            List<AdminUser> adminUsers = await _IFirebaseServices.GetAdminAccounts();
+            List<AdminUser> adminUsers = await _accountService.GetAdminAccounts();
             // Collects all the users who owe 
             foreach (var user in adminUsers)
             {
@@ -377,7 +379,7 @@ namespace API.Services
                 {
                     Username = user.UserName
                 };
-                await new BillingController(this,_IFirebaseServices).BillSender(dto);
+                await new BillingController(this,_accountService,_IFirebaseServices).BillSender(dto);
 
             }
 

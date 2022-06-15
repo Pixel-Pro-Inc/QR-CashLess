@@ -31,15 +31,5 @@ namespace API.Interfaces
         /// <returns></returns>
         public Task<List<T>> GetData<T>(string path) where T : class, new();
 
-
-
-        /// <summary>
-        /// This is left in <see cref="IFirebaseServices"/> cause it has special logic to map AppUsers to Admin
-        /// <para> It basically uses Automapper to map the properties of the AppUser to the AdminUser</para>
-        /// </summary>
-        /// <returns> A list of <see cref="AppUser"/>s in type <see cref="AdminUser"/></returns>
-        /// <remarks> Basically a list of <see cref="AdminUser"/></remarks>
-        public Task<List<AdminUser>> GetAdminAccounts();
-
     }
 }

@@ -25,12 +25,9 @@ namespace API.Services
     {
 
         public readonly FirebaseDataContext _firebaseDataContext;
-        private readonly IMapper _mapper;
-
-        public FirebaseServices(IMapper mapper)
+        public FirebaseServices()
         {
             _firebaseDataContext = new FirebaseDataContext();
-            _mapper = mapper;
         }
 
         public void StoreData(string path, object thing)=> _firebaseDataContext.StoreData(path, thing);
@@ -44,20 +41,6 @@ namespace API.Services
             objects = response.FromJsonToObject<T>();
 
             return objects;
-        }
-
-        public async Task<List<AdminUser>> GetAdminAccounts()
-        {
-            List<AppUser> Users = await GetData<AppUser>("Account");
-            List<AdminUser> AdminUsers = new List<AdminUser>();
-            foreach (var user in Users)
-            {
-                var testAdmin = _mapper.Map<AdminUser>(user);
-                if (testAdmin.Admin) AdminUsers.Add(testAdmin);
-
-            }
-
-            return AdminUsers;
         }
 
     }

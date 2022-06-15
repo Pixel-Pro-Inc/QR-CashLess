@@ -35,6 +35,12 @@ namespace API.Interfaces
         /// </summary>
         /// <returns> an <see cref="int"/> that hasn't been used before</returns>
         public Task<int> CreateId();
+        /// <summary>
+        /// <para> It basically uses Automapper to map the properties of the AppUsers from the database to the AdminUser</para>
+        /// </summary>
+        /// <returns> A list of <see cref="AppUser"/>s in type <see cref="AdminUser"/></returns>
+        /// <remarks> Returns basically a list of <see cref="AdminUser"/></remarks>
+        public Task<List<AdminUser>> GetAdminAccounts();
 
     }
 }

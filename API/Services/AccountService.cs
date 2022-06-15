@@ -1,5 +1,6 @@
 ﻿using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace API.Services
     public class AccountService: IAccountService
     {
         private readonly IFirebaseServices _IFirebaseServices;
+        private readonly IMapper _mapper;
 
-        public AccountService(IFirebaseServices _firebaseServices)
+        public AccountService(IFirebaseServices _firebaseServices, IMapper mapper)
         {
             _IFirebaseServices = _firebaseServices;
+            _mapper = mapper;
         }
 
         // REFACTOR: Check if you can ToLower numbers, if it doesnt throw and error, fuse the below two methods
@@ -53,6 +56,19 @@ namespace API.Services
             }
 
             return ran;
+        }
+        public async Task<List<AdminUser>> GetAdminAccounts()
+        {
+            List<AppUser> Users = await _IFirebaseServices.GetData<AppUser>("Account");
+            List<AdminUser> AdminUsers = new List<AdminUser>();
+            foreach (var user in Users)
+            {
+                var testAdmin = _mapper.Map<AdminUser>(user);
+                if (testAdmin.Admin) AdminUsers.Add(testAdmin);
+
+            }
+
+            return AdminUsers;
         }
 
     }
