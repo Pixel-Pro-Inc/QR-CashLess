@@ -12,7 +12,7 @@ namespace API.Interfaces
     /// Interface for the BillingService. 
     /// It states the required methods and actions needed to perform the billing 
     /// </summary>
-    public interface IBillingServices
+    public interface IBillingServices:_IBaseService
     {
         /// <summary>
         /// This is to set the user so that the billing services can work in it

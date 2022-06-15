@@ -20,7 +20,7 @@ namespace API.Services
     /// This is service that will calculate all the necessary information that needs to be sent to and fro the debtor.
     /// It will deal with all the billing buisness logic.
     /// </summary>
-    public class BillingServices : IBillingServices
+    public class BillingServices : _BaseService, IBillingServices
     {
         IFirebaseServices _IFirebaseServices;
         private readonly IMapper _mapper;

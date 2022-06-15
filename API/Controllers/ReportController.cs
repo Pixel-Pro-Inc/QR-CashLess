@@ -17,7 +17,6 @@ namespace API.Controllers
 {
     public class ReportController : BaseApiController
     {
-        private readonly string dir = "CompletedOrders/";
         private readonly IWebHostEnvironment _env;
         private readonly IReportServices _reportServices;
 

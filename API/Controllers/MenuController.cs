@@ -29,13 +29,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getmenu/{branchId}")]
-        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
-        {
-            List<MenuItem> items = await _firebaseServices.GetMenu(branchId);
-
-            return items;
-        }
-
+        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)=> await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
         [Authorize]
         [HttpPost("createitem/{id}")]
         public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string id)

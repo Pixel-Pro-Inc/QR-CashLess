@@ -24,6 +24,7 @@ namespace API.Services
             _mapper = mapper;
         }
 
+        // Sales and Revenue
         public async Task<float> GetSalesAmountinTimePeriod(ReportDto reportDto)
         {
             List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
@@ -92,6 +93,7 @@ namespace API.Services
             return paymentDtos;
         }
 
+        // Date and Time
         public int GetNumberOfDaysElapsed(List<List<OrderItem>> orders)
         {
             List<string> elapsedDates = new List<string>();
@@ -108,7 +110,7 @@ namespace API.Services
         }
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
-            List<List<OrderItem>> orders = await _firebaseServices.GetAllOrders("CompletedOrders/", reportDto.BranchId);
+            List<List<OrderItem>> orders = await _firebaseServices.GetData<List<OrderItem>>("CompletedOrders/"+ reportDto.BranchId);
 
             List<List<OrderItem>> eligibleOrders = FilterByDate(reportDto, orders); 
 
@@ -122,7 +124,7 @@ namespace API.Services
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseServices.GetBranchesFromDatabase();
+            var response = await _firebaseServices.GetData<Branch>("Branch");
 
             // Makes a branchDto for every Branch
             foreach (var item in response)
@@ -147,7 +149,7 @@ namespace API.Services
             // Gets orders for every branch
             for (int i = 0; i < branches.Count; i++)
             {
-                orders.Add(await _firebaseServices.GetOrders(branches[i].Id));
+                orders.Add(await _firebaseServices.GetData<OrderItem>(branches[i].Id));
             }
 
             return FilterByDate(reportDto, orders);
@@ -186,6 +188,7 @@ namespace API.Services
             return eligibleOrders;
         }
 
+        // Weight and Quantity
         public List<OrderItem> GetWeightByQuantity(List<OrderItem> items)
         {
             foreach (var item in items)
@@ -209,6 +212,7 @@ namespace API.Services
             return items;
         }
 
+        // Two month difference
         public async Task<(List<List<OrderItem>> ThisMonthorders, List<List<OrderItem>> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto)
         {
             // Gets orders this month
@@ -223,6 +227,7 @@ namespace API.Services
             return (orders, lastMonthOrders);
         }
        
+        // Filter methods
         public object OrderItemFilter<T>(string FilterType,  OrderItem item)
         {
             // So it doesn't throw null references, remove when we use enums
@@ -263,6 +268,7 @@ namespace API.Services
                     FilterType == typeName ^
                     true;
 
+        // Hashtable methods
         public ActionResult<Hashtable> GenerateReportHashtable(string metricname, float metric, float rawdifference, string rateOfchangePerDay)
         {
             Hashtable hashtable = new Hashtable();

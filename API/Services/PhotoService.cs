@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public class PhotoService : IPhotoService
+    public class PhotoService : _BaseService, IPhotoService
     {
         private readonly Cloudinary _cloudinary;
         static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();

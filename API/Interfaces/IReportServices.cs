@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Interfaces
 {
-    public interface IReportServices
+    public interface IReportServices: _IBaseService
     {
         /// <summary>
         /// Finds the total sales made in the time period given by the <see cref="ReportDto"/> 

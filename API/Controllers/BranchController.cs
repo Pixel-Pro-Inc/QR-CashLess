@@ -38,7 +38,7 @@ namespace API.Controllers
         public async Task<ActionResult<BranchDto>> CreateBranch(BranchDto dto)
         {
             List<Branch> branches = new List<Branch>();
-            branches = await _firebaseServices.GetBranchesFromDatabase();
+            branches = await _firebaseServices.GetData<Branch>("Branch");
 
             for (int i = 0; i < branches.Count; i++)
             {
@@ -177,7 +177,7 @@ namespace API.Controllers
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseServices.GetBranchesFromDatabase();
+            var response = await _firebaseServices.GetData<Branch>("Branch");
 
             foreach (var item in response)
             {

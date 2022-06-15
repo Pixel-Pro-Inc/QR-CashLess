@@ -1,22 +1,15 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 using AutoMapper;
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,13 +19,15 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
+        private readonly IAccountService _IAccountService;
         private readonly IMapper _mapper;
         private readonly SMSController smsSender;
 
 
-        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IMapper mapper) :base(firebaseServices)
+        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IAccountService accountService, IMapper mapper) :base(firebaseServices)
         {
             _tokenService = tokenService;
+            _IAccountService = accountService;
             _mapper = mapper;
             // UPDATE: I removed all references to firebaseDatacontext and replaces it with _firebaseServices
             smsSender = new SMSController(_firebaseServices);
@@ -41,7 +36,7 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await _firebaseServices.isUserTaken(registerDto.Username))
+            if (await _IAccountService.isUserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
             TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
@@ -63,7 +58,7 @@ namespace API.Controllers
                 NationalIdentityNumber = registerDto.NationalIdentityNumber
             };            
 
-            user.Id = await _firebaseServices.CreateId();
+            user.Id = await _IAccountService.CreateId();
 
             // Here I want to set the user to an AdminUser with the appropriate properties if admin=true
             if (user.Admin)
@@ -95,10 +90,10 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            if ((await _firebaseServices.GetUser(loginDto.Username)) == null)
-                return Unauthorized("Username doesn't exist");
+            AppUser user = (await _IAccountService.GetUser(loginDto.Username));
 
-            AppUser user = (await _firebaseServices.GetUser(loginDto.Username));
+            if (user == null)
+                return Unauthorized("Username doesn't exist");
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             Byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -120,14 +115,6 @@ namespace API.Controllers
                 SuperUser = user.SuperUser
             };
         }
-        
-        public async Task<bool> UserTaken(string username)
-        {
-            List<AppUser> items = await _firebaseServices.GetAllUsers();
-
-            return items.Any(x => x.UserName == username.ToLower());
-        }
-       
         
 
         //When you have set up the Identity roles thing then you can remove the below line to get access to the code
@@ -152,7 +139,7 @@ namespace API.Controllers
 
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await _firebaseServices.GetUserByNumber(accountID): user = await _firebaseServices.GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _IAccountService.GetUserByNumber(accountID): user = await _IAccountService.GetUser(accountID);
 
             if (user == null)
                 return "failed";
@@ -174,7 +161,7 @@ namespace API.Controllers
 
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await _firebaseServices.GetUserByNumber(accountID) : user = await _firebaseServices.GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _IAccountService.GetUserByNumber(accountID) : user = await _IAccountService.GetUser(accountID);
 
             if (user == null)
                 return "failed";
@@ -194,7 +181,7 @@ namespace API.Controllers
         {
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await _firebaseServices.GetUserByNumber(accountID) : user = await _firebaseServices.GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _IAccountService.GetUserByNumber(accountID) : await _IAccountService.GetUser(accountID);
 
             user.ResetToken = null;
 
@@ -208,7 +195,6 @@ namespace API.Controllers
 
             return "success";
         }
-
         [HttpGet("getadminusers")]
         public async Task<List<AdminUser>> GetAdminUsers() => await _firebaseServices.GetAdminAccounts();
 

@@ -22,9 +22,12 @@ namespace API.Controllers
     public class ExcelController : BaseApiController
     {
         private readonly string _rootPath;
-        public ExcelController(IWebHostEnvironment env, IFirebaseServices firebaseServices) :base (firebaseServices)
+        private readonly IExcelService _IExcelService;
+
+        public ExcelController(IWebHostEnvironment env, IFirebaseServices firebaseServices, IExcelService excelService) :base (firebaseServices)
         {
             _rootPath = env.WebRootPath;
+            this._IExcelService = excelService;
         }
 
         //TODO: This need to be refactored so an Excel Service should be made
@@ -50,7 +53,7 @@ namespace API.Controllers
             {
                 //Gets Orders from the Database
                 string dir = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
-                List<List<OrderItem>> orderItems = await _firebaseServices.GetAllOrders(dir + "/", branchId);
+                List<List<OrderItem>> orderItems = await _firebaseServices.GetData<List<OrderItem>>(dir + "/"+branchId);
 
                 if (orderItems.Count <= 0) //Checks to see if the result from the database actually has data
                 {
@@ -101,6 +104,7 @@ namespace API.Controllers
 
             return File(memory, GetContentType(filePath), "Rodizio Express Data_Export " + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
         }
+
 
         public async Task<IActionResult> ExportData(List<List<OrderItem>> Orders)
         {
@@ -362,8 +366,7 @@ namespace API.Controllers
             return contentType;
         }
 
-        string savePath(string fileName) => Path.Combine(_rootPath, fileName);
-
+        public string savePath(string fileName) => Path.Combine(_rootPath, fileName);
 
 
     }

@@ -27,11 +27,13 @@ namespace API.Controllers
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
         private IBillingServices _billingServices;
+        private readonly IAccountService _IAccountService;
 
         // I haven't tested the injection but it should work
-        public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices):base(firebaseServices)
+        public BillingController(IBillingServices billingServices,IAccountService accountService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _billingServices = billingServices;
+            _IAccountService = accountService;
         }
 
         // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.
@@ -143,7 +145,7 @@ namespace API.Controllers
         private async Task SetParameters(BilledUserDto BillingDto)
         {
             // Gets the user by the username
-            AppUser appUser = await _firebaseServices.GetUser(BillingDto.Username);
+            AppUser appUser = await _IAccountService.GetUser(BillingDto.Username);
 
             // REFACTOR: Figure out a way to coalesce the parameter setting in the service to include Sms as well I could put in the service but it was easier to put it here
             // Gets the sms sent by the branch.

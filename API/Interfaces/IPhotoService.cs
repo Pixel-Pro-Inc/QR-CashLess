@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
-    public interface IPhotoService
+    public interface IPhotoService: _IBaseService
     {
         Task<ImageUploadResult> AddPhotoAsync(string path);
         Task<DeletionResult> DeletePhotoAsync(string publicId);
