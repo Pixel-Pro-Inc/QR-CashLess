@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using API.Entities;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace API.Extensions
             {
                 for (int i = 0; i < source.Count; i++)
                 {
-                    T item = JsonConvert.DeserializeObject<T>(((JObject)source[i]).ToString());
+                    T item = JsonConvert.DeserializeObject<T>(((JArray)source[i]).ToString());
                     // This adds the deserialized list in the format into the type we are returning
                     results.Add(item);
                 }
@@ -51,31 +52,34 @@ namespace API.Extensions
             return results;
         }
 
+
         /// <summary>
         /// This is an overload that takes in the response when it is a single json object
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
         /// <returns> A list of type <typeparamref name="T"/></returns>
-        public static T FromJsonToObject<T>(this object source)
-      where T : class, new()
-        {
-            T result = new T();
-            try
-            {
-                result= JsonConvert.DeserializeObject<T>(((JObject)source).ToString());
-            }
-            catch (JsonSerializationException jsEx)
-            {
-                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", jsEx);
-            }
-            catch (InvalidCastException inEx)
-            {
-                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", inEx);
-            }
+      // OBSOLETE: This has been marked obsolete cause the complier can't distinguish between a list of objects and an object, it just takes it both as an object, so it fights with lists
+      //  [Obsolete]
+      //  public static T FromJsonToObject<T>(this object source)
+      //where T : class, new()
+      //  {
+      //      T result = new T();
+      //      try
+      //      {
+      //          result= JsonConvert.DeserializeObject<T>(((JObject)source).ToString());
+      //      }
+      //      catch (JsonSerializationException jsEx)
+      //      {
+      //          throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", jsEx);
+      //      }
+      //      catch (InvalidCastException inEx)
+      //      {
+      //          throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", inEx);
+      //      }
 
-            return result;
-        }
+      //      return result;
+      //  }
 
     }
 }

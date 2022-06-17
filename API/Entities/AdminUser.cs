@@ -16,7 +16,6 @@ namespace API.Entities
     public class AdminUser:AppUser
     {
         public string Fullname { get; set; }
-        public string Email { get; set; }
         public string Address { get; set; }
 
         // TODO: Set this value when the user pays. Which means we need an automatic way of confirming that a payment has come through
