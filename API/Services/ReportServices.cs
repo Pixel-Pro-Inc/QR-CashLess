@@ -24,6 +24,8 @@ namespace API.Services
             _mapper = mapper;
         }
 
+        // TODO: Have a cache property so that you don't have to call the database everytime you want a value
+
         // Sales and Revenue
         public async Task<float> GetSalesAmountinTimePeriod(ReportDto reportDto)
         {

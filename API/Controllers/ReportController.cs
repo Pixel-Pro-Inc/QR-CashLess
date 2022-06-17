@@ -11,7 +11,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -143,9 +143,10 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/volume/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentSales(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
                 BranchId = id
             };
@@ -175,9 +176,10 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/revenue/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentRevenue(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
                 BranchId = id
             };
@@ -195,11 +197,12 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/averagevolume/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentAverageSales(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
-                BranchId=id
+                BranchId = id
             };
 
             var TwoMonthOrders = await _reportServices.GetTwoMonthOrders(reportDto);
@@ -218,11 +221,12 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/averagerevenue/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentAverageRevenue(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
-                BranchId= id
+                BranchId = id
             };
 
             // NOTE: I left it like this cause we need the order count and not just the revenue
@@ -248,11 +252,12 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/averageitems/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentAverageItems(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
-                BranchId=id
+                BranchId = id
             };
 
             var TwoMonthOrders = await _reportServices.GetTwoMonthOrders(reportDto);
@@ -285,9 +290,10 @@ namespace API.Controllers
         [HttpGet("sales/thismonth/ordersource/{id}")]
         public async Task<ActionResult<List<Hashtable>>> GetOrderSources(string id)
         {
+            // Time period from the first day of the month to current time
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now,
                 BranchId = id
             };
