@@ -334,7 +334,7 @@ namespace API.Controllers
         {
             ReportDto reportDto = new ReportDto()
             {
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.FirstDayOfMonth(),
                 EndDate = DateTime.Now
             };
 
