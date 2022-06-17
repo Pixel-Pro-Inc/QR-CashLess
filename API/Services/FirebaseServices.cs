@@ -37,8 +37,18 @@ namespace API.Services
             List<T> objects = new List<T>();
 
             var response = await _firebaseDataContext.GetData(path);
-
+            // Here you might get errors cause at some point it was refusing to take the correct overload
             objects = response.FromJsonToObject<T>();
+
+            return objects;
+        }
+        public async Task<List<T>> GetDataArray<T>(string path) where T : class, new()
+        {
+            List<T> objects = new List<T>();
+
+            var response = await _firebaseDataContext.GetData(path);
+            // Here you might get errors cause at some point it was refusing to take the correct overload
+            objects = response.FromJsonToObjectArray<T>();
 
             return objects;
         }

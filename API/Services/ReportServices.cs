@@ -1,5 +1,6 @@
 ﻿using API.DTOs;
 using API.Entities;
+using API.Entities.Aggregates;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -29,7 +30,7 @@ namespace API.Services
         // Sales and Revenue
         public async Task<float> GetSalesAmountinTimePeriod(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            List<Order> ordersgiven = new List<Order>();
             ordersgiven = await GetOrdersByDate(reportDto);
 
             SalesDto SalesByItem = new SalesDto();
@@ -43,7 +44,7 @@ namespace API.Services
 
             return SalesByItem.SummaryTotal;
         }
-        public float FindRevenueinMonth(List<List<OrderItem>> orders)
+        public float FindRevenueinMonth(List<Order> orders)
         {
             float revenue = 0f;
             foreach (var item in orders)
@@ -66,7 +67,7 @@ namespace API.Services
 
             return (revenue, lastRevenue);
         }
-        public List<PaymentDto> GetpaymentTypeBalances(List<List<OrderItem>> ordersgiven, string[] paymentTypes, float[] amountList)
+        public List<PaymentDto> GetpaymentTypeBalances(List<Order> ordersgiven, string[] paymentTypes, float[] amountList)
         {
             List<PaymentDto> paymentDtos = new List<PaymentDto>();
 
@@ -96,7 +97,7 @@ namespace API.Services
         }
 
         // Date and Time
-        public int GetNumberOfDaysElapsed(List<List<OrderItem>> orders)
+        public int GetNumberOfDaysElapsed(List<Order> orders)
         {
             List<string> elapsedDates = new List<string>();
 
@@ -110,11 +111,11 @@ namespace API.Services
 
             return elapsedDates.Count;
         }
-        public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
+        public async Task<List<Order>> GetOrdersByDate(ReportDto reportDto)
         {
-            List<List<OrderItem>> orders = await _firebaseServices.GetData<List<OrderItem>>("CompletedOrders/"+ reportDto.BranchId);
+            List<Order> orders = await _firebaseServices.GetDataArray<Order>("CompletedOrders/"+ reportDto.BranchId);
 
-            List<List<OrderItem>> eligibleOrders = FilterByDate(reportDto, orders); 
+            List<Order> eligibleOrders = FilterByDate(reportDto, orders); 
 
             //TODO: Create a guardClass so that we don't have to put too many try catch blocks
             // Checks if it recieved orders from the database, then to see if any of them fit the time period
@@ -122,7 +123,7 @@ namespace API.Services
 
             return eligibleOrders;
         }
-        public async Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto)
+        public async Task<List<Order>> GetAllOrdersByDate(ReportDto reportDto)
         {
             List<BranchDto> branches = new List<BranchDto>();
 
@@ -147,11 +148,11 @@ namespace API.Services
                 branches.Add(branchDto);
             }
 
-            List<List<OrderItem>> orders = new List<List<OrderItem>>();
+            List<Order> orders = new List<Order>();
             // Gets orders for every branch
             for (int i = 0; i < branches.Count; i++)
             {
-                orders.Add(await _firebaseServices.GetData<OrderItem>(branches[i].Id));
+                orders=await _firebaseServices.GetDataArray<Order>(branches[i].Id);
             }
 
             return FilterByDate(reportDto, orders);
@@ -164,9 +165,9 @@ namespace API.Services
         /// <param name="reportDto"></param>
         /// <param name="orders"></param>
         /// <returns></returns>
-        private List<List<OrderItem>> FilterByDate(ReportDto reportDto, List<List<OrderItem>> orders)
+        private List<Order> FilterByDate(ReportDto reportDto, List<Order> orders)
         {
-            List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
+            List<Order> eligibleOrders = new List<Order>();
             foreach (var order in orders)
             {
                 for (int i = 0; i < order.Count; i++)
@@ -191,7 +192,7 @@ namespace API.Services
         }
 
         // Weight and Quantity
-        public List<OrderItem> GetWeightByQuantity(List<OrderItem> items)
+        public Order GetWeightByQuantity(Order items)
         {
             foreach (var item in items)
             {
@@ -215,16 +216,16 @@ namespace API.Services
         }
 
         // Two month difference
-        public async Task<(List<List<OrderItem>> ThisMonthorders, List<List<OrderItem>> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto)
+        public async Task<(List<Order> ThisMonthorders, List<Order> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto)
         {
             // Gets orders this month
             // If there is no branchId specified it will get all the orders of all the branches
-            List<List<OrderItem>> orders = reportDto.BranchId==null?await GetAllOrdersByDate(reportDto): await GetOrdersByDate(reportDto);
+            List<Order> orders = reportDto.BranchId==null?await GetAllOrdersByDate(reportDto): await GetOrdersByDate(reportDto);
 
             // Gets lasts months orders
             reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
             reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
-            List<List<OrderItem>> lastMonthOrders = await GetOrdersByDate(reportDto);
+            List<Order> lastMonthOrders = await GetOrdersByDate(reportDto);
 
             return (orders, lastMonthOrders);
         }
@@ -232,8 +233,9 @@ namespace API.Services
         // Filter methods
         public object OrderItemFilter<T>(string FilterType,  OrderItem item)
         {
+            //UPDATE: It kept making null hashtable so this isn't helpful
             // So it doesn't throw null references, remove when we use enums
-            if (FilterType == null) return null;
+            //if (FilterType == null) return null;
 
             // REFACTOR: I tried using is but it refused so I just went with this
             if (typeof(T) == typeof(Hashtable))

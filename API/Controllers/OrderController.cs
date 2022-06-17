@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Entities.Aggregates;
 using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace API.Controllers
         #region Create Order Item
 
         [HttpPost("createorder/{branchId}")]
-        public async Task<ActionResult<List<OrderItem>>> CreateOrder(List<OrderItem> orderItems, string branchId)
+        public async Task<ActionResult<Order>> CreateOrder(Order orderItems, string branchId)
         {
             int x = await GetOrderNum(branchId);
 

@@ -24,12 +24,21 @@ namespace API.Interfaces
         public void DeleteData(string fullpath);
         /// <summary>
         /// This takes in the path of the node in the database and coughs up the a list of the type
-        /// <typeparamref name="T"/> is the object type you want to have a list of
+        /// <typeparamref name="T"/>. <typeparamref name="T"/> is the object type you want to have a list of
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="path"></param>
-        /// <returns></returns>
+        /// <returns> <see cref="List{BaseEntity}"/></returns>
+        /// <remarks> This one tries to change the object to a JObject. Note that you cant try for both JArray and JObject</remarks>
         public Task<List<T>> GetData<T>(string path) where T : class, new();
+        /// <summary>
+        ///  This is used when you are collecting an aggreagate from the database. It won't work if you are just trying to get a list of Appusers, but it should work if you are trying to get a list of a list of orderItems, ie an Order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <remarks> This one tries to change the object to a JArray. Note that you cant try for both JArray and JObject</remarks>
+        public Task<List<T>> GetDataArray<T>(string path) where T : class, new();
 
     }
 }

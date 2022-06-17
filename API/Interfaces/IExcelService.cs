@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Entities.Aggregates;
 using API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -22,7 +23,7 @@ namespace API.Interfaces
         /// </summary>
         /// <param name="Orders"></param>
         /// <returns>It puts the excel file in the specified directory with everything it needs for the client</returns>
-        public Task<FileStreamResult> ExportDataFromDatabase(List<List<OrderItem>> Orders);
+        public Task<FileStreamResult> ExportDataFromDatabase(List<Order> Orders);
 
     }
 }

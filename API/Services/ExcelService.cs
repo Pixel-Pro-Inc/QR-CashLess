@@ -1,5 +1,6 @@
 ﻿using API.Controllers;
 using API.Entities;
+using API.Entities.Aggregates;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
@@ -31,7 +32,7 @@ namespace API.Services
             Excel ex= await MakeExcelFile(branchId);
             return await SetExcelFile(ex);
         }
-        public async Task<FileStreamResult> ExportDataFromDatabase(List<List<OrderItem>> Orders)
+        public async Task<FileStreamResult> ExportDataFromDatabase(List<Order> Orders)
         {
             Excel ex =  MakeExcelFile(Orders);
             return await SetExcelFile(ex);
@@ -57,7 +58,7 @@ namespace API.Services
                 //Gets Orders from the Database
                 string worksheetName = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
 
-                List<List<OrderItem>> Orders = await _firebaseServices.GetData<List<OrderItem>>(worksheetName + "/" + branchId);
+                List<Order> Orders = await _firebaseServices.GetDataArray<Order>(worksheetName + "/" + branchId);
                 if (Orders.Count <= 0) //Checks to see if the result from the database actually has data
                 {
                     emptyCount++;
@@ -76,7 +77,7 @@ namespace API.Services
         /// </summary>
         /// <param name="Ordres"></param>
         /// <returns></returns>
-        private Excel MakeExcelFile(List<List<OrderItem>> Orders)
+        private Excel MakeExcelFile(List<Order> Orders)
         {
             Excel ex = new Excel();
             ex.CreateNewFile();//Creates a new excel file
@@ -114,7 +115,7 @@ namespace API.Services
 
             return new BaseApiController( _firebaseServices).File(memory, GetContentType(filePath), folderName + DateTime.Now.ToShortDateString().Replace('/', '-') + ".xlsx");
         }
-        private void CreateWorkSheet(Excel ex, string worksheetName, List<List<OrderItem>> orderItems)
+        private void CreateWorkSheet(Excel ex, string worksheetName, List<Order> orderItems)
         {
             ex.CreateWorkSheet(worksheetName);//Creates a new work sheet
 

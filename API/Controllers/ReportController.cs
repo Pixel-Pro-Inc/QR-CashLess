@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Extensions;
+using API.Entities.Aggregates;
 
 namespace API.Controllers
 {
@@ -32,7 +33,7 @@ namespace API.Controllers
         public async Task<ActionResult<List<SalesDto>>> GetTotalSales(ReportDto reportDto)
         {
             //returns order number and amount earned
-            List<List<OrderItem>> eligibleOrders = await _reportServices.GetOrdersByDate(reportDto);
+            List<Order> eligibleOrders = await _reportServices.GetOrdersByDate(reportDto);
 
             List<float> totals = new List<float>();
             List<string> OrderNumbers = new List<string>();
@@ -65,7 +66,7 @@ namespace API.Controllers
         [HttpPost("sales/item")] //This is the sales by item on a time period. It gives OrderNumber| item| weight| amount paid
         public async Task<ActionResult<List<Hashtable>>> GetSalesByItem(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
+            List<Order> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             List<Hashtable> hashtables = new List<Hashtable>();
             foreach (var order in ordersgiven)
@@ -80,11 +81,11 @@ namespace API.Controllers
         }
         [Authorize]
         [HttpPost("sales/invoice")]//This is so you can get the order with the quantity got and the revenue by invoice
-        public async Task<ActionResult<List<List<OrderItem>>>> GetOrderItemByinvoice(ReportDto reportDto)
+        public async Task<ActionResult<List<Order>>> GetOrderItemByinvoice(ReportDto reportDto)
         {
             var results = await _reportServices.GetOrdersByDate(reportDto);
 
-            List<List<OrderItem>> temp = new List<List<OrderItem>>();
+            List<Order> temp = new List<Order>();
 
             // REFACTOR: Please please, there has to be another way
             foreach (var item in results)
@@ -126,7 +127,7 @@ namespace API.Controllers
         [HttpPost("sales/paymentmethods")]// This get the balance for both type of payment asked for
         public async Task<ActionResult<List<PaymentDto>>> GetPaymentBalance(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            List<Order> ordersgiven = new List<Order>();
             ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             float cash = 0;
@@ -366,14 +367,14 @@ namespace API.Controllers
         [HttpPost("excel/export-detailedsales")]
         public async Task<IActionResult> ExportDetailedSales(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
+            List<Order> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
-            List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
+            List<Order> orderfiltered = new List<Order>();
 
             // REFACTOR: Theres a better way, have the total and remove instead of adding
             foreach (var order in ordersgiven)
             {
-                orderfiltered.Add(new List<OrderItem>());
+                orderfiltered.Add(new Order());
                 foreach (var item in order)
                 {
                     orderfiltered[orderfiltered.Count - 1].Add((OrderItem)_reportServices.OrderItemFilter<OrderItem>(reportDto.Category, item));
@@ -387,7 +388,7 @@ namespace API.Controllers
         [HttpPost("excel/export-totalsales")]
         public async Task<IActionResult> ExportTotalSales(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            List<Order> ordersgiven = new List<Order>();
             ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
             return await _excelService.ExportDataFromDatabase(ordersgiven);
@@ -395,14 +396,14 @@ namespace API.Controllers
         [HttpPost("excel/export")] 
         public async Task<IActionResult> ExportIntercept(ReportDto reportDto)
         {
-            List<List<OrderItem>> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
+            List<Order> ordersgiven = await _reportServices.GetOrdersByDate(reportDto);
 
-            List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
+            List<Order> orderfiltered = new List<Order>();
 
             // REFACTOR: Theres a better way, have the total and remove instead of adding
             foreach (var order in ordersgiven)
             {
-                orderfiltered.Add(new List<OrderItem>());
+                orderfiltered.Add(new Order());
                 foreach (var item in order)
                 {
                     orderfiltered[orderfiltered.Count - 1].Add((OrderItem)_reportServices.OrderItemFilter<OrderItem>(reportDto.Category, item));

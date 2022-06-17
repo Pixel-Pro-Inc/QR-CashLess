@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
+using API.Entities.Aggregates;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Interfaces
@@ -25,7 +26,7 @@ namespace API.Interfaces
         /// </summary>
         /// <param name="orders"></param>
         /// <returns> revenue as a <see cref="float"/></returns>
-        public float FindRevenueinMonth(List<List<OrderItem>> orders);
+        public float FindRevenueinMonth(List<Order> orders);
         /// <summary>
         /// Give it a reportDto and it will cough up the revenue of the orders of this month and last month but it only uses the <see cref="IReportServices.GetAllOrdersByDate(ReportDto)"/>
         /// </summary>
@@ -39,7 +40,7 @@ namespace API.Interfaces
         /// <param name="paymentTypes"></param>
         /// <param name="amountList"></param>
         /// <returns> A list of paymentdto's so the client can use them</returns>
-        public List<PaymentDto> GetpaymentTypeBalances(List<List<OrderItem>> ordersgiven, string[] paymentTypes, float[] amountList);
+        public List<PaymentDto> GetpaymentTypeBalances(List<Order> ordersgiven, string[] paymentTypes, float[] amountList);
 
 
         /// <summary>
@@ -48,34 +49,34 @@ namespace API.Interfaces
         /// </summary>
         /// <param name="reportDto"></param>
         /// <returns>A <see cref="Tuple{T1, T2}"/> where <see cref="ValueTuple{T1}"/> is orders this month and <see cref="ValueTuple{T2}"/> is from last month</returns>
-        public Task<(List<List<OrderItem>> ThisMonthorders, List<List<OrderItem>> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto);
+        public Task<(List<Order> ThisMonthorders, List<Order> LastMonthOrders)> GetTwoMonthOrders(ReportDto reportDto);
         /// <summary>
         /// Takes the gets all the orders from the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> 
         /// <para> It also needs the <see cref="ReportDto"/> to have <see cref="ReportDto.BranchId"/> not null</para>
         /// </summary>
         /// <param name="reportDto"></param>
         /// <returns></returns>
-        public Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto);
+        public Task<List<Order>> GetOrdersByDate(ReportDto reportDto);
         /// <summary>
         /// Takes the gets all the orders from the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> 
         /// <para> It does this for all the branches and not just the ones provided</para>
         /// </summary>
         /// <param name="reportDto"></param>
         /// <returns></returns>
-        public Task<List<List<OrderItem>>> GetAllOrdersByDate(ReportDto reportDto);
+        public Task<List<Order>> GetAllOrdersByDate(ReportDto reportDto);
         /// <summary>
         /// 
         /// </summary>
         /// <param name="orders"></param>
         /// <returns>the number of days where the <paramref name="orders"/> where made</returns>
-        public int GetNumberOfDaysElapsed(List<List<OrderItem>> orders);
+        public int GetNumberOfDaysElapsed(List<Order> orders);
 
         /// <summary>
         /// Mutiplies the weight of each item by the quality ordered  to get the Total weight
         /// </summary>
         /// <param name="items"></param>
         /// <returns>The orders with total weight</returns>
-        public List<OrderItem> GetWeightByQuantity(List<OrderItem> items);
+        public Order GetWeightByQuantity(Order items);
         // REFACTOR: We should change item Category and name to an enum for convience
         /// <summary>
         /// This checks the type of object it wants to return and filters the orderitem based on only the filtertype, including if there was no <paramref name="FilterType"/> set
