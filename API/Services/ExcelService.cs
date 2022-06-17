@@ -3,6 +3,7 @@ using API.Entities;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System;
@@ -19,9 +20,10 @@ namespace API.Services
         private readonly string _rootPath;
         private readonly IFirebaseServices _firebaseServices;
 
-        public ExcelService(IFirebaseServices firebaseServices)
+        public ExcelService(IFirebaseServices firebaseServices, IWebHostEnvironment env)
         {
             _firebaseServices = firebaseServices;
+            _rootPath = env.WebRootPath;
         }
 
         public async Task<FileStreamResult> ExportDataFromDatabase(string branchId)

@@ -17,13 +17,11 @@ namespace API.Controllers
 {
     public class ReportController : BaseApiController
     {
-        private readonly IWebHostEnvironment _env;
         private readonly IReportServices _reportServices;
         private readonly IExcelService _excelService;
 
-        public ReportController(IWebHostEnvironment env, IFirebaseServices firebaseService, IReportServices reportServices, IExcelService excelService) :base(firebaseService)
+        public ReportController(IFirebaseServices firebaseService, IReportServices reportServices, IExcelService excelService) :base(firebaseService)
         {
-            _env = env;
             _reportServices = reportServices;
             _excelService = excelService;
         }

@@ -46,7 +46,8 @@ namespace API.Extensions
             }
             catch (InvalidCastException inEx)
             {
-                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}", inEx);
+                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}"+"It might be cause it is expecting a JObject but we are " +
+                    "trying to cast it to a JArray, but really you should look a little deeper", inEx);
             }
 
             return results;

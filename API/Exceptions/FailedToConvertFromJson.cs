@@ -6,7 +6,6 @@ namespace API.Extensions
     /// <summary>
     /// This should be thrown in the <see cref="JsonConvertExtensions"/> when trying to convert a list of objects/ object to the appropriate type
     /// </summary>
-    [Obsolete]
     [Serializable]
     public class FailedToConvertFromJson : Exception
     {
