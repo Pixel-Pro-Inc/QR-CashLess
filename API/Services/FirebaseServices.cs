@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Entities.Aggregates;
 using API.Extensions;
 using API.Interfaces;
 using AutoMapper;
@@ -42,13 +43,13 @@ namespace API.Services
 
             return objects;
         }
-        public async Task<List<T>> GetDataArray<T>(string path) where T : class, new()
+        public async Task<List<Aggregate>> GetDataArray<Aggregate, Entity>(string path) where Aggregate : BaseAggregates<Entity>, new()
         {
-            List<T> objects = new List<T>();
+            List<Aggregate> objects = new List<Aggregate>();
 
             var response = await _firebaseDataContext.GetData(path);
             // Here you might get errors cause at some point it was refusing to take the correct overload
-            objects = response.FromJsonToObjectArray<T>();
+            objects = response.FromJsonToObjectArray<Aggregate>();
 
             return objects;
         }

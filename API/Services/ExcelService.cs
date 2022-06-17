@@ -58,7 +58,7 @@ namespace API.Services
                 //Gets Orders from the Database
                 string worksheetName = worksheetNames[i] == "UnCompletedOrders" ? "Order" : worksheetNames[i];
 
-                List<Order> Orders = await _firebaseServices.GetDataArray<Order>(worksheetName + "/" + branchId);
+                List<Order> Orders = await _firebaseServices.GetDataArray<Order,OrderItem>(worksheetName + "/" + branchId);
                 if (Orders.Count <= 0) //Checks to see if the result from the database actually has data
                 {
                     emptyCount++;

@@ -113,7 +113,7 @@ namespace API.Services
         }
         public async Task<List<Order>> GetOrdersByDate(ReportDto reportDto)
         {
-            List<Order> orders = await _firebaseServices.GetDataArray<Order>("CompletedOrders/"+ reportDto.BranchId);
+            List<Order> orders = await _firebaseServices.GetDataArray<Order,OrderItem>("CompletedOrders/"+ reportDto.BranchId);
 
             List<Order> eligibleOrders = FilterByDate(reportDto, orders); 
 
@@ -152,7 +152,7 @@ namespace API.Services
             // Gets orders for every branch
             for (int i = 0; i < branches.Count; i++)
             {
-                orders=await _firebaseServices.GetDataArray<Order>(branches[i].Id);
+                orders=await _firebaseServices.GetDataArray<Order,OrderItem>(branches[i].Id);
             }
 
             return FilterByDate(reportDto, orders);

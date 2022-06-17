@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using API.Entities.Aggregates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,21 +25,24 @@ namespace API.Interfaces
         public void DeleteData(string fullpath);
         /// <summary>
         /// This takes in the path of the node in the database and coughs up the a list of the type
-        /// <typeparamref name="T"/>. <typeparamref name="T"/> is the object type you want to have a list of
+        /// <typeparamref name="T"/>. <typeparamref name="T"/> is the object type you want to have a list of.
+        /// <para> NOTE: I didnt put type checking here cause there is data that isn't an entity that could be taken from the database, Like flavour</para>
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="path"></param>
         /// <returns> <see cref="List{BaseEntity}"/></returns>
-        /// <remarks> This one tries to change the object to a JObject. Note that you cant try for both JArray and JObject</remarks>
+        /// <remarks> Within the method is logic that tries to change the object to a JObject. Note that you cant try for both JArray and JObject</remarks>
         public Task<List<T>> GetData<T>(string path) where T : class, new();
         /// <summary>
-        ///  This is used when you are collecting an aggreagate from the database. It won't work if you are just trying to get a list of Appusers, but it should work if you are trying to get a list of a list of orderItems, ie an Order
+        /// This is used when you are collecting aggreagates from the database. It won't work if you are just trying to get a list of Appusers, but it should work if you are trying to get a list of a list of orderItems, ie an Order
+        /// <para> In case you still don't understand an aggregate is a list of Entities</para>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Aggregate"></typeparam>
+        /// <typeparam name="Entity"></typeparam>
         /// <param name="path"></param>
         /// <returns></returns>
-        /// <remarks> This one tries to change the object to a JArray. Note that you cant try for both JArray and JObject</remarks>
-        public Task<List<T>> GetDataArray<T>(string path) where T : class, new();
+        /// <remarks> Within the method is logic that tries to change the object to a JArray. Note that you cant try for both JArray and JObject</remarks>
+        public Task<List<Aggregate>> GetDataArray<Aggregate, Entity>(string path) where Aggregate : BaseAggregates<Entity>, new();
 
     }
 }
