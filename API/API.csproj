@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="client\src\environments\" />
     <Folder Include="client\src\app\_interceptors\" />
     <Folder Include="client\src\app\_guards\" />
     <Folder Include="client\ssl\" />
