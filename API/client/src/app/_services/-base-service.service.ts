@@ -14,6 +14,6 @@ export class BaseServiceService {
    * components anyways
    */
   // REFACTOR: Here is a good place to use an environment variable so we don't have future problems
-  //public baseUrl = 'https://rodizioexpress.com/api/'; 
-  public baseUrl = 'https://localhost:5001/api/';
+  public baseUrl = 'https://rodizioexpress.com/api/'; 
+  //public baseUrl = 'https://localhost:5001/api/';
 }
