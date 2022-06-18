@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import html2canvas from 'html2canvas';
+import jspdf from 'jspdf';
 import { BusyService } from '../_services/busy.service';
 import { DashService } from '../_services/dash.service';
 import { ReferenceService } from '../_services/reference.service';
@@ -276,6 +278,37 @@ export class DashboardComponent implements OnInit {
 
   exportToExcel(){    
     this.dashService.exportToExcel(this.referenceService.currentBranch());
+  }
+
+  exportDetailReportToExcel(){
+    this.dashService.exportDetailReportToExcel(this.model1);
+  }
+
+  exportTotalReportToExcel(){
+    this.dashService.exportTotalReportToExcel(this.model);
+  }
+  showSpin = false;
+  
+  public convertToPDF()
+  {
+    this.showSpin = true;
+   var data = document.getElementById('contentToConvert');
+   html2canvas(data).then(canvas => {
+
+   // Few necessary setting options
+   var imgWidth = 208;
+   var imgHeight = canvas.height * imgWidth / canvas.width;
+
+   console.log(imgHeight);
+   console.log(imgWidth);
+   
+   const contentDataURL = canvas.toDataURL('image/png')
+   let pdf = new jspdf('p', 'mm', 'a4'); // A4 size page of PDF
+   var position = 0;
+   pdf.addImage(contentDataURL, 'JPEG', 0, position, imgWidth, imgHeight)
+   pdf.save('rodizio-express-report-' + new Date() + '.pdf'); // Generated PDF
+   this.showSpin = false;
+  });
   }
 
 }

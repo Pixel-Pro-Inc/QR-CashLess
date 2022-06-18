@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AppComponent } from '../app.component';
+import { MenuComponent } from '../menu/menu.component';
 import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
@@ -7,6 +9,8 @@ import { BaseServiceService } from './-base-service.service';
 })
 export class ReferenceService extends BaseServiceService {
   branchId: string;
+  hideNavBar = false;
+  
   constructor(http: HttpClient) {
       super(http);
   }

@@ -1,6 +1,8 @@
 ﻿using API.Data;
 using API.DTOs;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -17,9 +19,13 @@ namespace API.Controllers
     public class ReportController : BaseApiController
     {
         private readonly string dir = "CompletedOrders/";
+        private readonly IWebHostEnvironment _env;
+        public ReportController(IWebHostEnvironment env) //:base()
+        {
+            _env = env;
+        }
 
-        public ReportController():base(){ }
-        
+        [Authorize]        
         [HttpPost("sales/total")]
         public async Task<ActionResult<List<SalesDto>>> GetTotalSales(ReportDto reportDto)
         {
@@ -56,6 +62,7 @@ namespace API.Controllers
             return totalSalesDto;
         }        
 
+        [Authorize]
         [HttpPost("sales/item")] //This is the sales by item on a time period. It gives OrderNumber| item| weight| amount paid
         public async Task<ActionResult<List<Hashtable>>> GetSalesByItem(ReportDto reportDto)
         {
@@ -71,62 +78,66 @@ namespace API.Controllers
                     if (FilterByCategory(reportDto) && FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
-                            if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                            if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
+                                item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
                             {
-                                Hashtable hashtable = new Hashtable();
-                                hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                                hashtable.Add("itemName", item.Name);
-                                hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                                hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                                hashtable.Add("quantity", item.Quantity);
-
-                                hashtables.Add(hashtable);
+                                hashtables.Add(GetHashtable(item));
                             }
                     }
                     else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
                     {
                         if (reportDto.Category.ToUpper() == item.Category.ToUpper())
                         {
-                            Hashtable hashtable = new Hashtable();
-                            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                            hashtable.Add("itemName", item.Name);
-                            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                            hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                            hashtable.Add("quantity", item.Quantity);
-
-                            hashtables.Add(hashtable);
+                            hashtables.Add(GetHashtable(item));
                         }
                     }
                     else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
                     {
-                        if (reportDto.Name.ToUpper() == item.Name.ToUpper())
+                        if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
+                                item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
                         {
-                            Hashtable hashtable = new Hashtable();
-                            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                            hashtable.Add("itemName", item.Name);
-                            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                            hashtable.Add("weight", item.Weight.Length > 0 ? item.Weight : "-");
-                            hashtable.Add("quantity", item.Quantity);
-
-                            hashtables.Add(hashtable);
+                            hashtables.Add(GetHashtable(item));
                         }
                     }
                     else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
                     {
-                        Hashtable hashtable = new Hashtable();
-                        hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
-                        hashtable.Add("itemName", item.Name);
-                        hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
-                        hashtable.Add("weight", item.Weight != null ? item.Weight : "-");
-                        hashtable.Add("quantity", item.Quantity);
-
-                        hashtables.Add(hashtable);
+                        hashtables.Add(GetHashtable(item));
                     }
                 }
             }
 
             return hashtables;
         }
+
+        // TRACK: This needs to be studied. I have an idea of what it is doing but why did he chose this, or to accomplish what
+        Hashtable GetHashtable(OrderItem item) //Formats data into a form for the angular client to understand
+        {
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("orderNumber", GetOrderNumber(item.OrderNumber));
+            hashtable.Add("itemName", item.Name);
+            hashtable.Add("orderRevenue", FormatAmountString(float.Parse(item.Price)));
+            hashtable.Add("quantity", item.Quantity);
+
+            if (!string.IsNullOrEmpty(item.Weight))
+            {
+                bool condition = item.Weight.Contains(' ');
+
+                if (condition)
+                {
+                    string weight = item.Weight.Substring(0, item.Weight.IndexOf(' ') + 1);
+                    string newWeight = (float.Parse(weight) * (float)item.Quantity).ToString();
+
+                    hashtable.Add("weight", newWeight);
+                    return hashtable;
+                }
+
+                hashtable.Add("weight", (float.Parse(item.Weight) * (float)item.Quantity).ToString());
+                return hashtable;
+            }
+
+            hashtable.Add("weight", "-");
+            return hashtable;
+        } 
 
         bool FilterByCategory(ReportDto reportDto)
         {
@@ -149,7 +160,8 @@ namespace API.Controllers
 
             return false;
         }
-
+        
+        [Authorize]
         [HttpPost("sales/invoice")]//This is so you can get the order with the quantity got and the revenue by invoice
         public async Task<ActionResult<List<List<OrderItem>>>> GetOrderItemByinvoice(ReportDto reportDto)
         {
@@ -169,21 +181,21 @@ namespace API.Controllers
                         {
                             item[0].OrderNumber = reportDto.Invoice;
                             item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                            temp.Add(item);
+                            temp.Add(GetWeightByQuantity(item));
                         }
                     }
                     else
                     {
                         item[0].OrderNumber = GetOrderNumber(item[0].OrderNumber);
                         item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                        temp.Add(item);
+                        temp.Add(GetWeightByQuantity(item));
                     }
                 }
                 else
                 {
                     item[0].OrderNumber = GetOrderNumber(item[0].OrderNumber);
                     item[0].Description = x.Substring(0, 10).Replace('-', '/');
-                    temp.Add(item);
+                    temp.Add(GetWeightByQuantity(item));
                 }
             }
 
@@ -198,6 +210,32 @@ namespace API.Controllers
             return temp;
         }
 
+        List<OrderItem> GetWeightByQuantity(List<OrderItem> items)
+        {
+            foreach (var item in items)
+            {
+                if (!string.IsNullOrEmpty(item.Weight))
+                {
+                    bool condition = item.Weight.Contains(' ');
+
+                    if (condition)
+                    {
+                        string weight = item.Weight.Substring(0, item.Weight.IndexOf(' ') + 1);
+                        item.Weight = (float.Parse(weight) * (float)item.Quantity).ToString();
+                        continue;
+                    }
+
+                    item.Weight = (float.Parse(item.Weight) * (float)item.Quantity).ToString();
+                    continue;
+                }
+
+                item.Weight = "-";
+            }
+
+            return items;
+        }
+
+        [Authorize]
         [HttpPost("sales/summary")]//This gets a flat out total in a period of time
         public async Task<ActionResult<SalesDto>> GetSummarySales(ReportDto reportDto)
         {
@@ -222,6 +260,8 @@ namespace API.Controllers
 
             return sales;
         }
+
+        [Authorize]
         [HttpPost("sales/paymentmethods")]// This get the balance for both type of payment asked for
         public async Task<ActionResult<List<PaymentDto>>> GetPaymentBalance(ReportDto reportDto)
         {
@@ -286,6 +326,7 @@ namespace API.Controllers
             return payments; //Kana if you change this ill honestly fight you cause it works properly
         }
 
+        [Authorize]
         [HttpGet("sales/thismonth/volume/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentSales(string id)
         {
@@ -318,13 +359,15 @@ namespace API.Controllers
             Hashtable hashtable = new Hashtable();
             hashtable.Add("sales", orders.Count);
 
-            string change = FormatAmountString(difference < 0 ? percentageChange * -100f : percentageChange * 100f);
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
             hashtable.Add("change", change);
 
             hashtable.Add("positive", difference < 0 ? false : true);
 
             return hashtable;
         }
+
+        [Authorize]
         [HttpGet("sales/thismonth/revenue/{id}")]
         public async Task<ActionResult<Hashtable>> GetCurrentRevenue(string id)
         {
@@ -373,13 +416,321 @@ namespace API.Controllers
             Hashtable hashtable = new Hashtable();
             hashtable.Add("revenue", FormatAmountString(revenue));
 
-            string change = FormatAmountString(difference < 0 ? percentageChange * -100f : percentageChange * 100f);
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
             hashtable.Add("change", change);
 
             hashtable.Add("positive", difference < 0 ? false : true);
 
             return hashtable;
         }
+
+        [Authorize]
+        [HttpGet("sales/thismonth/averagevolume/{id}")]
+        public async Task<ActionResult<Hashtable>> GetCurrentAverageSales(string id)
+        {
+            ReportDto reportDto = new ReportDto()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
+
+            #region Date
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+
+            var orders = await GetOrdersByDate(reportDto);
+
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
+
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
+
+            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            #endregion
+
+            float avgOrdersCurrent = (float)orders.Count / (float)GetNumberOfDaysElapsed(orders);
+            float avgOrdersPast = (float)lastMonthOrders.Count / (float)GetNumberOfDaysElapsed(lastMonthOrders);
+
+            float difference = avgOrdersCurrent - avgOrdersPast;
+            float absDifference = Math.Abs(difference);
+
+            float percentageChange = absDifference / avgOrdersPast;
+
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("averagesales", FormatAmountString(avgOrdersCurrent));
+
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
+            hashtable.Add("change", change);
+
+            hashtable.Add("positive", difference < 0 ? false : true);
+
+            return hashtable;
+        }
+
+        [Authorize]
+        [HttpGet("sales/thismonth/averagerevenue/{id}")]
+        public async Task<ActionResult<Hashtable>> GetCurrentAverageRevenue(string id)
+        {
+            ReportDto reportDto = new ReportDto()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
+
+            #region Date
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+
+            var orders = await GetOrdersByDate(reportDto);
+
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
+
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
+
+            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            #endregion
+
+            float revCurrent = 0f;
+            float revPast = 0f;
+
+            foreach (var order in orders)
+            {
+                foreach (var orderItem in order)
+                {
+                    revCurrent += float.Parse(orderItem.Price);
+                }                
+            }
+
+            foreach (var order in lastMonthOrders)
+            {
+                foreach (var orderItem in order)
+                {
+                    revPast += float.Parse(orderItem.Price);
+                }
+            }
+
+            float avgRevOrdersCurrent = revCurrent/(float)orders.Count;
+            float avgRevOrdersPast = revPast / (float)lastMonthOrders.Count;
+
+            float difference = avgRevOrdersCurrent - avgRevOrdersPast;
+            float absDifference = Math.Abs(difference);
+
+            float percentageChange = (float)absDifference / (float)avgRevOrdersPast;
+
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("averagerevenue", FormatAmountString(avgRevOrdersCurrent));
+
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
+            hashtable.Add("change", change);
+
+            hashtable.Add("positive", difference < 0 ? false : true);
+
+            return hashtable;
+        }
+
+        [Authorize]
+        [HttpGet("sales/thismonth/averageitems/{id}")]
+        public async Task<ActionResult<Hashtable>> GetCurrentAverageItems(string id)
+        {
+            ReportDto reportDto = new ReportDto()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
+
+            #region Date
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+
+            var orders = await GetOrdersByDate(reportDto);
+
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.StartDate = reportDto.StartDate.AddMonths(-1);
+
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+            reportDto.EndDate = reportDto.EndDate.AddMonths(-1);
+
+            var lastMonthOrders = await GetOrdersByDate(reportDto);
+            #endregion
+
+            float itemsCurrent = 0f;
+            float itemsPast = 0f;
+
+            foreach (var order in orders)
+            {
+                itemsCurrent += order.Count;
+            }
+
+            foreach (var order in lastMonthOrders)
+            {
+                itemsPast += order.Count;
+            }
+
+            float avgItemsOrdersCurrent = itemsCurrent / (float)orders.Count;
+            float avgItemsOrdersPast = itemsPast / (float)lastMonthOrders.Count;
+
+            float difference = avgItemsOrdersCurrent - avgItemsOrdersPast;
+            float absDifference = Math.Abs(difference);
+
+            float percentageChange = (float)absDifference / (float)avgItemsOrdersPast;
+
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add("averageitems", FormatAmountString(avgItemsOrdersCurrent));
+
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
+            hashtable.Add("change", change);
+
+            hashtable.Add("positive", difference < 0 ? false : true);
+
+            return hashtable;
+        }
+
+        [Authorize]
+        [HttpGet("sales/thismonth/ordersource/{id}")]
+        public async Task<ActionResult<List<Hashtable>>> GetOrderSources(string id)
+        {
+            ReportDto reportDto = new ReportDto()
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now
+            };
+
+            #region Date
+            reportDto.BranchId = id;
+            reportDto.StartDate = new DateTime(reportDto.StartDate.Year, reportDto.StartDate.Month, 1);
+            reportDto.EndDate = new DateTime(reportDto.EndDate.Year, reportDto.EndDate.Month, DateTime.DaysInMonth(reportDto.EndDate.Year, reportDto.EndDate.Month));
+
+            var orders = await GetOrdersByDate(reportDto);
+            #endregion
+
+            List<Hashtable> hashtables = new List<Hashtable>();
+
+            for (int i = 0; i < 4; i++)
+            {
+                hashtables.Add(new Hashtable());
+            }
+
+            int walkins = 0;
+            int callins = 0;
+            int onlines = 0;
+            int deliveries = 0;
+
+            foreach (var order in orders)
+            {
+                if(order[0].Reference.ToLower().Trim() == "till")
+                    walkins++;
+
+                if (order[0].Reference.ToLower().Trim() == "call")
+                    callins++;
+
+                if (order[0].Reference.ToLower().Trim().Contains("client"))
+                    onlines++;
+
+                if (order[0].Reference.ToLower().Trim() == "delivery")
+                    deliveries++;
+            }
+
+            hashtables[0].Add("name", "Walk in");
+            hashtables[0].Add("value", walkins);
+
+            hashtables[1].Add("name", "Call in");
+            hashtables[1].Add("value", callins);
+
+            hashtables[2].Add("name", "Online");
+            hashtables[2].Add("value", onlines);
+
+            hashtables[3].Add("name", "Delivery");
+            hashtables[3].Add("value", deliveries);
+
+            return hashtables;
+        }
+
+        int GetNumberOfDaysElapsed(List<List<OrderItem>> orders)
+        {
+            List<string> elapsedDates = new List<string>();
+
+            foreach (var order in orders)
+            {
+                if(!elapsedDates.Contains(order[0].OrderDateTime.ToShortDateString()))
+                {
+                    elapsedDates.Add(order[0].OrderDateTime.ToShortDateString());
+                }
+            }
+
+            return elapsedDates.Count;
+        }
+
+        [Authorize]
+        [HttpPost("excel/export-detailedsales")]
+        public async Task<IActionResult> ExportDetailedSales(ReportDto reportDto)
+        {
+            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            ordersgiven = await GetOrdersByDate(reportDto);
+
+            List<List<OrderItem>> orderfiltered = new List<List<OrderItem>>();
+
+            // REFACTOR: Theres a better way, have the total and remove instead of adding
+            foreach (var order in ordersgiven)
+            {
+                orderfiltered.Add(new List<OrderItem>());
+                foreach (var item in order)
+                {
+                    if (FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                            if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
+                                item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
+                            {
+                                orderfiltered[orderfiltered.Count - 1].Add(item);
+                            }
+                    }
+                    else if (FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        if (reportDto.Category.ToUpper() == item.Category.ToUpper())
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && FilterByName(reportDto))
+                    {
+                        if (item.Name.ToUpper().Contains(reportDto.Name.ToUpper()) ||
+                                item.SubCategory.ToUpper().Contains(reportDto.Name.ToUpper()))
+                        {
+                            orderfiltered[orderfiltered.Count - 1].Add(item);
+                        }
+                    }
+                    else if (!FilterByCategory(reportDto) && !FilterByName(reportDto))
+                    {
+                        orderfiltered[orderfiltered.Count - 1].Add(item);
+                    }
+                }
+
+            }
+
+            return await new ExcelController(_env).ExportData(orderfiltered);
+        }
+
+        [Authorize]
+        [HttpPost("excel/export-totalsales")]
+        public async Task<IActionResult> ExportTotalSales(ReportDto reportDto)
+        {
+            List<List<OrderItem>> ordersgiven = new List<List<OrderItem>>();
+            ordersgiven = await GetOrdersByDate(reportDto);
+
+            return await new ExcelController(_env).ExportTotalSalesData(ordersgiven);
+        }
+
+
+        [Authorize]
         [HttpGet("sales/thismonth/allrevenue")]
         public async Task<ActionResult<Hashtable>> GetAllCurrentRevenue()
         {
@@ -426,7 +777,7 @@ namespace API.Controllers
             Hashtable hashtable = new Hashtable();
             hashtable.Add("revenue", FormatAmountString(revenue));
 
-            string change = FormatAmountString(difference < 0 ? percentageChange * -100f : percentageChange * 100f);
+            string change = FormatAmountString(difference < 0 ? percentageChange * 100f : percentageChange * 100f);
             hashtable.Add("change", change);
 
             hashtable.Add("positive", difference < 0 ? false : true);
@@ -436,15 +787,7 @@ namespace API.Controllers
         public async Task<List<List<OrderItem>>> GetOrdersByDate(ReportDto reportDto)
         {
             List<List<OrderItem>> eligibleOrders = new List<List<OrderItem>>();
-            var result = await _firebaseDataContext.GetData(dir + reportDto.BranchId);
-
-            List<List<OrderItem>> orders = new List<List<OrderItem>>();
-
-            foreach (var item in result)
-            {
-                var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
-                orders.Add(pain);
-            }
+            List<List<OrderItem>> orders = await _firebaseDataContext.GetData<List<OrderItem>>(dir + reportDto.BranchId);
 
             foreach (var order in orders)
             {
@@ -476,11 +819,11 @@ namespace API.Controllers
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData("Branch");
+            var response = await _firebaseDataContext.GetData<Branch>("Branch");
 
             foreach (var item in response)
             {
-                Branch branch = JsonConvert.DeserializeObject<Branch>(((JObject)item).ToString());
+                Branch branch = item;
 
                 TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
 
@@ -503,11 +846,11 @@ namespace API.Controllers
 
             for (int i = 0; i < branches.Count; i++)
             {
-                var result = await _firebaseDataContext.GetData(dir + branches[i].Id);
+                var result = await _firebaseDataContext.GetData<List<OrderItem>>(dir + branches[i].Id);
 
                 foreach (var item in result)
                 {
-                    var pain = JsonConvert.DeserializeObject<List<OrderItem>>(((JArray)item).ToString());
+                    var pain = item;
                     orders.Add(pain);
                 }
             }

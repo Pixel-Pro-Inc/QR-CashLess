@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../_models/user';
@@ -12,34 +13,22 @@ import { ReferenceService } from '../_services/reference.service';
 })
 export class LoginComponent implements OnInit {
 
-  model: any = {};
-  user: User;
+  signinForm: FormGroup;
 
-  constructor(public accountService: AccountService, private referenceService: ReferenceService, private router: Router, private toastr: ToastrService) { }
+  constructor(private fb: FormBuilder, private accountService: AccountService) { }
 
   ngOnInit(): void {
+    this.initializeForm();
   }
 
-  login() {  
-    
-    console.log(this.model);
-
-    this.accountService.login(this.model, 'account/login').subscribe(response => {
-      this.accountService.currentUser$.subscribe(response => {
-        this.user = response;
-        console.log(this.user);
-
-        if (this.user.admin) {
-          this.router.navigateByUrl('/');
-        }
-        else {
-          this.router.navigateByUrl('/');
-        }
-      });      
-    }, error => {
-      console.log(error);
-      this.toastr.error(error.error);
-    })
+  initializeForm(){
+    this.signinForm = this.fb.group({
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required]]
+    });
   }
 
+  signin(){
+    this.accountService.login(this.signinForm.value, 'account/login');
+  }
 }

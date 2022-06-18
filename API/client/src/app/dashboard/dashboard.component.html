@@ -1,7 +1,7 @@
 <body class="bg-light">
   <div class="d-flex">
       <span>
-          <aside id="sidebar" class="sidebar" style="height: 650px;">
+          <aside id="sidebar" class="sidebar" style="min-height: 100vh;">
       
               <ul class="sidebar-nav" id="sidebar-nav">
           
@@ -43,7 +43,7 @@
 
                 <li class="nav-item">
                   <a class="nav-link collapsed" (click)="exportToExcel()" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                    <i class="fa fa-file text-success"></i><span class="text-success">Export To Excel</span>
+                    <i class="fa fa-file-excel-o text-success"></i><span class="text-success">Export All Data To Excel</span>
                   </a>
                 </li>
               </ul>
@@ -66,8 +66,8 @@
             <div class="d-flex ml-5">
               <div class="card info-card sales-card mr-5">
                   <div class="card-body">
-                      <h5 class="card-title">Sales <span>| This month</span></h5>             
-
+                    <i class="fa fa-shopping-cart fa-2x text-success"></i>
+                      <h5 class="card-title">Sales <span>| This month</span></h5>
                     <div class="d-flex align-items-center">
                       <div *ngIf="salesVolume.sales != null" class="ps-3">
                         <h4>{{salesVolume.sales}}</h4>
@@ -80,6 +80,7 @@
                 </div>
                 <div class="card info-card sales-card mr-5">
                   <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
                       <h5 class="card-title">Revenue <span>| This month</span></h5>             
 
                     <div class="d-flex align-items-center">
@@ -94,6 +95,57 @@
                 </div>      
                 <div class="card info-card sales-card mr-5">
                   <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                      <h5 class="card-title">Revenue<span>| This month (All Franchises)</span></h5>             
+
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="allSalesRevenue.revenue != null" class="ps-3">
+                        <h4>BWP <span class="text-success">{{allSalesRevenue.revenue}}</span></h4>
+                        <span *ngIf="allSalesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{allSalesRevenue.change}}% change</span>
+                        <span *ngIf="!allSalesRevenue.positive" class="text-danger small pt-1 fw-bold">{{allSalesRevenue.change}}% change</span>    
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>
+            </div>
+            <div class="d-flex mt-3 ml-5">
+              <div class="card info-card sales-card mr-5">
+                  <div class="card-body">
+                    <i class="fa fa-shopping-cart fa-2x text-success"></i>
+                      <h5 class="card-title">Sales <span>| This month</span></h5>
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="salesVolume.sales != null" class="ps-3">
+                        <h4>{{salesVolume.sales}}</h4>
+                        <span *ngIf="salesVolume.positive" class="text-success small pt-1 fw-bold">+ {{salesVolume.change}}% change</span>
+                        <span *ngIf="!salesVolume.positive" class="text-danger small pt-1 fw-bold">{{salesVolume.change}}% change</span>    
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>
+                <div class="card info-card sales-card mr-5">
+                  <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                      <h5 class="card-title">Revenue <span>| This month</span></h5>             
+
+                    <div class="d-flex align-items-center">
+                      <div *ngIf="salesRevenue.revenue != null" class="ps-3">
+                        <h4>BWP <span class="text-success">{{salesRevenue.revenue}}</span></h4>
+                        <span *ngIf="salesRevenue.positive" class="text-success small pt-1 fw-bold">+ {{salesRevenue.change}}% change</span>
+                        <span *ngIf="!salesRevenue.positive" class="text-danger small pt-1 fw-bold">{{salesRevenue.change}}% change</span>    
+                      </div>
+                    </div>
+                  </div>
+  
+                </div>      
+                <div class="card info-card sales-card mr-5">
+                  <div class="card-body">
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
+                    <i class="fa fa-usd fa-2x text-success"></i>
                       <h5 class="card-title">Revenue<span>| This month (All Franchises)</span></h5>             
 
                     <div class="d-flex align-items-center">
@@ -108,8 +160,8 @@
                 </div>
             </div>
           </div>
-          
-          <div class="ml-2 mt-4">
+          <!--PDF Page Content Start-->
+          <div class="ml-2 mt-4 page-content container" id="contentToConvert">
               <ng-container *ngIf="showTotal">
                 <form #totalSalesForm="ngForm" (ngSubmit)="generateReport('total')" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
                   <h4>Select a period for your report</h4>
@@ -124,8 +176,9 @@
                     <input type="date" class="form-control" name="endDate"
                            [(ngModel)]="model.endDate">
                   </div>
-                  <div class="form-group text-center">
+                  <div class="form-group text-center d-flex">
                     <button class="btn btn-success mr-2" type="submit">Generate</button>
+                    <button class="btn btn-success" (click)="exportTotalReportToExcel()"> <span class="fa fa-file-excel-o mr-1"></span>Export To Excel</button>
                   </div>
                 </form>
 
@@ -173,15 +226,17 @@
                       <option>Drink</option>
                       <option>Side</option>
                       <option>Dessert</option>
+                      <option>Carry Bag</option>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label>Choose Item Name</label>
+                    <label>Choose Item Name / Subcategory</label>
                     <input type="text" class="form-control" name="name"
                            [(ngModel)]="model1.name">
                   </div>
-                  <div class="form-group text-center">
+                  <div class="form-group text-center d-flex">
                     <button class="btn btn-success mr-2" type="submit">Generate</button>
+                    <button class="btn btn-success" (click)="exportDetailReportToExcel()"> <span class="fa fa-file-excel-o mr-1"></span>Export To Excel</button>
                   </div>
                 </form>
 
@@ -193,7 +248,7 @@
                       <th scope="col">Order Number</th>
                       <th scope="col">Name</th>
                       <th scope="col">Quantity</th>
-                      <th scope="col" style="text-align: right;">Weight (Grams)</th>
+                      <th scope="col" style="text-align: right;">Weight * Quantity (Grams)</th>
                       <th scope="col" style="text-align: right;">Amount (BWP)</th>
                     </tr>
                   </thead>
@@ -264,8 +319,15 @@
                     <input type="date" class="form-control" name="endDate3"
                            [(ngModel)]="model3.endDate">
                   </div>
-                  <div class="form-group text-center">
+                  <div class="form-group text-center d-flex">
                     <button class="btn btn-success mr-2" type="submit">Generate</button>
+                    <ng-container *ngIf="!showSpin">
+                      <button class="ml-3 btn btn-primary" (click)="convertToPDF()"><i class="fa fa-download"></i> Generate PDF</button>
+                    </ng-container>
+                    
+                    <ng-container *ngIf="showSpin">
+                      <button class="ml-3 btn btn-primary"><i class="fa fa-spinner fa-spin fa-pulse"></i> Generating PDF</button>
+                    </ng-container>
                   </div>
                 </form>
 
@@ -335,7 +397,7 @@
                         <tr>
                           <th scope="col">Name</th>
                           <th scope="col">Quantity</th>
-                          <th scope="col" style="text-align: right;">Weight (Grams)</th>
+                          <th scope="col" style="text-align: right;">Weight * Quantity (Grams)</th>
                           <th scope="col" style="text-align: right;">Amount (BWP)</th>
                         </tr>
                       </thead>
@@ -362,6 +424,7 @@
               </div>
               </ng-container>
           </div>
+          <!--PDF Page Content End-->
       </div>
   </div>
 </body>

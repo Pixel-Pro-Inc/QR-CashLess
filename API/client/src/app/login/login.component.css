@@ -1,53 +1,30 @@
-.login-container{
-    margin-top: 5%;
-    margin-bottom: 5%;
+body{
+    background-color: #eeeeee;
 }
-.login-logo{
-    position: relative;
-    margin-left: -41.5%;
+.login-card{
+  background-color: #fff;
+  width: min-content;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin: auto;
 }
-.login-logo img{
-    position: absolute;
-    width: 20%;
-    margin-top: 19%;
-    background: #282726;
-    border-radius: 4.5rem;
-    padding: 5%;
+.login-btn {
+  padding: 13px 20px 12px;
+  background-color: #000;
+  border-radius: 4px;
+  font-size: 17px;
+  font-weight: bold;
+  line-height: 20px;
+  color: #fff;
+  margin-bottom: 24px; 
 }
-.login-form-1{
-    padding: 9%;
-    background:#282726;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
+.login-btn:hover {
+  border: 1px solid #000;
+  background-color: transparent;
+  color: #000; 
 }
-.login-form-1 h3{
-    text-align: center;
-    margin-bottom:12%;
-    color:#fff;
-}
-.login-form-2{
-    padding-bottom: 20%;
-    background: #f05837;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 9px 26px 0 rgba(0, 0, 0, 0.19);
-}
-.login-form-2 h3{
-    text-align: center;
-    color: #fff;
-}
-.btnSubmit{
-    font-weight: 600;
-    width: 50%;
-    color: #282726;
-    background-color: #fff;
-    border: none;
-    border-radius: 1.5rem;
-    padding:2%;
-}
-.btnForgetPwd{
-    color: #fff;
-    font-weight: 600;
-    text-decoration: none;
-}
-.btnForgetPwd:hover{
-    text-decoration:none;
-    color:#fff;
+.forgot-password-link {
+  font-size: 14px;
+  color: #919aa3;
+  margin-bottom: 12px; 
 }

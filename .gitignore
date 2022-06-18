@@ -449,3 +449,8 @@ $RECYCLE.BIN/
 
 appsettings.json
 qrcashless.db
+/API/dark-mode-playground/src/environments/environment.prod.ts
+/API/dark-mode-playground/src/environments/environment.ts
+/API/client/src/environments/environment.prod.ts
+/API/client/src/environments/environment.ts
+/API/dark-mode-playground/.vscode

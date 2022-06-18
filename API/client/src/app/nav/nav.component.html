@@ -1,41 +1,46 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-light shadow">
+<nav class="navbar navbar-expand-md navbar-dark bg-light shadow" style="height: var(--navbar-height);">
   <div class="container">
-    <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10"
-    alt="logo"    
-    width="120">
+    <a routerLink="/">
+      <img src="assets/Images/rodizio_express_logo.png" alt="logo" width="120">
+    </a>   
     
-    <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
-      <a class="dropdown-toggle text-dark" dropdownToggle>Welcome {{user.username | titlecase}}</a>
-      <div class="dropdown-menu mt-3" *dropdownMenu>
-        <ng-container class="mr-5">
-          <div class="dropdown-divider"></div>
-          <ng-container>
-            <a class="dropdown-item" routerLink="/menu/edit">
-              Menu
+    <ng-container *ngIf="!referenceService.hideNavBar">
+      <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
+        <a class="dropdown-toggle text-dark" dropdownToggle>Welcome {{user.username | titlecase}}</a>
+        <div class="dropdown-menu mt-3" *dropdownMenu>
+          <ng-container class="mr-5">
+            <div class="dropdown-divider"></div>
+            <ng-container>
+              <a class="dropdown-item" routerLink="/menu/edit">
+                Menu
+              </a>
+              <a class="dropdown-item" routerLink="/register/user">
+                Register Staff
+              </a>
+              <a class="dropdown-item" routerLink="/">
+                Switch Branch
+              </a>
+              <a class="dropdown-item" routerLink="/admin-portal">
+                Admin Portal
+              </a>
+              <a class="dropdown-item" routerLink="/setclosetime">
+                Set Closing Time
+              </a>
+            </ng-container>
+            <ng-container *ngIf="developer">
+              <a class="dropdown-item" routerLink="/register/admin">
+                Register Admin
+              </a>
+              <a class="dropdown-item" routerLink="/register/branch">
+                Register Branch
+              </a>
+            </ng-container>
+            <a class="dropdown-item" (click)="logout()">
+              Logout
             </a>
-            <a class="dropdown-item" routerLink="/register/user">
-              Register Staff
-            </a>
-            <a class="dropdown-item" routerLink="/">
-              Switch Branch
-            </a>
-            <a class="dropdown-item" routerLink="/dashboard">
-              Dashboard
-            </a>
-          </ng-container>
-          <ng-container *ngIf="developer">
-            <a class="dropdown-item" routerLink="/register/admin">
-              Register Admin
-            </a>
-            <a class="dropdown-item" routerLink="/register/branch">
-              Register Branch
-            </a>
-          </ng-container>
-          <a class="dropdown-item" (click)="logout()">
-            Logout
-          </a>
-        </ng-container>        
+          </ng-container>        
+        </div>
       </div>
-    </div>
+    </ng-container>
   </div>
 </nav>

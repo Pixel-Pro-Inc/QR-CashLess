@@ -1,24 +1,48 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseServiceService } from './-base-service.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BusyService extends BaseServiceService {
+export class BusyService {
 
   busyRequestCount = 0;
   isLoading: Boolean;
-  constructor(http: HttpClient) {
-    super(http); }
+  constructor(private spinnerService: NgxSpinnerService) {}
 
-  busy() {
-    this.busyRequestCount++;    
+  busy(){
+    /*this.busyRequestCount++;
+    this.spinnerService.show(undefined, {
+      type: 'ball-spin-clockwise-fade-rotating',
+      bdColor: 'rgba(0, 0, 0, 0.8)',
+      color: '#fff'
+    });*/
   }
-  idle() {
-    this.busyRequestCount--;
-    if (this.busyRequestCount<=0) {
+
+  idle(){
+    /*this.busyRequestCount--;
+    if(this.busyRequestCount <= 0){
       this.busyRequestCount = 0;
+      this.spinnerService.hide();
+    }*/
+  }
+
+  busy_1(){
+    this.busyRequestCount++;
+    this.spinnerService.show(undefined, {
+      type: 'ball-clip-rotate',
+      bdColor: 'rgba(0, 0, 0, 0.8)',
+      color: '#fff'
+    });
+  }
+
+  idle_1(){
+    this.busyRequestCount--;
+    if(this.busyRequestCount <= 0){
+      this.busyRequestCount = 0;
+      this.spinnerService.hide();
     }
   }
 

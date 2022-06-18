@@ -1,0 +1,482 @@
+/*Side Bar*/
+body{
+    margin: 0;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    background-color: white;
+    top:0;
+    height: var(--header-height);
+    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .2);
+    padding: 0 .5rem;
+    width: 100%;
+}
+
+/*(*) means everything*/
+*, *::before, *::after{
+    box-sizing: border-box;
+}
+
+.menu-icon{
+    width: 25px;
+    height: 25px;
+    fill: var(--medium-gray);
+    cursor: pointer;
+}
+
+.menu-icon:hover{
+    fill: var(--accent-color);
+}
+
+.menu-icon-btn{
+    background: none;
+    border: none;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    margin-left: 1rem;
+}
+
+.sidebar .logo{
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar .logo > img{
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar .top-sidebar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar .hidden-sidebar{
+    opacity: 0;
+    width: 0%;
+    height: 0;
+    transition: opacity var(--animation-duration) var(--animation-timing-curve);
+}
+
+.sidebar.open .hidden-sidebar{
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+}
+
+.sidebar {
+    align-items: center;
+    justify-content: stretch;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-right: 1px solid lightgray;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    width: 75px;
+    height: calc(100vh - (var(--header-height) + var(--navbar-height)));
+    transition: width var(--animation-duration) var(--animation-timing-curve);
+}
+
+.middle-sidebar{
+    flex-grow: 1;/*Fill as much height as possible*/
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+    margin: 1rem 0rem;
+}
+
+.bottom-sidebar{
+    width: 100%;
+}
+
+.container-side{
+    display: flex;
+}
+
+.sidebar-list{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+}
+
+.sidebar.open .sidebar-link{
+    justify-content: flex-start;
+    padding-left: 1.5rem;
+}
+
+.sidebar-icon{
+    width: 24px;
+    height: 24px;
+    fill: var(--light-gray);
+    flex-shrink: 0;
+}
+
+.sidebar.open .sidebar-icon{
+    margin-right: 1.5rem;
+}
+
+.sidebar-link{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: .5rem 0;
+    color: var(--light-gray);
+    text-decoration: none;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebar.open .sidebar-link-text.hidden-sidebar{
+    font-size: .9rem;
+    font-weight: lighter;
+}
+
+.top-sidebar{
+    margin-bottom: .5rem;
+}
+
+.sidebar-list-item{
+    width: 100%;
+    position: relative;
+}
+
+.sidebar-list-item.active{
+    background-color: var(--lightest-gray);
+}
+
+.sidebar-list-item.active .sidebar-icon{
+    fill: var(--accent-color);
+}
+
+.sidebar-list-item:hover{
+    background-color: var(--lightest-gray);
+}
+
+.sidebar-list-item:hover::before{
+    content: "";
+    background-color: var(--light-gray);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    width: 3px;
+}
+
+/*Red Bar Next To Active Icon*/
+.sidebar-list-item.active::before{
+    content: "";
+    background-color: var(--accent-color);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    width: 3px;
+}
+
+.sidebar.open {
+    width: 300px;
+}
+
+@media screen and (max-width: 600px) {
+    .sidebar.open {
+        width: 100%;
+    }
+
+    .content.open{
+        display: none;
+    }
+  }
+
+.sidebar.open .logo{
+    width: 90px;
+    height: 90px;
+}
+
+.sidebar-list .hidden-sidebar{
+    white-space: nowrap;
+}
+
+.navbar-heading{
+    font-size: 1.5rem;
+    font-weight: lighter;    
+}
+
+/*Content*/
+.content{
+    padding-top: 1rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+    height: calc(100vh - (var(--header-height) + var(--navbar-height)));
+    justify-content: center;
+    background-color: #fafbfe;
+}
+
+.section-heading{
+    font-weight: 500;
+    font-size: 1rem;
+    margin-left: 1rem;
+}
+
+.card-bar{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.dash-card{
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .2);
+    margin: 1rem;
+    background-color: white;
+    border-radius: .2rem;
+    width: 300px;
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-timing-curve);
+}
+
+.dash-card:hover{
+    transform: scale(1.1);
+}
+
+.dash-card-graph{
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .2);
+    background-color: white;
+    border-radius: .2rem;
+    margin: 1rem;
+    cursor: pointer;
+}
+
+.dash-card-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.dash-card-body{
+    padding: 1rem;
+}
+
+.dash-card-icon{
+    fill: var(--dash-icon-color);
+    height: 50px;
+    width: 50px;
+}
+
+.text-pill{
+    background-color: #292929;
+    border-radius: .3rem;
+    height: fit-content;
+    width: fit-content;
+}
+
+.dash-card-header-text{
+    font-weight: 400;
+    font-size: .6rem;
+    color: white;
+    padding: 0 .2rem 0 .2rem;
+}
+
+.dash-card-main-content{
+    font-weight: 600;
+    font-size: 2.25rem;
+    margin-top: -10px;
+}
+
+.dash-card-small-content{
+    font-weight: 300;
+    font-size: .75rem;
+}
+
+/*Reports*/
+.reports-content{
+    padding: 1rem;
+}
+
+.report-content-form{
+    width: 100%;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+.report-content-form-input-group{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: .5rem;
+}
+
+.report-content-form-title{
+    font-weight: 300;
+    color: #ffffff;
+    padding: 0 .25rem;
+}
+
+.form-group{
+    margin: 0 .1rem 0 .1rem;
+    flex-grow: 1;
+}
+
+.form-card{
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, .2);
+    margin: 1rem;
+    background-color: white;
+    border-radius: .2rem;
+    max-width: 375px;
+}
+
+.form-btn{
+    background: none;
+    border-radius: .25rem;
+    border-width: 0.05rem;
+    border-color: var(--accent-color);
+    border-style: solid;
+    padding: .25rem 1rem .25rem 1rem;
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    width: 100%;
+    color: var(--accent-color);
+}
+.form-btn:hover{
+    background-color: var(--accent-color);
+    color: white;
+}
+.form-control-text{
+    font-size: .7rem;
+    font-weight: 300;
+}
+.btn-group{
+    display: block;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.report-header-text{
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.invalid-search{
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    padding: 0 1rem 0 1rem;
+}
+
+.column-header-text{
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+.column-item-text{
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.column-item-text-number{
+    font-size: 1rem;
+    font-weight: 300;
+    align-self:flex-end;
+}
+
+.column-header-text-number{
+    font-size: 1.2rem;
+    font-weight: 300;
+    align-self:flex-end;
+}
+
+.summary-text{
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.table-row{
+    background-color: #ffffff;
+}
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  }
+  
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+   
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+
+.form-control{
+    flex-grow: 1;
+    width: 100%;
+}
+
+table td{
+    text-align: right;
+}
+
+.mobile-summary{
+    display: none;
+}
+
+  th, td {padding: 8px}
+  
+  @media screen and (max-width: 600px) {
+    table {
+      width: 100%;
+    }
+  
+    table thead {
+      display: none;
+    }
+
+    .mobile-summary{
+        display: block;
+    }
+
+    .desktop-summary{
+        display: none;
+    }
+  
+    table tr, table td {
+      border-bottom: 1px solid rgb(35, 35, 35);
+    }
+  
+    table tr {
+      margin-bottom: 8px;
+    }
+  
+    table td {
+      display: flex;
+      text-align: left;
+    }
+    
+    table td::before {
+      content: attr(label);
+      font-weight: bold;
+      text-align: left;
+      width: 120px;
+      min-width: 120px;
+    }
+  }

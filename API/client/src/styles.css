@@ -1,2 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
+/*
+    The below elements are form Angular-Dark-Mode. This is a test or an iteration. I intend on using Angular material
+    instead but this might do the job too, so I'm putting this here in case I need it. 
+*/
+body {
+  margin: 0;
+}
+
+:root{
+  --accent-color: rgb(204, 0, 0);
+  --lightest-gray: rgb(249, 249, 249);
+  --light-gray: rgb(144, 144, 144);
+  --medium-gray: rgb(96, 96, 96);
+  --dark-gray: rgb(13, 13, 13);
+  --header-height: 40px;
+  --navbar-height: 47.02px;
+  --footbar-height: 40px;
+  --animation-duration: 200ms;
+  --animation-timing-curve: ease-in-out;
+  --dash-icon-color: rgb(200, 0, 0);
+}
+
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
