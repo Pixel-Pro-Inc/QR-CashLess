@@ -280,7 +280,7 @@
                 </ul>
             </div>
         </aside>
-        <main class="content reports-content">
+        <main class="content reports-content" id="content">
             <!--Dashboard Start-->
             <div *ngIf="!showingReports">
                 <div class="report-content">
@@ -428,9 +428,6 @@
                           </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="card-bar">                        
                         <div class="dash-card">
                             <div class="dash-card-body">
                           <div class="dash-card-header">
@@ -691,7 +688,7 @@
                               <tr class="table-row">
                                 <th class="column-header-text" scope="col">Order Number</th>
                                 <th class="column-header-text" scope="col">Name</th>
-                                <th class="column-header-text" scope="col">Quantity</th>
+                                <th class="column-header-text" scope="col" style="text-align: right;">Quantity</th>
                                 <th class="column-header-text" scope="col" style="text-align: right;">Weight * Quantity (Grams)</th>
                                 <th class="column-header-text" scope="col" style="text-align: right;">Amount (BWP)</th>
                               </tr>
@@ -699,21 +696,27 @@
                             <tbody>
                               <ng-container *ngFor="let x of detailedtotalSales">
                                 <tr class="table-row">
-                                  <th class="column-item-text" scope="row">Order Number - {{x.orderNumber}}</th>
-                                  <td class="column-item-text">{{x.itemName}}</td>
-                                  <td class="column-item-text-number">{{x.quantity}}</td>
-                                  <td class="column-item-text-number" style="text-align: right;">{{x.weight}}</td>
-                                  <th class="column-item-text-number" style="text-align: right;" class="text-success">{{x.orderRevenue}}</th>
+                                  <td label="Order Number" class="column-item-text" style="text-align: left;" scope="row">Order Number - {{x.orderNumber}}</td>
+                                  <td label="Name" class="column-item-text" style="text-align: left;">{{x.itemName}}</td>
+                                  <td label="Quantity" class="column-item-text-number">{{x.quantity}}</td>
+                                  <td label="Weight * Quantity (Grams)" class="column-item-text-number right">{{x.weight}}</td>
+                                  <td label="Amount (BWP)" class="column-item-text-number right" class="text-success">{{x.orderRevenue}}</td>
                                 </tr>                                   
                               </ng-container>      
                               
-                              <tr class="table-row">
-                                <th class="column-header-text">Total</th>
-                                <th class="column-header-text">-</th>
-                                <th class="column-header-text">{{getTotal(detailedtotalSales, 'dtotal')[0]}}</th>
-                                <th class="column-header-text-number">{{getTotal(detailedtotalSales, 'dtotal')[1]}} Grams</th>
-                                <th class="column-header-text-number">BWP <span class="text-success">{{getTotal(detailedtotalSales, 'dtotal')[2]}}</span></th>
-                              </tr>                                   
+                              <tr class="table-row desktop-summary">
+                                <td class="column-header-text" style="text-align: left;">Total</td>
+                                <td class="column-header-text" style="text-align: left;">-</td>
+                                <td class="column-header-text">{{getTotal(detailedtotalSales, 'dtotal')[0]}}</td>
+                                <td class="column-header-text-number">{{getTotal(detailedtotalSales, 'dtotal')[1]}} Grams</td>
+                                <td class="column-header-text-number">BWP <span class="text-success">{{getTotal(detailedtotalSales, 'dtotal')[2]}}</span></td>
+                              </tr>
+                              
+                              <tr class="table-row mobile-summary">
+                                <td label="Total" class="column-header-text">{{getTotal(detailedtotalSales, 'dtotal')[0]}} Items</td>
+                                <td label="Total" class="column-header-text-number">{{getTotal(detailedtotalSales, 'dtotal')[1]}} Grams</td>
+                                <td label="Total" class="column-header-text-number">BWP <span class="text-success">{{getTotal(detailedtotalSales, 'dtotal')[2]}}</span></td>
+                              </tr>
                             </tbody>
                         </table>
                     </div>
@@ -833,7 +836,7 @@
                             <ng-container *ngFor="let x of invoices">
                                 <a class="list-group-item list-group-item-action" aria-current="true" (click)="expandToggle(x)">
                                     <div class="d-flex justify-content-between">
-                                      <div class="column-header-text">Order Number - {{x[0].orderNumber}}</div>
+                                      <div class="column-header-text">Order # - {{x[0].orderNumber}}</div>
 
                                       <h5 class="column-header-text-number text-success">({{x[0].description}})</h5>
                                     </div>
@@ -850,10 +853,10 @@
                                       <tbody>
                                         <ng-container *ngFor="let s of x">
                                           <tr class="table-row">
-                                            <td class="column-item-text">{{s.name}}</td>
-                                            <td class="column-item-text">{{s.quantity}}</td>
-                                            <td class="column-item-text" style="text-align: right;">{{s.weight}}</td>
-                                            <th class="column-item-text" style="text-align: right;" class="text-success">{{s.price}}</th>
+                                            <td label="Name" class="column-item-text">{{s.name}}</td>
+                                            <td label="Quantity" class="column-item-text">{{s.quantity}}</td>
+                                            <td label="Weight * Quantity (Grams)" class="column-item-text" style="text-align: right;">{{s.weight}}</td>
+                                            <td label="Amount (BWP)" class="column-item-text" style="text-align: right;" class="text-success">{{s.price}}</td>
                                           </tr>
                                         </ng-container>                            
                                       </tbody>

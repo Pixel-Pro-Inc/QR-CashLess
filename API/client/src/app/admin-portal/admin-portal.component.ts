@@ -378,6 +378,9 @@ export class AdminPortalComponent implements OnInit {
   ToggleSideBar(){
     var sidebar = document.getElementById('sidebar');
     sidebar.classList.toggle('open');
+
+    var content = document.getElementById('content');
+    content.classList.toggle('open');
   }
 
 }

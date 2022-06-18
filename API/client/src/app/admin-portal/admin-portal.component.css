@@ -186,6 +186,16 @@ body{
     width: 300px;
 }
 
+@media screen and (max-width: 600px) {
+    .sidebar.open {
+        width: 100%;
+    }
+
+    .content.open{
+        display: none;
+    }
+  }
+
 .sidebar.open .logo{
     width: 90px;
     height: 90px;
@@ -219,6 +229,7 @@ body{
 
 .card-bar{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
 }
 
@@ -297,6 +308,7 @@ body{
 
 .report-content-form-input-group{
     display: flex;
+    flex-wrap: wrap;
     margin-top: .5rem;
 }
 
@@ -307,7 +319,8 @@ body{
 }
 
 .form-group{
-    margin: 0 1rem 0 0;
+    margin: 0 .1rem 0 .1rem;
+    flex-grow: 1;
 }
 
 .form-card{
@@ -315,7 +328,7 @@ body{
     margin: 1rem;
     background-color: white;
     border-radius: .2rem;
-    width: 375px;
+    max-width: 375px;
 }
 
 .form-btn{
@@ -412,4 +425,58 @@ body{
   /* Show the tooltip text when you mouse over the tooltip container */
   .tooltip:hover .tooltiptext {
     visibility: visible;
+  }
+
+.form-control{
+    flex-grow: 1;
+    width: 100%;
+}
+
+table td{
+    text-align: right;
+}
+
+.mobile-summary{
+    display: none;
+}
+
+  th, td {padding: 8px}
+  
+  @media screen and (max-width: 600px) {
+    table {
+      width: 100%;
+    }
+  
+    table thead {
+      display: none;
+    }
+
+    .mobile-summary{
+        display: block;
+    }
+
+    .desktop-summary{
+        display: none;
+    }
+  
+    table tr, table td {
+      border-bottom: 1px solid rgb(35, 35, 35);
+    }
+  
+    table tr {
+      margin-bottom: 8px;
+    }
+  
+    table td {
+      display: flex;
+      text-align: left;
+    }
+    
+    table td::before {
+      content: attr(label);
+      font-weight: bold;
+      text-align: left;
+      width: 120px;
+      min-width: 120px;
+    }
   }
