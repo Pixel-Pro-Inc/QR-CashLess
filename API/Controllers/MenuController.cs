@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using FireSharp.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using API.Entities.Aggregates;
 
 namespace API.Controllers
 {
@@ -29,7 +30,7 @@ namespace API.Controllers
         }
 
         [HttpGet("getmenu/{branchId}")]
-        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)=> await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
+        public async Task<ActionResult<Menu>> GetMenu(string branchId)=> (Menu)await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
         [Authorize]
         [HttpPost("createitem/{id}")]
         public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string id)
@@ -184,7 +185,7 @@ namespace API.Controllers
         }
         public async Task<int> GetId(string branchId)
         {
-            List<MenuItem> items = await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
+            Menu items = (Menu)await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
 
             if (items.Count != 0)
             {

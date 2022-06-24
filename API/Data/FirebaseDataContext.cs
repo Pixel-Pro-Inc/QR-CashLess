@@ -1,13 +1,13 @@
-﻿using API.Controllers;
-using FireSharp.Config;
+﻿using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
+
 using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Data
@@ -32,28 +32,13 @@ namespace API.Data
             client = new FireSharp.FirebaseClient(config);
         }
 
-        public async void DeleteData(string path)
-        {
-            client = new FireSharp.FirebaseClient(config);
-
-            var response = await client.DeleteAsync(path);
-        }
-
-        public async void StoreData(string path, object data)
-        {
-            client = new FireSharp.FirebaseClient(config);
-
-            var response = await client.SetAsync(path, data);
-        }
-
-        // UNDONE: DO NOT SWITCH TO YEWO'S version on Development. The problem with that version is that you have to make a type for everything you want from the database
-        // like flavour and shit. We dont need that. Just have this work as is and then the extension will change the type where it is needed
-        // @Yewo: Here is my reason. Don't fight and delete unless you consult with me
+        // UPDATE: I change the code cause it kept making new clients, I don't know why it needed to do that
+        public async void DeleteData(string path)=>await client.DeleteAsync(path);
+        public async void StoreData(string path, object data)=>await client.SetAsync(path, data);
         // NOTE: You don't need to refactor this to work with the JsonConvertExtension. But you could clean up with Yewo after discussing it
         public async Task<List<object>> GetData(string path)
         {
             List<object> objects = new List<object>();
-            client = new FireSharp.FirebaseClient(config);
 
             FirebaseResponse response = await client.GetAsync(path);
 
@@ -67,6 +52,7 @@ namespace API.Data
 
                     if (item != null)
                     {
+                        // REFACTOR: Try to see if this is the solution we need to make the overload in JsonConvertExtension unified
                         if (item.GetType() == typeof(JProperty))
                         {
                             _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
@@ -83,11 +69,7 @@ namespace API.Data
 
             return objects;
         }
-        public async void EditData(string path, object data)
-        {
-            client = new FireSharp.FirebaseClient(config);
+        public async void EditData(string path, object data)=> await client.UpdateAsync(path, data);
 
-            var response = await client.UpdateAsync(path, data);
-        }
     }
 }

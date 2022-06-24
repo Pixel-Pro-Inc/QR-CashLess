@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
+    // REFACTOR: Consider having a IDataBaseService that IFirebase inherits from, that way we can switch database providers when ever we feel like.
+    /// <summary>
+    /// This will be the FirebaseService for all firebase needs
+    /// </summary>
+    /// <remarks>
+    /// Any and all requests  from the Firebasedatabase should be found in this partial class
+    /// </remarks>
     public interface IFirebaseServices: _IBaseService
     {
 
