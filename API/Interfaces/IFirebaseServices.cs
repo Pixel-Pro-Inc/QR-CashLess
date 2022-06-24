@@ -14,7 +14,7 @@ namespace API.Interfaces
     /// <remarks>
     /// Any and all requests  from the Firebasedatabase should be found in this partial class
     /// </remarks>
-    public interface IFirebaseServices: _IBaseService
+    public interface IFirebaseServices: IBaseService
     {
 
         /// <summary>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
-    public interface IExcelService:_IBaseService
+    public interface IExcelService:IBaseService
     {
         /// <summary>
         /// This takses in the <paramref name="branchId"/>, and creates an excel based on all the orders in the specific branch

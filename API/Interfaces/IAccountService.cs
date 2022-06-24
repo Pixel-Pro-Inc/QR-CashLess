@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace API.Interfaces
 {
-    public interface IAccountService: _IBaseService
+    public interface IAccountService: IBaseService
     {
         /// <summary>
         /// Gets the specific user from the database

@@ -11,7 +11,7 @@ namespace API.Interfaces
     ///  Or different parts of the same layer talking to each other. That means, you shouldn't be having controller instances newed up in each other, you should instead
     ///  be pulling in a service scope that is responsible for that duty</para>
     /// </summary>
-    public interface _IBaseService
+    public interface IBaseService
     {
     }
 }

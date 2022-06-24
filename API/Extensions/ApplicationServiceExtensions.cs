@@ -22,7 +22,7 @@ namespace API.Extensions
         {
             services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
 
-            services.AddScoped<_IBaseService, _BaseService>();
+            services.AddScoped<IBaseService, _BaseService>();
 
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService, TokenService>();
