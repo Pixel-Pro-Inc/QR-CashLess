@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 using API.DTOs;
 
-namespace API.Services
+namespace API.Exceptions
 {
     /// <summary>
     /// We expect this to be thrown when the <see cref="ReportDto.StartDate"/> and <see cref="ReportDto.EndDate"/> can't be used.

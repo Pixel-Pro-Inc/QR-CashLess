@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace API.Extensions
+namespace API.Exceptions
 {
     /// <summary>
     ///  This should be thrown when the string you give isn't in the correct OrderNumber format or is not at all even and OrderNumber

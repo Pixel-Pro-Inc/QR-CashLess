@@ -1,5 +1,6 @@
 ﻿using API.Entities;
 using API.Entities.Aggregates;
+using API.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,10 +31,11 @@ namespace API.Interfaces
         /// </summary>
         /// <param name="path"></param>
         public void DeleteData(string fullpath);
+        // FIXME: We need to remove the clases that don't inherit from baseEntity. If any object can pass through here, then aggregates can mistakenly be put here
         /// <summary>
         /// This takes in the path of the node in the database and coughs up the a list of the type
         /// <typeparamref name="T"/>. <typeparamref name="T"/> is the object type you want to have a list of.
-        /// <para> NOTE: I didnt put type checking here cause there is data that doesn't inherit from <see cref="BaseEntity"/> that could be taken from the database, Like <see cref="Flavour"/></para>
+        /// <para> NOTE: I didnt put type checking here cause there is data that doesn't inherit from <see cref="BaseEntity"/> that could be taken from the database, Like <see cref="Flavour"/>.  This means that an error can be thrown if you try to pass in an aggregate. See <see cref="FailedToConvertFromJson"/></para>
         /// </summary>
         /// <typeparam name="T"> </typeparam>
         /// <param name="path"></param>

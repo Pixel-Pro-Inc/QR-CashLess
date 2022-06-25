@@ -79,6 +79,11 @@ namespace API.Extensions
             {
                 throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", inEx);
             }
+            catch(Exception ex)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}. This is most probably cause you gave it an aggregate instead of " +
+                    $"and entity. ", ex);
+            }
 
             return result;
         }
