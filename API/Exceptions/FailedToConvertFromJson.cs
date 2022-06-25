@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using API.Entities.Aggregates;
 using API.Interfaces;
+using API.Extensions;
 
 
 namespace API.Exceptions

@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using API.Entities;
 using API.Entities.Aggregates;
+using API.Exceptions;
 using API.Extensions;
 using API.Helpers;
 using API.Interfaces;

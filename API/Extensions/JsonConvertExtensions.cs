@@ -1,5 +1,6 @@
 ﻿using API.Entities;
 using API.Entities.Aggregates;
+using API.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -46,7 +47,7 @@ namespace API.Extensions
             catch (InvalidCastException inEx)
             {
                 throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}"+"It might be cause it is expecting a JObject but we are " +
-                    "trying to cast it to a JArray, but really you should look a little deeper", inEx);
+                    "trying to cast it to a JArray, You should try using FromJsonToObject instead", inEx);
             }
 
             return results;
