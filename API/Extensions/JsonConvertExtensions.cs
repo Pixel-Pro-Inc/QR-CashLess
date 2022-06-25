@@ -55,7 +55,7 @@ namespace API.Extensions
 
 
         /// <summary>
-        /// This takes in the response when it is 'expected' to be a List of objects/Entities
+        /// This takes in the response when it is 'expected' to be returned as List of objects/Entities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
