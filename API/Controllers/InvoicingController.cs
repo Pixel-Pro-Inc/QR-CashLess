@@ -15,7 +15,7 @@ namespace API.Controllers
     When the payments are expected is also up for discussion. Will it be at a specific date, regardless of start time? or will it be different for every 
     manager who opens ( seems ideal for them, not really for us) or will it be at the end of the business month
      */
-    public class InvoicingController : Controller
+    public class InvoicingController : Microsoft.AspNetCore.Mvc.Controller
     {
         public IActionResult Index()
         {

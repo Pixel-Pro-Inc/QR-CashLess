@@ -40,7 +40,7 @@ export class RestaurantBranchComponent implements OnInit {
   }  
 
   getBranches() {
-    this.branchService.getRestBranches('branch/getbranches').subscribe(response => {
+    this.branchService.getRestBranches('/branch/getbranches').subscribe(response => {
 
       console.log(response);
 
