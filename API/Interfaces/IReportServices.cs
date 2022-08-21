@@ -110,5 +110,15 @@ namespace API.Interfaces
         /// <returns></returns>
         public List<Hashtable> GenerateSourcesHashtable(string[] sourceNames, int[] values);
 
+        /// <summary>
+        /// Send email to developers about the ability to stop the branches functionality. Since the bill had already informed them it can terminate
+        /// </summary>
+        public void InformBillToDeveloper();
+        /// <summary>
+        /// Sends the bill as an Email to the debtor
+        /// </summary>
+        public void SendBillToUser();
+
+
     }
 }

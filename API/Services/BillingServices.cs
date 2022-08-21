@@ -168,9 +168,8 @@ namespace API.Services
             wordApp.Visible = true;
 
             // This opens the document using the one within the specified path
-            // TODO: Use environment variables here
             Microsoft.Office.Interop.Word.Document wordDoc = wordApp.Documents
-                .Open(@"C:\Users\cash\OneDrive\business\PixelPro\Products\QRCashless\QRCashlessInvoiceTemplate.docx");
+                .Open(Configuration["templateDocumentDirectories:QRCashlessInvoiceTemplate"]);
 
             // Make a document we can work and edit with
             Microsoft.Office.Interop.Word.Document workingDoc = wordDoc;
@@ -184,7 +183,7 @@ namespace API.Services
             try
             {
                 // TESTING: This is where I expect a file to be generated and analysed for accuracy
-                string folderpath = @"C:\Users\cash\Documents";
+                string folderpath = Configuration["templateDocumentDirectories:folderpath"];
                 string date = DateTime.Today.ToString("dd.MM.yyyy");
                 string fileName = Path.Combine(folderpath, $"PixelPro Invoice-{DateTime.Now.ToPixelProInvoiceFormat() + "0000" + "-00"}", date);
 

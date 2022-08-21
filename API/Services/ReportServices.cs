@@ -328,7 +328,40 @@ namespace API.Services
             hashtable.Add("weight", "-");
             return hashtable;
         }
+
+
         
+        public void InformBillToDeveloper()
+        {
+            // get word document from billingservices
+
+            // turn it into a pdf
+
+            // add pdf to an email
+
+            // TODO: Send email to developers informing of sent bills.
+            throw new NotImplementedException("InformBillToDeveloper() not done");
+        }
+
+        /// <summary>
+        /// Sends the bill as an Email to the debtor
+        /// </summary>
+        public void SendBillToUser()
+        {
+
+            // get word document from billingservices
+
+            // turn it into a pdf
+
+            // add pdf to an email
+
+            // TODO: Send email/ SMS 
+            // TODO: Try merging work from the emailService branch since recent work was done in it
+
+            throw new NotImplementedException("SendBillToUser() not done");
+
+        }
+
 
     }
 }

@@ -17,7 +17,6 @@ namespace API.Services
     public class PhotoService : _BaseService, IPhotoService
     {
         private readonly Cloudinary _cloudinary;
-        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
         //I removed the parameter and use the config, but like, i left it in the comments cause i am not 100% sure it will work, but im pretty confident it will
         // UPDATE: It indeed works but I'm leaving it here so as to track where we are coming from

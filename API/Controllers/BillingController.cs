@@ -28,12 +28,16 @@ namespace API.Controllers
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
         private IBillingServices _billingServices;
         private readonly IAccountService _IAccountService;
+        private IReportServices _reportServices;
 
         // I haven't tested the injection but it should work
-        public BillingController(IBillingServices billingServices,IAccountService accountService, IFirebaseServices firebaseServices):base(firebaseServices)
+        public BillingController(
+            IBillingServices billingServices,IAccountService accountService,
+            IReportServices reportServices ,IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _billingServices = billingServices;
             _IAccountService = accountService;
+            _reportServices = reportServices;
         }
 
         // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.
@@ -79,49 +83,13 @@ namespace API.Controllers
             _billingServices.CreateInvoice();
 
             // TESTING: When done testing the invoice creation remove this
-            //SendBillToUser();
-            //InformBillToDeveloper();
+            //_reportServices.SendBillToUser();
+            //_reportServices.InformBillToDeveloper();
            
             // Now that you are finished with the logic it will set it back to nothing
             await SetParameters(null);
 
             return Ok();
-
-        }
-
-        // TODO: put this in the report service
-        /// <summary>
-        /// Send email to developers about the ability to stop the branches functionality. Since the bill had already informed them it can terminate
-        /// </summary>
-        private void InformBillToDeveloper()
-        {
-            // get word document from billingservices
-
-            // turn it into a pdf
-
-            // add pdf to an email
-
-            // TODO: Send email to developers informing of sent bills.
-            throw new NotImplementedException("InformBillToDeveloper() not done");
-        }
-
-        // TODO: put this in the report service
-        /// <summary>
-        /// Sends the bill as an Email to the debtor
-        /// </summary>
-        private void SendBillToUser()
-        {
-
-            // get word document from billingservices
-
-            // turn it into a pdf
-
-            // add pdf to an email
-
-            // TODO: Send email/ SMS 
-            // TODO: Try merging work from the emailService branch since recent work was done in it
-
-            throw new NotImplementedException("SendBillToUser() not done");
 
         }
 

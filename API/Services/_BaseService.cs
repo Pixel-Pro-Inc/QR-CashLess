@@ -1,4 +1,5 @@
 ﻿using API.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,10 @@ namespace API.Services
     /// </summary>
     public class _BaseService: IBaseService
     {
+        /// <summary>
+        /// This is so Services can access the information found in appsettings 
+        /// </summary>
+        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+
     }
 }

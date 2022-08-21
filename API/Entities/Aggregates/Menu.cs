@@ -15,7 +15,7 @@ namespace API.Entities.Aggregates
             string orderItems = null;
             foreach (MenuItem menuItem in this)
             {
-                orderItems = menuItem.Name + " IdentityFied with " + menuItem.Id.ToString() + "\n" + " Costing:" + Price.ToString();
+                orderItems = menuItem.Name + " IdentityFied with " + menuItem.Id.ToString() + "\n" + " Costing:" + Price.ToString()+"\n\n";
             }
             return orderItems;
         }
