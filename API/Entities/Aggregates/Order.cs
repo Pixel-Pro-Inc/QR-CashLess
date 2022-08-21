@@ -23,18 +23,12 @@ namespace API.Entities.Aggregates
             return orderItems;
         }
 
-        // REFACTOR: Slowly but surely we will phase away the orderItems ability to have these following properties unless EXPLLICITLY needed for critical case
+        // TODO: Have the aggreProperty come back so that we don't have to have these private properties anymore
 
         private string _orderNumber
         {
             get { return _orderNumber == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _orderNumber; }
-            set
-            {
-                if (this.Any())
-                {
-                    _orderNumber = this.First().OrderNumber;
-                }
-            }
+            set { _orderNumber=value; }
         }
         /// <summary>
         /// This is the ordernumber gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -43,19 +37,20 @@ namespace API.Entities.Aggregates
         public string OrderNumber
         {
             get { return _orderNumber; }
-            private set { }
+           init 
+           {
+                if (this.Any())
+                {
+                    _orderNumber = this.First().OrderNumber;
+                }
+            
+            }
         }
 
         private string _user
         {
             get { return _user == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _user; }
-            set
-            {
-                if (this.Any())
-                {
-                    _user = this.First().User;
-                }
-            }
+            set { _user= value; }
         }
         /// <summary>
         /// This is the User as a string (Their name) gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -64,19 +59,19 @@ namespace API.Entities.Aggregates
         public string User
         {
             get { return _user; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _user = this.First().User;
+                }
+            }
         }
 
         private string _reference
         {
             get { return _reference == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _reference; }
-            set
-            {
-                if (this.Any())
-                {
-                    _reference = this.First().Reference;
-                }
-            }
+            set { _reference = value; } 
         }
         /// <summary>
         /// This is the Reference (Where the <see cref="Order"/> came from) gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -85,13 +80,28 @@ namespace API.Entities.Aggregates
         public string Reference
         {
             get { return _reference; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _reference = this.First().Reference;
+                }
+            }
         }
 
-        private DateTime _orderDateTime
+        private DateTime? _orderDateTime
         {
             get { return _orderDateTime == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _orderDateTime; }
-            set
+            set { _orderDateTime = value; }
+        }
+        /// <summary>
+        /// This is the <see cref="DateTime"/> gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
+        /// <para> I also made it Immutable/ReadOnly</para>
+        /// </summary>
+        public DateTime? OrderDateTime
+        {
+            get { return _orderDateTime; }
+            init 
             {
                 if (this.Any())
                 {
@@ -99,20 +109,20 @@ namespace API.Entities.Aggregates
                 }
             }
         }
-        /// <summary>
-        /// This is the <see cref="DateTime"/> gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
-        /// <para> I also made it Immutable/ReadOnly</para>
-        /// </summary>
-        public DateTime OrderDateTime
-        {
-            get { return _orderDateTime; }
-            private set { }
-        }
 
         private float? _price
         {
             get { return _price == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _price; }
-            set
+            set { _price = value; }
+        }
+        /// <summary>
+        /// This is the Price gotten from the adding all the prices of the <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
+        /// <para> I also made it Immutable/ReadOnly</para>
+        /// </summary>
+        public float? Price
+        {
+            get { return _price; }
+            init
             {
                 if (this.Any())
                 {
@@ -123,26 +133,11 @@ namespace API.Entities.Aggregates
                 }
             }
         }
-        /// <summary>
-        /// This is the Price gotten from the adding all the prices of the <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
-        /// <para> I also made it Immutable/ReadOnly</para>
-        /// </summary>
-        public float? Price
-        {
-            get { return _price; }
-            private set { }
-        }
 
         private int? _id
         {
             get { return _id == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _id; }
-            set
-            {
-                if (this.Any())
-                {
-                    _id = this.First().Id;
-                }
-            }
+            set { _id = value; }
         }
         /// <summary>
         /// This is the id gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -151,7 +146,13 @@ namespace API.Entities.Aggregates
         public int? Id
         {
             get { return _id; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _id = this.First().Id;
+                }
+            }
         }
 
         private int? _prepTime
@@ -159,10 +160,7 @@ namespace API.Entities.Aggregates
             get { return _prepTime == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _prepTime; }
             set
             {
-                if (this.Any())
-                {
-                    _prepTime = this.First().PrepTime;
-                }
+                _prepTime = value;
             }
         }
         /// <summary>
@@ -172,19 +170,19 @@ namespace API.Entities.Aggregates
         public int? PrepTime
         {
             get { return _prepTime; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _prepTime = this.First().PrepTime;
+                }
+            }
         }
 
         private bool? _purchased
         {
             get { return _purchased == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _purchased; }
-            set
-            {
-                if (this.Any())
-                {
-                    _purchased = this.First().Purchased;
-                }
-            }
+            set{ _purchased= value; }   
         }
         /// <summary>
         /// This is whether or not the order has been purchased gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -193,19 +191,19 @@ namespace API.Entities.Aggregates
         public bool? Purchased
         {
             get { return _purchased; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _purchased = this.First().Purchased;
+                }
+            }
         }
 
         public string _paymentMethod
         {
             get { return _paymentMethod == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _paymentMethod; }
-            set
-            {
-                if (this.Any())
-                {
-                    _paymentMethod = this.First().PaymentMethod;
-                }
-            }
+            set{ _paymentMethod = value;}
         }
         /// <summary>
         /// This is the payment method gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -214,19 +212,19 @@ namespace API.Entities.Aggregates
         public string PaymentMethod
         {
             get { return _paymentMethod; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _paymentMethod = this.First().PaymentMethod;
+                }
+            }
         }
 
         private bool? _waitingForPayment
         {
             get { return _waitingForPayment == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _waitingForPayment; }
-            set
-            {
-                if (this.Any())
-                {
-                    _waitingForPayment = this.First().WaitingForPayment;
-                }
-            }
+            set{ _waitingForPayment = value; }  
         }
         /// <summary>
         /// This is whether or not the order is still waiting for payment, gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -235,20 +233,20 @@ namespace API.Entities.Aggregates
         public bool? WaitingForPayment
         {
             get { return _waitingForPayment; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _waitingForPayment = this.First().WaitingForPayment;
+                }
+            }
         }
 
 
         private bool? _collected
         {
             get { return _collected == null ? throw new NullReferenceException("There are no OrderItems in this Order") : _collected; }
-            set
-            {
-                if (this.Any())
-                {
-                    _collected = this.First().Collected;
-                }
-            }
+            set{ _collected = value; }  
         }
         /// <summary>
         /// This is whether or not the order is collected, gotten from the first element of <see cref="OrderItem"/>s it has. If it doesn't have an element it throws <see cref="NullReferenceException()"/>
@@ -257,7 +255,13 @@ namespace API.Entities.Aggregates
         public bool? Collected
         {
             get { return _collected; }
-            private set { }
+            init
+            {
+                if (this.Any())
+                {
+                    _collected = this.First().Collected;
+                }
+            }
         }
 
 
