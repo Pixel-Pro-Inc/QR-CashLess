@@ -378,7 +378,7 @@ namespace API.Services
                 {
                     Username = user.UserName
                 };
-                await new BillingController(this,_accountService,_IFirebaseServices).BillSender(dto);
+                await new BillingController(this,_accountService, _reportServices,_IFirebaseServices).BillSender(dto);
 
             }
 
