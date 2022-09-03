@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,12 +23,16 @@ using Microsoft.OpenApi.Models;
 
 namespace API
 {
+    //This is the development Branch. If You see this then you're in the Dev branch. Remeber to always ignore this line in the git push
+    //Development
+    // TODO: View Order Button Render On Top Of Evedrything. If you need futher clarifaction ask yewo, mans never says what he is trying to do
     public class Startup
     {
         private readonly IConfiguration _config;
 
         public Startup(IConfiguration config)
         {
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
             _config = config;
         }
 
@@ -37,7 +42,7 @@ namespace API
             services.AddApplicationServices(_config);
 
             services.AddControllers();
-            services.AddCors();
+            services.AddCors();           
 
             services.AddIdentityServices(_config);
 
@@ -47,7 +52,7 @@ namespace API
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline. It's chronologically sensitive so you can't just put anything any how
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment() || env.IsStaging())
@@ -63,7 +68,10 @@ namespace API
 
             app.UseHttpsRedirection();
 
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(x => x.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true)
+                    .AllowCredentials());
 
             app.UseAuthentication();
 
@@ -80,3 +88,5 @@ namespace API
         }
     }
 }
+// TODO: These are the links for the Dark and light mode https://betterprogramming.pub/turn-off-the-lights-with-angular-dark-mode-194241f491ae
+// https://pkief.medium.com/automatic-dark-mode-detection-in-angular-material-8342917885a0 They should help you set up things easy

@@ -14,7 +14,7 @@
             "request": "launch",
             // Make sure you configure task.json for this to work properly
             "preLaunchTask": "npm: start",
-            "url": "https://localhost:4200/billing",
+            "url": "https://localhost:4200/admin-portal",
             //We use userProfile cause we want our changes to be saved
             "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
             "webRoot": "${workspaceFolder}"
@@ -26,7 +26,7 @@
             "type": "pwa-msedge",
             "request": "launch",
             "name": "Launch Edge against localhost- Please start serving first",
-            "url": "https://localhost:4200/billing",
+            "url": "https://localhost:4200/admin-portal",
             "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
             "webRoot": "${workspaceFolder}"
           },
@@ -37,7 +37,7 @@
             "name": "Non-sync clear Chrome",
             "type": "chrome",
             "request": "launch",
-            "url": "https://localhost:4200/billing",
+            "url": "https://localhost:4200/admin-portal",
             "webRoot": "${workspaceFolder}"
         },
         

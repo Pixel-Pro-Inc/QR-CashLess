@@ -27,11 +27,17 @@ namespace API.Controllers
     {
         // The service to calcutate all the business logic with. Noone but this controller should acess this so its private
         private IBillingServices _billingServices;
+        private readonly IAccountService _IAccountService;
+        private IReportServices _reportServices;
 
         // I haven't tested the injection but it should work
-        public BillingController(IBillingServices billingServices, IFirebaseServices firebaseServices):base(firebaseServices)
+        public BillingController(
+            IBillingServices billingServices,IAccountService accountService,
+            IReportServices reportServices ,IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _billingServices = billingServices;
+            _IAccountService = accountService;
+            _reportServices = reportServices;
         }
 
         // NOTE: Within BillingServices there is a method that is to be called automatically that calls this method.
@@ -59,7 +65,7 @@ namespace API.Controllers
         public async Task<IActionResult> BillSender (BilledUserDto BillingDto)
         {
             //Sets the parameters to do the billing logic with
-             await SetParameters(BillingDto);
+            await SetParameters(BillingDto);
 
             // Checks if the time to send is not now
             if (!_billingServices.isPastDueDate(System.DateTime.Now))
@@ -77,49 +83,13 @@ namespace API.Controllers
             _billingServices.CreateInvoice();
 
             // TESTING: When done testing the invoice creation remove this
-            //SendBillToUser();
-            //InformBillToDeveloper();
+            //_reportServices.SendBillToUser();
+            //_reportServices.InformBillToDeveloper();
            
             // Now that you are finished with the logic it will set it back to nothing
             await SetParameters(null);
 
             return Ok();
-
-        }
-
-        // TODO: put this in the report service
-        /// <summary>
-        /// Send email to developers about the ability to stop the branches functionality. Since the bill had already informed them it can terminate
-        /// </summary>
-        private void InformBillToDeveloper()
-        {
-            // get word document from billingservices
-
-            // turn it into a pdf
-
-            // add pdf to an email
-
-            // TODO: Send email to developers informing of sent bills.
-            throw new NotImplementedException("InformBillToDeveloper() not done");
-        }
-
-        // TODO: put this in the report service
-        /// <summary>
-        /// Sends the bill as an Email to the debtor
-        /// </summary>
-        private void SendBillToUser()
-        {
-
-            // get word document from billingservices
-
-            // turn it into a pdf
-
-            // add pdf to an email
-
-            // TODO: Send email/ SMS 
-            // TODO: Try merging work from the emailService branch since recent work was done in it
-
-            throw new NotImplementedException("SendBillToUser() not done");
 
         }
 
@@ -143,11 +113,12 @@ namespace API.Controllers
         private async Task SetParameters(BilledUserDto BillingDto)
         {
             // Gets the user by the username
-            AppUser appUser = await _firebaseServices.GetUser(BillingDto.Username);
+            AppUser appUser = await _IAccountService.GetUser(BillingDto.Username);
 
             // REFACTOR: Figure out a way to coalesce the parameter setting in the service to include Sms as well I could put in the service but it was easier to put it here
             // Gets the sms sent by the branch.
-            List<SMS> Smses = await _firebaseServices.GetSMSinBranch();
+            // TESTING: Removing this to test the doc creation proper
+            //List<SMS> Smses = await _firebaseServices.GetSMSinBranch();
 
             try 
             { 
@@ -155,7 +126,7 @@ namespace API.Controllers
                 _billingServices.SetCurrentDate(System.DateTime.Today);
                 // FIXME: 655 orders is too large so I will dealwith this later
                 //_billingServices.SetSalesinUsersBranch();
-                _billingServices.SetSMSSent(Smses);
+                //_billingServices.SetSMSSent(Smses);
             }
             catch (UnBillableUserException)
             {

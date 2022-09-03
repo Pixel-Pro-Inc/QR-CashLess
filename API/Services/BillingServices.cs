@@ -20,17 +20,19 @@ namespace API.Services
     /// This is service that will calculate all the necessary information that needs to be sent to and fro the debtor.
     /// It will deal with all the billing buisness logic.
     /// </summary>
-    public class BillingServices : IBillingServices
+    public class BillingServices : _BaseService, IBillingServices
     {
         IFirebaseServices _IFirebaseServices;
         private readonly IMapper _mapper;
         private readonly IReportServices _reportServices;
+        private readonly IAccountService _accountService;
 
-        public BillingServices(IFirebaseServices firebaseServices, IMapper mapper, IReportServices reportServices)
+        public BillingServices(IFirebaseServices firebaseServices, IMapper mapper, IReportServices reportServices, IAccountService accountService)
         {
             _IFirebaseServices = firebaseServices;
             _mapper = mapper;
             _reportServices = reportServices;
+            _accountService = accountService;
         }
 
         #region Properties
@@ -166,9 +168,8 @@ namespace API.Services
             wordApp.Visible = true;
 
             // This opens the document using the one within the specified path
-            // TODO: Use environment variables here
             Microsoft.Office.Interop.Word.Document wordDoc = wordApp.Documents
-                .Open(@"C:\Users\cash\OneDrive\business\PixelPro\Products\QRCashless\QRCashlessInvoiceTemplate.docx");
+                .Open(Configuration["templateDocumentDirectories:QRCashlessInvoiceTemplate"]);
 
             // Make a document we can work and edit with
             Microsoft.Office.Interop.Word.Document workingDoc = wordDoc;
@@ -182,7 +183,7 @@ namespace API.Services
             try
             {
                 // TESTING: This is where I expect a file to be generated and analysed for accuracy
-                string folderpath = @"C:\Users\cash\Documents";
+                string folderpath = Configuration["templateDocumentDirectories:folderpath"];
                 string date = DateTime.Today.ToString("dd.MM.yyyy");
                 string fileName = Path.Combine(folderpath, $"PixelPro Invoice-{DateTime.Now.ToPixelProInvoiceFormat() + "0000" + "-00"}", date);
 
@@ -358,7 +359,7 @@ namespace API.Services
         {
             List<AdminUser> OwingUsers = new List<AdminUser>();
 
-            List<AdminUser> adminUsers = await _IFirebaseServices.GetAdminAccounts();
+            List<AdminUser> adminUsers = await _accountService.GetAdminAccounts();
             // Collects all the users who owe 
             foreach (var user in adminUsers)
             {
@@ -377,7 +378,7 @@ namespace API.Services
                 {
                     Username = user.UserName
                 };
-                await new BillingController(this,_IFirebaseServices).BillSender(dto);
+                await new BillingController(this,_accountService, _reportServices,_IFirebaseServices).BillSender(dto);
 
             }
 

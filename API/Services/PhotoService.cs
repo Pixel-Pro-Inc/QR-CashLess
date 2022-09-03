@@ -14,21 +14,17 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public class PhotoService : IPhotoService
+    public class PhotoService : _BaseService, IPhotoService
     {
         private readonly Cloudinary _cloudinary;
-        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
         //I removed the parameter and use the config, but like, i left it in the comments cause i am not 100% sure it will work, but im pretty confident it will
+        // UPDATE: It indeed works but I'm leaving it here so as to track where we are coming from
+        // REFACTOR: We might need to change this Configuration to use environment variables
         public PhotoService(/*IOptions<CloudinarySettings> config*/)
         {
             var acc = new Account
                 (
-                /*
-                 config.Value.CloudName,
-                config.Value.ApiKey,
-                config.Value.ApiSecret
-                 */
                 Configuration["CloudinarySettings:CloudName"],
                 Configuration["CloudinarySettings:ApiKey"],
                 Configuration["CloudinarySettings:ApiSecret"]

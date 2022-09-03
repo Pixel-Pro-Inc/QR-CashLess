@@ -1,26 +1,21 @@
-<div class="text-center login-form-2">
-  <div class="text-center">
-      <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10" 
-      alt="logo"
-      width="300"
-      class="mt-5"/>
+<body style="min-height: calc(100vh - (var(--footbar-height) + var(--navbar-height)));">
+  <div style="opacity: 0">Sign in</div>
+  <div class="login-card mt-2">
+    <div class="mb-2 text-center">
+      <img src="assets/Images/rodizio_express_logo.png" height="60px">
+    </div>
+    <p class="login-card-description">Sign into your account</p>
+    <form [formGroup]='signinForm' (ngSubmit)="signinForm.valid && signin()" style="width: 326px">
+      <div class="form-group">
+        <label for="username" class="sr-only">Username</label>
+        <app-text-input [type]="'text'" id="'username" [formControl]='signinForm.controls["username"]' [label]='"username"' [placeholder]='"Username"'></app-text-input>
+      </div>
+      <div class="form-group">
+        <label for="password" class="sr-only">Password</label>
+        <app-text-input [type]="'password'" id="'password'" [formControl]='signinForm.controls["password"]' [label]='"password"' [placeholder]='"*************"'></app-text-input>
+      </div>
+      <input name="login" id="login" class="btn btn-block login-btn mb-4" type="submit" value="Login">
+    </form>
+    <a routerLink="/password/reset" class="forgot-password-link">Forgot password?</a>
   </div>
-
-  <h3>Login</h3>
-  <form #registerForm="ngForm" (ngSubmit)="login()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
-    <hr>
-    <div class="form-group">
-      <input type="text" class="form-control" name="username"
-             [(ngModel)]="model.username" placeholder="Username">
-    </div>
-    <div class="form-group">
-      <input type="password" class="form-control" name="password"
-             [(ngModel)]="model.password" placeholder="Password">
-    </div>
-    <div class="form-group text-center">
-      <button class="btn btn-success mr-2" type="submit">Sign in</button>
-    </div>
-
-    <a href="#" class="btnForgetPwd" value="Login">Forgot your password?</a>
-  </form>    
-</div>
+</body>

@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Entities.Aggregates;
 using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace API.Controllers
         #region Create Order Item
 
         [HttpPost("createorder/{branchId}")]
-        public async Task<ActionResult<List<OrderItem>>> CreateOrder(List<OrderItem> orderItems, string branchId)
+        public async Task<ActionResult<Order>> CreateOrder(Order orderItems, string branchId)
         {
             int x = await GetOrderNum(branchId);
 
@@ -49,37 +50,40 @@ namespace API.Controllers
         }
         public async Task<int> GetOrderNum(string branchId)
         {
-            List<OrderItem> orders = await _firebaseServices.GetOrders(branchId);
+            List<OrderNumber> ordersNumbersResult = await _firebaseServices.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
+
+            List<string> oNumbersAssigned = new List<string>();
+
+            if (ordersNumbersResult.Count > 0)
+                oNumbersAssigned = ordersNumbersResult[0].OrderNumbers;
+
+            string d = DateTime.Now.Day.ToString("00") + "-" + DateTime.Now.Month.ToString("00") + "-"
+                    + DateTime.Now.Year.ToString("0000");
+
+            bool clearList = false;
+
+            foreach (var oNumber in oNumbersAssigned)
+            {
+                if(oNumber.Substring(0, 10) != d)
+                {
+                    clearList = true;
+                }
+            }
+
+            if(clearList)
+                oNumbersAssigned.Clear();
 
             int candidateNumber = new Random().Next(1000, 9999);
 
             //Check Against Other Order Numbers For The Day
-            List<int> orderNums = new List<int>();
-
-            for (int i = 0; i < orders.Count; i++)
-            {
-                //Only 4 digit numbers
-
-                string orderNum = orders[i].OrderNumber;
-
-                int n = orderNum.IndexOf('_');
-
-                string date = orderNum.Remove(n, 5);
-
-                string number = orderNum.Remove(0, n + 1);
-
-                string dateToday = DateTime.Now.ToPixelProDashFormat();
-
-                if (date == dateToday)
-                {
-                    orderNums.Add((Int32.Parse(number)));
-                }
-            }
-
-            while (orderNums.Contains(candidateNumber))
+            while (oNumbersAssigned.Contains(d + "_" + candidateNumber))
             {
                 candidateNumber = new Random().Next(1000, 9999);
             }
+
+            oNumbersAssigned.Add(d + "_" + candidateNumber);
+
+            _firebaseServices.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
 
             return candidateNumber;
         }

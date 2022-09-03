@@ -1,8 +1,6 @@
-<body>
-    <div class="text-center m-5">
-        <img src="https://firebasestorage.googleapis.com/v0/b/rodizoapp.appspot.com/o/Website%20Assets%2FRodizioExpressLogo.png?alt=media&token=797fd035-c84d-4f96-8b38-f0ec238e4d10"
-    alt="logo"
-    style="width: 200px;">
+<body style="min-height: calc(100vh - (var(--footbar-height) + var(--navbar-height)));">
+    <div class="text-center">
+        <img src="assets/Images/rodizio_express_logo.png" alt="logo" style="width: 200px; padding-top: 2rem;">
     </div>
     
     <h6 class="text-center mb-3 mt-2 ml-4 mr-4">{{title}}</h6>
@@ -10,7 +8,7 @@
     <div class="list-group ml-2 mr-2">
         <ng-container *ngFor="let branch of RestBranches">
             <a (click)="onClick(branch)" class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                <img *ngIf="branch.img != null" src="{{branch.img}}" width="100" alt="location">
+                <img *ngIf="branch.img != null" src="{{branch.img}}" width="100" height="100" alt="location">
                 <div class="d-flex">
                     <div>
                         <h4 class="mb-0">{{branch.name}}</h4>
@@ -21,6 +19,10 @@
                         <ng-container *ngIf="getStatus(branch) != 'Online order available.'">
                             <b class="text-warning opacity-50 text-nowrap">{{getStatus(branch)}}</b>
                         </ng-container>
+                        <div class="d-flex">
+                            <b class="mr-3"><span class="text-success">Opens -</span> {{branch.openingTime}}</b>
+                            <b><span class="text-danger">Closes -</span> {{branch.closingTime}}</b>
+                        </div>                        
                     </div>                
                 </div>
               </a>

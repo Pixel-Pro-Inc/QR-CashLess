@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using API.Entities;
+using API.Entities.Aggregates;
+using API.Exceptions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,27 +16,25 @@ namespace API.Extensions
     /// </summary>
     public static class JsonConvertExtensions
     {
-        // NOTE: For example it will be used like , AppUser response = await _firebaseDataContext.GetData(dir).FromJsonToObject<AppUser>()
-        // NOTE: firebase response usually comes out as a list of objects
         /// <summary>
-        /// This is to be used of firebaseResponses to convert them to the correct type we want
+        /// This takes a response and changes its to the desired types. It is used when we 'expect' to have an aggregate returned to us
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
         /// <returns> A list of type <typeparamref name="T"/></returns>
-        public static List<T> FromJsonToObject<T>(this List<object> source)
+        public static List<T> FromJsonToObjectArray<T>(this List<object> source)
        where T : class, new()
         {
-            int count =source.Count;
             List<T> results = new List<T>();
             try
             {
                 for (int i = 0; i < source.Count; i++)
                 {
-                    T item = JsonConvert.DeserializeObject<T>(((JObject)source[i]).ToString());
+                    T item = JsonConvert.DeserializeObject<T>(((JArray)source[i]).ToString());
                     // This adds the deserialized list in the format into the type we are returning
                     results.Add(item);
                 }
+
             }
             catch (JsonSerializationException jsEx)
             {
@@ -45,25 +46,31 @@ namespace API.Extensions
             }
             catch (InvalidCastException inEx)
             {
-                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}", inEx);
+                throw new FailedToConvertFromJson($" The Extension failed to convert {results[results.Count]} to {typeof(T)}"+"It might be cause it is expecting a JObject but we are " +
+                    "trying to cast it to a JArray, You should try using FromJsonToObject instead", inEx);
             }
 
             return results;
         }
 
+
         /// <summary>
-        /// This is an overload that takes in the response when it is a single json object
+        /// This takes in the response when it is 'expected' to be returned as List of objects/Entities
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
         /// <returns> A list of type <typeparamref name="T"/></returns>
-        public static T FromJsonToObject<T>(this object source)
+        public static List<T> FromJsonToObject<T>(this List<object> source)
       where T : class, new()
         {
-            T result = new T();
+            List<T> result = new List<T>();
             try
             {
-                result= JsonConvert.DeserializeObject<T>(((JObject)source).ToString());
+                for (int i = 0; i < source.Count; i++)
+                {
+                    result.Add(JsonConvert.DeserializeObject<T>(((JObject)source[i]).ToString()));
+                }
+                
             }
             catch (JsonSerializationException jsEx)
             {
@@ -72,6 +79,11 @@ namespace API.Extensions
             catch (InvalidCastException inEx)
             {
                 throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}", inEx);
+            }
+            catch(Exception ex)
+            {
+                throw new FailedToConvertFromJson($" The Extension failed to convert {result} to {typeof(T)}. This is most probably cause you gave it an aggregate instead of " +
+                    $"and entity. ", ex);
             }
 
             return result;

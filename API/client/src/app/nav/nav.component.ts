@@ -24,6 +24,7 @@ export class NavComponent implements OnInit {
     this.accountService.currentUser$.subscribe(
       response => {
         this.user = response;
+        
         if (this.user != null)
         {
           if (this.user.admin) {

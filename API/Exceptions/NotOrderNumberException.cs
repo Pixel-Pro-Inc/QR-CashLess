@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace API.Extensions
+namespace API.Exceptions
 {
     /// <summary>
     ///  This should be thrown when the string you give isn't in the correct OrderNumber format or is not at all even and OrderNumber
-    ///  <para> Check <see cref="DateTimeFormatExtensions.FromPixelProOrderNumbertoDateFormat(string)"/> for reference on the format</para>
+    ///  <para> Check <see cref="FormatExtensions.FromPixelProOrderNumbertoDateFormat(string)"/> for reference on the format</para>
     /// </summary>
     [Serializable]
     internal class NotOrderNumberException : Exception

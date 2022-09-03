@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace API.Services
 {
-    public class TokenService : ITokenService
+    public class TokenService : _BaseService, ITokenService
     {
         private readonly SymmetricSecurityKey _key;
 

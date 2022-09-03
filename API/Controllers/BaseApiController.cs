@@ -18,7 +18,7 @@ namespace API.Controllers
     //[ServiceFilter(typeof(LogUserActivity))]
     [ApiController]
     [Route("api/[controller]")]
-    public class BaseApiController : Controller
+    public class BaseApiController : Microsoft.AspNetCore.Mvc.Controller
     {
         // OBSOLETE: We are phasing this out to use firebaseServices
         //protected readonly FirebaseDataContext _firebaseDataContext;
