@@ -24,7 +24,8 @@ namespace API.Controllers
         //protected readonly FirebaseDataContext _firebaseDataContext;
 
         protected readonly IFirebaseServices _firebaseServices;
-        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true).Build();
         protected static readonly HttpClient client = new HttpClient();
 
         public BaseApiController(IFirebaseServices firebaseServices)
