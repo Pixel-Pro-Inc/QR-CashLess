@@ -49,17 +49,13 @@ export class RestaurantBranchComponent implements OnInit {
       let user: User;
       user = JSON.parse(localStorage.getItem('user'));
 
-      if(user != null){
-        if(user.admin){  
-          for (let i = 0; i < result.length; i++) {            
-            if(user.branchId.includes(result[i].id)){
-              this.RestBranches.push(result[i]);
-            }
-          }      
-        }
-        else{
-          this.RestBranches = response;
-        }
+      //Checks if user is an admin. UPDATE: There were other conditions that were redundant so I removed them
+      if(user.admin){
+        for (let i = 0; i < result.length; i++) {            
+          if(user.branchId.includes(result[i].id)){
+            this.RestBranches.push(result[i]);
+          }
+        }   
       }
       else{
         this.RestBranches = response;

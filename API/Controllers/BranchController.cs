@@ -75,6 +75,7 @@ namespace API.Controllers
         List<int> GetPhoneNumbers_Int(List<string> numbers)
         {
             List<int> phoneNumbers = new List<int>();
+            if(numbers==null) return null;
             foreach (var number in numbers)
             {
                 phoneNumbers.Add(Int32.Parse(number));
@@ -85,6 +86,7 @@ namespace API.Controllers
         List<string> GetPhoneNumbers_String(List<int> numbers)
         {
             List<string> phoneNumbers = new List<string>();
+            if (numbers == null) return null;
             foreach (var number in numbers)
             {
                 phoneNumbers.Add(number.ToString());
@@ -199,10 +201,8 @@ namespace API.Controllers
 
             var publicHolidays = DateSystem.GetPublicHolidays(currentDateTime.Year, CountryCode.BW);
 
-            DateTime dateTime = new DateTime();
-
             //Get time for day of week
-            dateTime = dateTimes[GetDayOfWeek(currentDateTime.DayOfWeek)];
+            DateTime dateTime = dateTimes==null?new DateTime(): dateTimes[GetDayOfWeek(currentDateTime.DayOfWeek)];
 
             //If is public holiday set to last item in array
             foreach (var item in publicHolidays)
@@ -239,10 +239,8 @@ namespace API.Controllers
 
             var publicHolidays = DateSystem.GetPublicHolidays(tomorrowDateTime.Year, CountryCode.BW);
 
-            DateTime dateTime = new DateTime();
-
             //Get time for day of week
-            dateTime = dateTimes[GetDayOfWeek(tomorrowDateTime.DayOfWeek)];
+            DateTime dateTime = dateTimes == null ? new DateTime() : dateTimes[GetDayOfWeek(tomorrowDateTime.DayOfWeek)];
 
             //If is public holiday set to last item in array
             foreach (var item in publicHolidays)

@@ -26,6 +26,32 @@
                 "/Views": "${workspaceFolder}/Views"
             }
         },
+         /*
+        This is a config so that you can launch chrome. The profile is synced and you don't
+        have to fire ng first. It does that automatically
+         */
+         {
+            "name": "Launch ng s & Chrome",
+            "type": "chrome",
+            "request": "launch",
+            // Make sure you configure task.json for this to work properly
+            "preLaunchTask": "npm: start",
+            "url": "https://localhost:4200/",
+            //We use userProfile cause we want our changes to be saved
+            "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
+            "webRoot": "${workspaceFolder}"
+        },
+        /*
+        This is a config so that you can launch edge. The profile is synced
+         */
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Launch Edge against localhost- Please start serving first",
+            "url": "https://localhost:4200/",
+            "userDataDir": "${env:UserProfile}/.vscode/vscode-chrome-debug-userdatadir",
+            "webRoot": "${workspaceFolder}"
+          },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",

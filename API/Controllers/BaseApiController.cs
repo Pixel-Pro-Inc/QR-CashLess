@@ -20,8 +20,9 @@ namespace API.Controllers
     public class BaseApiController : Controller
     {
         protected readonly FirebaseDataContext _firebaseDataContext;
-        // REFACTOR: yet another instance of config that may need changing. This one is kinda important since this is the base API config used in all other controllers
-        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+
+        protected static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true).Build();
         protected static readonly HttpClient client = new HttpClient();
 
         public BaseApiController()
