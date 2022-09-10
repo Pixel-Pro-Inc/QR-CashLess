@@ -15,7 +15,8 @@ namespace API.Services
         /// <summary>
         /// This is so Services can access the information found in appsettings 
         /// </summary>
-        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+        static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true).Build();
 
     }
 }
