@@ -38,7 +38,7 @@ namespace API.Infrastructure.Controllers
 
             for (int i = 0; i < eligibleOrders.Count; i++)
             {
-                OrderNumbers.Add(Format.OrderNumber(eligibleOrders[i][0].OrderNumber));
+                OrderNumbers.Add(eligibleOrders[i][0].OrderNumber.OrderNumber());
             }
 
             for (int i = 0; i < eligibleOrders.Count; i++)
@@ -55,7 +55,7 @@ namespace API.Infrastructure.Controllers
 
             for (int i = 0; i < totals.Count; i++)
             {
-                totalSalesDto.Add(new SalesDto() { OrderNumber = OrderNumbers[i], OrderRevenue = Format.AmountToString(totals[i]) });
+                totalSalesDto.Add(new SalesDto() { OrderNumber = OrderNumbers[i], OrderRevenue = totals[i].AmountToString() });
             }
 
             return totalSalesDto;
@@ -92,7 +92,7 @@ namespace API.Infrastructure.Controllers
 
                 // Checks if the invoiceNumber is the same as the orderNumber and give the Ordernumber to itself or formats it correctly
                 item[0].OrderNumber = x.Substring(x.IndexOf('_') + 1, 4) == reportDto.Invoice ?
-                    reportDto.Invoice : item[0].OrderNumber = Format.OrderNumber(item[0].OrderNumber);
+                    reportDto.Invoice : item[0].OrderNumber = item[0].OrderNumber.OrderNumber();
                 item[0].Description = x.Substring(0, 10).Replace('-', '/');
                 temp.Add(_reportServices.GetWeightByQuantity(item));
             }
@@ -101,7 +101,7 @@ namespace API.Infrastructure.Controllers
             {
                 foreach (var x in item)
                 {
-                    x.Price = Format.AmountToString(float.Parse(x.Price));
+                    x.Price = float.Parse(x.Price).AmountToString();
                 }
             }
 
@@ -112,7 +112,7 @@ namespace API.Infrastructure.Controllers
         public async Task<ActionResult<SalesDto>> GetSummarySales(ReportDto reportDto)
         {
             //Gets the total Sales in the time period set in the ReportDto
-            string total = Format.AmountToString( await _reportServices.GetSalesAmountinTimePeriod(reportDto));
+            string total = (await _reportServices.GetSalesAmountinTimePeriod(reportDto)).AmountToString();
 
             SalesDto sales = new SalesDto()
             {
@@ -167,7 +167,7 @@ namespace API.Infrastructure.Controllers
             string metricname = "sales";
             int sales = TwoMonthOrders.ThisMonthorders.Count;
             float difference = thisMonthratePerDay - lastMonthratePerDay;
-            string change = Format.AmountToString(Math.Abs(thisMonthratePerDay / lastMonthratePerDay) * 100f);
+            string change = (Math.Abs(thisMonthratePerDay / lastMonthratePerDay) * 100f).AmountToString();
 
             return _reportServices.GenerateReportHashtable(metricname, sales, difference, change);
         }
@@ -190,7 +190,7 @@ namespace API.Infrastructure.Controllers
 
             float percentageChange = (float)absDifference / (float)TwoMonthRevenue.LastMonthRevenue;
 
-            return _reportServices.GenerateReportHashtable("revenue", TwoMonthRevenue.ThisMonthRevenue, absDifference, Format.AmountToString(percentageChange* 100f));
+            return _reportServices.GenerateReportHashtable("revenue", TwoMonthRevenue.ThisMonthRevenue, absDifference, (percentageChange * 100f).AmountToString());
         }
         [Authorize]
         [HttpGet("sales/thismonth/averagevolume/{id}")]
@@ -214,7 +214,7 @@ namespace API.Infrastructure.Controllers
 
             float percentageChange = absDifference / avgOrdersPast;
 
-            return _reportServices.GenerateReportHashtable("averagesales", avgOrdersCurrent, absDifference, Format.AmountToString(percentageChange * 100f));
+            return _reportServices.GenerateReportHashtable("averagesales", avgOrdersCurrent, absDifference, (percentageChange * 100f).AmountToString());
         }
         [Authorize]
         [HttpGet("sales/thismonth/averagerevenue/{id}")]
@@ -245,7 +245,7 @@ namespace API.Infrastructure.Controllers
 
             float percentageChange = (float)absDifference / (float)avgRevOrdersPast;
 
-            return _reportServices.GenerateReportHashtable("averagerevenue", avgRevOrdersCurrent, absDifference, Format.AmountToString(percentageChange * 100f));
+            return _reportServices.GenerateReportHashtable("averagerevenue", avgRevOrdersCurrent, absDifference, (percentageChange * 100f).AmountToString());
         }
         [Authorize]
         [HttpGet("sales/thismonth/averageitems/{id}")]
@@ -283,7 +283,7 @@ namespace API.Infrastructure.Controllers
 
             float percentageChange = (float)absDifference / (float)avgItemsOrdersPast;
 
-            return _reportServices.GenerateReportHashtable("averageitems", avgItemsOrdersCurrent, absDifference, Format.AmountToString(percentageChange * 100f));
+            return _reportServices.GenerateReportHashtable("averageitems", avgItemsOrdersCurrent, absDifference, (percentageChange * 100f).AmountToString());
         }
         [Authorize]
         [HttpGet("sales/thismonth/ordersource/{id}")]
@@ -344,7 +344,7 @@ namespace API.Infrastructure.Controllers
 
             float percentageChange = (float)absDifference / (float)TwoMonthRevenue.LastMonthRevenue;
 
-            return _reportServices.GenerateReportHashtable("revenue", TwoMonthRevenue.ThisMonthRevenue, absDifference, Format.AmountToString(percentageChange * 100f));
+            return _reportServices.GenerateReportHashtable("revenue", TwoMonthRevenue.ThisMonthRevenue, absDifference, (percentageChange * 100f).AmountToString());
         }
 
 

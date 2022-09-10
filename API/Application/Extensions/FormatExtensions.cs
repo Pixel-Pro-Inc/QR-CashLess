@@ -1,5 +1,6 @@
 ﻿using API.Application.Exceptions;
 using System;
+using System.Collections.Generic;
 
 namespace API.Application.Extensions
 {
@@ -90,7 +91,38 @@ namespace API.Application.Extensions
                 .AddMinutes(-1);
         }
 
-      
+        /// <summary>
+        /// Takes a list of string and makes them into a single string.
+        /// It just uses the index of the string in the list and adds it respectively
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string ListToString(this List<string> input)
+        {
+            string x = "";
+
+            foreach (var item in input)
+            {
+                x += input.IndexOf(item) == 0 ? item : ", " + item;
+            }
+
+            return x;
+        }
+        /// <summary>
+        /// Takes a full invoiceNumber of an order and returns just the specific order number
+        /// </summary>
+        /// <param name="OrderNumber"></param>
+        /// <returns> Actual order number</returns>
+        public static string OrderNumber(this string OrderNumber) => OrderNumber.Substring(OrderNumber.IndexOf('_') + 1, 4);
+
+        /// <summary>
+        /// Takes an <paramref name="amount"/> and format it as a string as such: 1,000,000.00
+        /// </summary>
+        /// <param name="amount"></param>
+        /// <returns></returns>
+        public static string AmountToString(this float amount) => String.Format("{0:n}", amount);
+
+
 
 
     }

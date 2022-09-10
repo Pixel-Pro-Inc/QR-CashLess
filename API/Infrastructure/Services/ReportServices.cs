@@ -93,7 +93,7 @@ namespace API.Infrastructure.Services
                     new PaymentDto()
                     {
                         Method = paymentTypes[i],
-                        Amount = Format.AmountToString(amountList[i])
+                        Amount = amountList[i].AmountToString()
                     });
             }
             return paymentDtos;
@@ -307,9 +307,9 @@ namespace API.Infrastructure.Services
         private Hashtable GenerateOrderHashtable(OrderItem item)
         {
             Hashtable hashtable = new Hashtable();
-            hashtable.Add("orderNumber", Format.OrderNumber(item.OrderNumber));
+            hashtable.Add("orderNumber", item.OrderNumber.OrderNumber());
             hashtable.Add("itemName", item.Name);
-            hashtable.Add("orderRevenue", Format.AmountToString(float.Parse(item.Price)));
+            hashtable.Add("orderRevenue", (float.Parse(item.Price)).AmountToString());
             hashtable.Add("quantity", item.Quantity);
 
             if (!string.IsNullOrEmpty(item.Weight))

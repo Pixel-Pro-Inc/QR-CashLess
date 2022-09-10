@@ -174,7 +174,7 @@ namespace API.Infrastructure.Services
 
                         if (data.Key == "Chefs" || data.Key == "Sauces")
                         {
-                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : Format.ListToString((List<string>)data.Value), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
+                            ex.WriteToCell(rowCount, x, data.Value == null ? "-" : ((List<string>)data.Value).ListToString(), worksheetName);// writes data to excel cell using row and column as reference (row, column, data)
                             continue;
                         }
                         if (fields[x].ToLower() == "ordernumber")
