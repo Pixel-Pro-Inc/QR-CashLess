@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using API.Entities;
 using API.Services;
 
-namespace API.Exceptions
+namespace API.Application.Exceptions
 {
     /// <summary>
     /// This is thrown when a <see cref="AppUser"/> is found not to be a <see cref="AdminUser"/> type.

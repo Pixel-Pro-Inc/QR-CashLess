@@ -1,11 +1,10 @@
 ﻿using API.Controllers;
-using API.DTOs;
 using System;
 using System.Collections.Generic;
 using RodizioSmartKernel.Entities;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;
 
-namespace API.Interfaces
+namespace API.Application.Interfaces
 {
     /// <summary>
     /// Interface for the BillingService. 

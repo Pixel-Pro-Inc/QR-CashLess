@@ -1,8 +1,8 @@
-﻿using API.DTOs;
-using API.Exceptions;
-using API.Extensions;
-using API.Helpers;
-using API.Interfaces;
+﻿using API.Application.DTOs;
+using API.Application.Exceptions;
+using API.Application.Extensions;
+using API.Application.Helpers;
+using API.Application.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities;
@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class ReportServices : IReportServices
     {

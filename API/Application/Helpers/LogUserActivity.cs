@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using API.Extensions;
+using API.Application.Extensions;
 using API.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Helpers
+namespace API.Application.Helpers
 {
     public class LogUserActivity// : IAsyncActionFilter
     {

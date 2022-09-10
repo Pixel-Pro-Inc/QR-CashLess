@@ -1,20 +1,18 @@
-﻿using API.DTOs;
-using API.Interfaces;
-using API.Helpers;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.Extensions;
 using RodizioSmartKernel.Entities.Aggregates;
 using RodizioSmartKernel.Entities;
+using API.Application.Interfaces;
+using API.Application.DTOs;
+using API.Application.Helpers;
+using API.Application.Extensions;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class ReportController : BaseApiController
     {

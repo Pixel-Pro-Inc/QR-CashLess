@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace API.Extensions
+namespace API.Application.Extensions
 {
     public static class ObjectExtensions
     {

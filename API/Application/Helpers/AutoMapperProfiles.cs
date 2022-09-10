@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using RodizioSmartKernel.Entities;
 
-namespace API.Helpers
+namespace API.Application.Helpers
 {
     /// <summary>
     /// This is the class that will define our Mapping preferences in what is called <see cref="Profile"/>

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using API.DTOs;
-using API.Entities;
-using API.Interfaces;
+using API.Application.DTOs;
+using API.Application.Interfaces;
+using API.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities;
 using RodizioSmartKernel.Entities.Aggregates;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class MenuController : BaseApiController
     {

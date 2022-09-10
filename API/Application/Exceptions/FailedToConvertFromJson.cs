@@ -4,8 +4,7 @@ using RodizioSmartKernel.Entities.Aggregates;
 using API.Interfaces;
 using API.Extensions;
 
-
-namespace API.Exceptions
+namespace API.Application.Exceptions
 {
     /// <summary>
     /// This should be thrown in the <see cref="JsonConvertExtensions"/> when trying to convert a list of objects/ object to the appropriate type

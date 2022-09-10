@@ -1,6 +1,6 @@
-﻿using API.DTOs;
-using API.Entities;
-using API.Interfaces;
+﻿using API.Application.DTOs;
+using API.Application.Interfaces;
+using API.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nager.Date;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class BranchController : BaseApiController
     {

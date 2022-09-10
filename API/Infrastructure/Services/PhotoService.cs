@@ -1,18 +1,12 @@
-﻿using API.Helpers;
-using API.Interfaces;
+﻿using API.Application.Interfaces;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class PhotoService : BaseService, IPhotoService
     {

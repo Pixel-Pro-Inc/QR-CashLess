@@ -1,6 +1,4 @@
-﻿using API.DTOs;
-using API.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -9,8 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using RodizioSmartKernel.Entities;
+using API.Application.Interfaces;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class AccountController : BaseApiController
     {

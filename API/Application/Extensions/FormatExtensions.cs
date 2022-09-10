@@ -1,10 +1,7 @@
-﻿using API.Exceptions;
+﻿using API.Application.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace API.Extensions
+namespace API.Application.Extensions
 {
     /// <summary>
     /// These are methods used to structure data in desired ways. From Ordernumber to the date

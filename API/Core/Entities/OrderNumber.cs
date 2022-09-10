@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace API.Entities
+namespace API.Core.Entities
 {
     public class OrderNumber
     {

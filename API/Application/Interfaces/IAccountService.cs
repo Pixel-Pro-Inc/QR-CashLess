@@ -3,7 +3,7 @@ using RodizioSmartKernel.Interfaces.BaseInterfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace API.Interfaces
+namespace API.Application.Interfaces
 {
     public interface IAccountService: IBaseService
     {

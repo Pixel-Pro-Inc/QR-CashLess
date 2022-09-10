@@ -1,11 +1,11 @@
-﻿using API.Data;
-using API.Extensions;
-using API.Interfaces;
+﻿using API.Application.Data;
+using API.Application.Extensions;
+using API.Application.Interfaces;
 using RodizioSmartKernel.Entities.Aggregates;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class FirebaseServices : BaseService, IFirebaseServices
     {

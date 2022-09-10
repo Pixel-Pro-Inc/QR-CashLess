@@ -1,7 +1,7 @@
 ﻿using RodizioSmartKernel.Entities;
 using System;
 
-namespace API.DTOs
+namespace API.Application.DTOs
 {
     /// <summary>
     /// This is a Dto that contains all the information needed to find process and send Bills the the franchisee representitives

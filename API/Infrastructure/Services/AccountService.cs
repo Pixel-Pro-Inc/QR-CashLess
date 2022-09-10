@@ -1,5 +1,4 @@
-﻿using API.Entities;
-using API.Interfaces;
+﻿using API.Application.Interfaces;
 using AutoMapper;
 using RodizioSmartKernel.Entities;
 using System;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class AccountService: BaseService, IAccountService
     {

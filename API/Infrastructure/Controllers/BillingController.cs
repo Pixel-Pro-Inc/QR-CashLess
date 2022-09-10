@@ -1,12 +1,12 @@
-﻿using API.DTOs;
-using API.Exceptions;
-using API.Interfaces;
+﻿using API.Application.DTOs;
+using API.Application.Exceptions;
+using API.Application.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     // TODO: Have the Git commit explain why we fixed it and also add it to the error list we have in Notes
     // GITRACK: look up

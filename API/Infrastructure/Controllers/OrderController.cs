@@ -1,14 +1,13 @@
-﻿using API.Entities;
-using API.Extensions;
-using API.Interfaces;
+﻿using API.Application.Extensions;
+using API.Application.Interfaces;
+using API.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities.Aggregates;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class OrderController : BaseApiController
     {

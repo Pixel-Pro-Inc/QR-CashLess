@@ -1,19 +1,11 @@
-﻿using API.Data;
-using API.Entities;
-using API.Helpers;
-using API.Interfaces;
-using FireSharp.Config;
-using FireSharp.Interfaces;
-using FireSharp.Response;
+﻿
+using API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     //[ServiceFilter(typeof(LogUserActivity))]
     [ApiController]

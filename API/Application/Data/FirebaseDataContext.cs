@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace API.Data
+namespace API.Application.Data
 {
     public class FirebaseDataContext
     {

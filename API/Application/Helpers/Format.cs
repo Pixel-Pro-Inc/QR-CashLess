@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Helpers
+namespace API.Application.Helpers
 {
     /// <summary>
     /// This class changes certain inputs into whatever format those inputs could be in

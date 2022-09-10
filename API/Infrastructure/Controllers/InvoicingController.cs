@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     // TODO: Invoicing has to be done so that branch managers know how much to pay
     // This is the controller that will be used to invoice the other branch managers ( or every branch manager the cost we have for our service.

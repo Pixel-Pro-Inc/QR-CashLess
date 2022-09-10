@@ -1,12 +1,9 @@
-﻿using API.Exceptions;
-using RodizioSmartKernel.Entities.Aggregates;
+﻿using RodizioSmartKernel.Entities.Aggregates;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Interfaces
+namespace API.Application.Interfaces
 {
     // REFACTOR: Consider having a IDataBaseService that IFirebase inherits from, that way we can switch database providers when ever we feel like.
     /// <summary>

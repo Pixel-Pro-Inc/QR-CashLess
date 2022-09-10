@@ -1,15 +1,13 @@
-﻿using API.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-﻿using API.Interfaces;
 
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using RodizioSmartKernel.Entities;
+using API.Application.Interfaces;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class SMSController : BaseApiController
     {

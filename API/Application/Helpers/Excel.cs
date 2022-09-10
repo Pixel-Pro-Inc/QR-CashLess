@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using System.Collections.Generic;
 
-namespace API.Helpers
+namespace API.Application.Helpers
 {
     public class Excel
     {

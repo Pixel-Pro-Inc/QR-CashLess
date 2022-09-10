@@ -1,12 +1,7 @@
-﻿using API.Entities;
-using RodizioSmartKernel.Entities;
+﻿using RodizioSmartKernel.Entities;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace API.Interfaces
+namespace API.Application.Interfaces
 {
     public interface ITokenService: IBaseService
     {

@@ -1,12 +1,8 @@
-﻿using API.Interfaces;
+﻿using API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     /// <summary>
     /// This is a Controller in charge of all Online payments

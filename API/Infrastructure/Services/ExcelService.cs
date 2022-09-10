@@ -1,7 +1,7 @@
-﻿using API.Controllers;
-using API.Extensions;
-using API.Helpers;
-using API.Interfaces;
+﻿using API.Application.Extensions;
+using API.Application.Helpers;
+using API.Application.Interfaces;
+using API.Infrastructure.Controllers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class ExcelService: BaseService, IExcelService
     {

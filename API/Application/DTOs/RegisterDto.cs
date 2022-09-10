@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.DTOs
+namespace API.Application.DTOs
 {
     public class RegisterDto
     {

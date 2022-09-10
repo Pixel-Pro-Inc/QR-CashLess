@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;
 using RodizioSmartKernel.Services;
 
-namespace API.Extensions
+namespace API.Application.Extensions
 {
     public static class ApplicationServiceExtensions
     {

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using API.DTOs;
+using API.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities;
 using RodizioSmartKernel.Entities.Aggregates;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;
 
-namespace API.Interfaces
+namespace API.Application.Interfaces
 {
     public interface IReportServices: IBaseService
     {

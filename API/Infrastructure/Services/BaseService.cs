@@ -2,7 +2,7 @@
 using RodizioSmartKernel.Services;
 using System;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     public class BaseService:_BaseService
     {

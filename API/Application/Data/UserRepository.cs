@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Data
+namespace API.Application.Data
 {
     [Obsolete]
     // OBSOLETE: We used this when we were working with EF Core and stuff. But now we on Firebase so itsn't not necessary

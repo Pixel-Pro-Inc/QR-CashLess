@@ -1,21 +1,13 @@
-﻿using API.Controllers;
-using API.Data;
-using API.DTOs;
-using API.Entities;
-using API.Exceptions;
-using API.Extensions;
-using API.Interfaces;
+﻿using API.Application.Exceptions;
+using API.Application.Interfaces;
 using AutoMapper;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RodizioSmartKernel.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace API.Services
+namespace API.Infrastructure.Services
 {
     /// <summary>
     /// This is service that will calculate all the necessary information that needs to be sent to and fro the debtor.

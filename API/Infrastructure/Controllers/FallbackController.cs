@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
+﻿using System.IO;
 
-namespace API.Controllers
+namespace API.Infrastructure.Controllers
 {
     public class FallbackController : Microsoft.AspNetCore.Mvc.Controller
     {

@@ -1,10 +1,10 @@
-﻿using API.Exceptions;
+﻿using API.Application.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
-namespace API.Extensions
+namespace API.Application.Extensions
 {
     //NOTE: I'm under the impression that extension methods, don't need to be added in AddApplicationServices, because them being static means they are assesable
     /// <summary>
