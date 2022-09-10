@@ -32,7 +32,7 @@ export class AccountService extends BaseServiceService{
       response => {
         let user: any = response;
 
-        console.log(user);
+        console.log(user.name);
 
         if(!user.admin && !user.developer && !user.superUser){
           this.toastr.error('You cannot login to this platform');
@@ -67,7 +67,6 @@ export class AccountService extends BaseServiceService{
           return;
         }
 
-        console.log(response);
 
         localStorage.setItem('resetToken', response);
         localStorage.setItem('accountID', model.accountID);
@@ -84,7 +83,6 @@ export class AccountService extends BaseServiceService{
       response => {
         this.busyService.idle();
 
-        console.log(response);
 
         localStorage.removeItem('resetToken');
         localStorage.removeItem('accountID');
