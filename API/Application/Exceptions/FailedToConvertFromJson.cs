@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using RodizioSmartKernel.Entities.Aggregates;
-using API.Interfaces;
-using API.Extensions;
+using API.Application.Interfaces;
+using API.Application.Extensions;
 
 namespace API.Application.Exceptions
 {

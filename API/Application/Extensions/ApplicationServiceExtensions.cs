@@ -1,6 +1,6 @@
-﻿using API.Helpers;
-using API.Interfaces;
-using API.Services;
+﻿using API.Application.Helpers;
+using API.Application.Interfaces;
+using API.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RodizioSmartKernel.Interfaces.BaseInterfaces;

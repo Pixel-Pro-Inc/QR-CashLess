@@ -1,4 +1,5 @@
-﻿using API.Controllers;
+﻿using API.Infrastructure.Controllers;
+using API.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using RodizioSmartKernel.Entities;

@@ -1,5 +1,8 @@
-﻿using API.Application.Exceptions;
+﻿using API.Application.DTOs;
+using API.Application.Exceptions;
+using API.Application.Extensions;
 using API.Application.Interfaces;
+using API.Infrastructure.Controllers;
 using AutoMapper;
 using RodizioSmartKernel.Entities;
 using System;

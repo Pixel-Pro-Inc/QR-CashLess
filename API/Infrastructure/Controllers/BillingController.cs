@@ -1,7 +1,6 @@
 ﻿using API.Application.DTOs;
 using API.Application.Exceptions;
 using API.Application.Interfaces;
-using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Entities;
 using System.Threading.Tasks;

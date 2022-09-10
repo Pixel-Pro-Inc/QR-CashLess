@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RodizioSmartKernel.Entities;
 using API.Application.Interfaces;
+using API.Application.DTOs;
 
 namespace API.Infrastructure.Controllers
 {
