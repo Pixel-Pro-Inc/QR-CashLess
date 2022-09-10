@@ -1,22 +1,25 @@
-﻿using API.Controllers;
-using FireSharp.Config;
+﻿using FireSharp.Config;
 using FireSharp.Interfaces;
 using FireSharp.Response;
+
 using Microsoft.Extensions.Configuration;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Data
 {
     public class FirebaseDataContext
     {
-        // REFACTOR: Another instance of config that we may need to modify to use environment variaables
-        protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
+        static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+        static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true).Build();
+
+       
+        // NOTE: The configuration works properly
         IFirebaseConfig config = new FirebaseConfig
         {
             AuthSecret = Configuration["FirebaseDataBaseSettings:AuthSecret"],
@@ -30,24 +33,13 @@ namespace API.Data
             client = new FireSharp.FirebaseClient(config);
         }
 
-        public async void DeleteData(string path)
+        // UPDATE: I change the code cause it kept making new clients, I don't know why it needed to do that
+        public async void DeleteData(string path)=>await client.DeleteAsync(path);
+        public async void StoreData(string path, object data)=>await client.SetAsync(path, data);
+        // NOTE: You don't need to refactor this to work with the JsonConvertExtension. But you could clean up with Yewo after discussing it
+        public async Task<List<object>> GetData(string path)
         {
-            client = new FireSharp.FirebaseClient(config);
-
-            var response = await client.DeleteAsync(path);
-        }
-
-        public async void StoreData(string path, object data)
-        {
-            client = new FireSharp.FirebaseClient(config);
-
-            var response = await client.SetAsync(path, data);
-        }
-        public async Task<List<T>> GetData<T>(string path) where T : class, new()
-        {
-            List<T> objects = new List<T>();
-
-            client = new FireSharp.FirebaseClient(config);
+            List<object> objects = new List<object>();
 
             FirebaseResponse response = await client.GetAsync(path);
 
@@ -57,17 +49,18 @@ namespace API.Data
             {
                 foreach (var item in data)
                 {
+                    object _object = new object();
+
                     if (item != null)
                     {
-                        var _object = new T();
-
+                        // REFACTOR: Try to see if this is the solution we need to make the overload in JsonConvertExtension unified
                         if (item.GetType() == typeof(JProperty))
                         {
-                            _object = JsonConvert.DeserializeObject<T>(((JProperty)item).Value.ToString());
+                            _object = JsonConvert.DeserializeObject<object>(((JProperty)item).Value.ToString());
                         }
                         else
                         {
-                            _object = JsonConvert.DeserializeObject<T>(((JObject)item).ToString());
+                            _object = JsonConvert.DeserializeObject<object>(((JObject)item).ToString());
                         }
 
                         objects.Add(_object);
@@ -77,11 +70,7 @@ namespace API.Data
 
             return objects;
         }
-        public async void EditData(string path, object data)
-        {
-            client = new FireSharp.FirebaseClient(config);
+        public async void EditData(string path, object data)=> await client.UpdateAsync(path, data);
 
-            var response = await client.UpdateAsync(path, data);
-        }
     }
 }

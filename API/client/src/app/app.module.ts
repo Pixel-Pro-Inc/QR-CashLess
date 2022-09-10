@@ -30,6 +30,8 @@ import { LoginComponent } from './login/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RevenuechartComponent } from './revenuechart/revenuechart.component';
 import { ThankyouComponent } from './thankyou/thankyou.component';
+import { BillingComponent } from './billing/billing.component';
+import { AccountmanagementComponent } from './accountmanagement/accountmanagement.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 import { ResetComponent } from './reset/reset.component';
@@ -68,6 +70,8 @@ import { TextInputComponent } from './_forms/text-input/text-input.component';
     RevenuechartComponent,
     LoginComponent,
     ThankyouComponent,
+    BillingComponent,
+    AccountmanagementComponent,
     ResetpasswordComponent,
     ResetComponent,
     QuantityCounterComponent,

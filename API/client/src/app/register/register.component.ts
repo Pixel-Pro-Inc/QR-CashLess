@@ -19,6 +19,7 @@ export class RegisterComponent implements OnInit {
   user: User;
 
   isDeveloper = false;
+  isSuperUser=false;
 
   constructor(public accountService: AccountService, private toastr: ToastrService, private branchService: BranchService, private referenceService: ReferenceService) { }
 
@@ -28,6 +29,7 @@ export class RegisterComponent implements OnInit {
         this.user = r;
 
         this.isDeveloper = this.user.developer;
+        this.isSuperUser= this.user.superUser;
       }
     );
 
@@ -65,6 +67,7 @@ export class RegisterComponent implements OnInit {
     this.cancelRegister.emit(false);
   }
   
+  // @Yewo: Why is this here
   resetBranches(){
     this.model.branchId = null;
   }

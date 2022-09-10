@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminPortalComponent } from './admin-portal/admin-portal.component';
+import { AccountmanagementComponent } from './accountmanagement/accountmanagement.component';
 import { AdminComponent } from './admin/admin.component';
+import { BillingComponent } from './billing/billing.component';
 import { CheckoutComponent } from './checkout/checkout.component';
 import { ClosingTimePickerComponent } from './closing-time-picker/closing-time-picker.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -39,6 +41,8 @@ const routes: Routes = [
   { path: 'receipt', component: ReceiptComponent },
   { path: 'branches', component: RestaurantBranchComponent},
   { path: 'checkout', component: CheckoutComponent},
+  { path: 'billing', component: BillingComponent},
+  { path: 'accountmanagement', component: AccountmanagementComponent},
   { path: 'password/reset', component: ResetpasswordComponent},
   { path: 'password/reset/success', component: ResetComponent, canActivate: [AuthGuard]},
   { path: 'thankyou', component: ThankyouComponent},

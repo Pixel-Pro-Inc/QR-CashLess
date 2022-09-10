@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace API.DTOs
 {
@@ -16,5 +17,11 @@ namespace API.DTOs
         public bool SuperUser { get; set; }
         public List<string> branchId { get; set; }
         public bool Admin { get; set; }
+
+        // UPDATE: These are in the case that the user is an admin
+        public string Fullname { get; set; }
+        public string Address { get; set; }
+        public DateTime DuePaymentDate { get; set; }
+
     }
 }

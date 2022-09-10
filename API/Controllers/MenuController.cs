@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using FireSharp.Response;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using API.Entities.Aggregates;
 
 namespace API.Controllers
 {
@@ -23,17 +24,13 @@ namespace API.Controllers
     {
         private IPhotoService _photoService;
 
-        public MenuController(IPhotoService photoService):base()
+        public MenuController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }
 
         [HttpGet("getmenu/{branchId}")]
-        public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenu(string branchId)
-        {
-            return await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
-        }
-
+        public async Task<ActionResult<Menu>> GetMenu(string branchId)=> (Menu)await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
         [Authorize]
         [HttpPost("createitem/{id}")]
         public async Task<ActionResult<MenuItemDto>> AddMenuItem(MenuItemDto menuItemDto, string id)
@@ -61,7 +58,7 @@ namespace API.Controllers
             if (menuItem.Weight != "0")
                 menuItem.Name = String.IsNullOrEmpty(menuItem.Weight) ? menuItem.Name : menuItem.Name + " (" + menuItem.Weight + " grams)";
 
-            List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
+            List<Subcategory> subCategories = await _firebaseServices.GetData<Subcategory>("SubCategories");
 
             //You need to comment on why you have this block/logic here, cause it was cool when you showed Mr Billy but ahhh, I couldn't understand why it exists
             if(menuItem.Category == "Meat")
@@ -71,7 +68,7 @@ namespace API.Controllers
                     List<string> subs = new List<string>();
                     subs.Add(menuItemDto.SubCategory);
 
-                    _firebaseDataContext.StoreData("SubCategories/" + 0, new Subcategory()
+                    _firebaseServices.StoreData("SubCategories/" + 0, new Subcategory()
                     {
                         SubCategories = subs
                     });
@@ -81,7 +78,7 @@ namespace API.Controllers
                     if (!subCategories[0].SubCategories.Contains(menuItemDto.SubCategory))
                     {
                         subCategories[0].SubCategories.Add(menuItemDto.SubCategory);
-                        _firebaseDataContext.StoreData("SubCategories/" + 0, subCategories[0]);
+                        _firebaseServices.StoreData("SubCategories/" + 0, subCategories[0]);
                     }
                 }
             }
@@ -102,7 +99,7 @@ namespace API.Controllers
 
             menuItem.Id = n;
 
-            _firebaseDataContext.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + n.ToString(), menuItem);
 
             return menuItemDto;
         }
@@ -110,7 +107,7 @@ namespace API.Controllers
         [HttpGet("subcategory")]
         public async Task<ActionResult<List<string>>> GetSubCategories()
         {
-            var response = (await _firebaseDataContext.GetData<Subcategory>("SubCategories"));
+            var response = (await _firebaseServices.GetData<Subcategory>("SubCategories"));
 
             return response.Count != 0 ? response[0].SubCategories : new List<string>();
         }
@@ -118,7 +115,7 @@ namespace API.Controllers
         [HttpGet("flavours/create/{flavour}")]
         public async Task<ActionResult<List<string>>> CreateFlavours(string flavour)
         {
-            var response = (await _firebaseDataContext.GetData<Flavour>("Flavours"));
+            var response = (await _firebaseServices.GetData<Flavour>("Flavours"));
 
             if (response.Count == 0)
                 response.Add(new Flavour());
@@ -126,7 +123,7 @@ namespace API.Controllers
             response[0].Flavours.Add(flavour);
 
 
-            _firebaseDataContext.StoreData("Flavours/" + 0, response[0]);
+            _firebaseServices.StoreData("Flavours/" + 0, response[0]);
 
             return response[0].Flavours;
         }
@@ -134,7 +131,7 @@ namespace API.Controllers
         [HttpGet("flavours/get")]
         public async Task<ActionResult<List<string>>> GetFlavours()
         {
-            var response = (await _firebaseDataContext.GetData<Flavour>("Flavours"));
+            var response = (await _firebaseServices.GetData<Flavour>("Flavours"));
 
             return response.Count != 0 ? response[0].Flavours : new List<string>();
         }
@@ -142,7 +139,7 @@ namespace API.Controllers
         [HttpGet("meattemperature/create/{meattemperature}")]
         public async Task<ActionResult<List<string>>> CreateMeatTemperature(string meattemperature)
         {
-            var response = (await _firebaseDataContext.GetData<MeatTemperature>("MeatTemperature"));
+            var response = (await _firebaseServices.GetData<MeatTemperature>("MeatTemperature"));
 
             if (response.Count == 0)
                 response.Add(new MeatTemperature());
@@ -150,7 +147,7 @@ namespace API.Controllers
             response[0].MeatTemperatures.Add(meattemperature);
 
 
-            _firebaseDataContext.StoreData("MeatTemperature/" + 0, response[0]);
+            _firebaseServices.StoreData("MeatTemperature/" + 0, response[0]);
 
             return response[0].MeatTemperatures;
         }
@@ -158,7 +155,7 @@ namespace API.Controllers
         [HttpGet("meattemperatures/get")]
         public async Task<ActionResult<List<string>>> GetMeatTemperatures()
         {
-            var response = (await _firebaseDataContext.GetData<MeatTemperature>("MeatTemperature"));
+            var response = (await _firebaseServices.GetData<MeatTemperature>("MeatTemperature"));
 
             return response.Count != 0 ? response[0].MeatTemperatures : new List<string>();
         }
@@ -166,7 +163,7 @@ namespace API.Controllers
         [HttpGet("sauce/create/{sauce}")]
         public async Task<ActionResult<List<string>>> CreateSauce(string sauce)
         {
-            var response = (await _firebaseDataContext.GetData<Sauce>("Sauce"));
+            var response = (await _firebaseServices.GetData<Sauce>("Sauce"));
 
             if (response.Count == 0)
                 response.Add(new Sauce());
@@ -174,7 +171,7 @@ namespace API.Controllers
             response[0].Sauces.Add(sauce);
 
 
-            _firebaseDataContext.StoreData("Sauce/" + 0, response[0]);
+            _firebaseServices.StoreData("Sauce/" + 0, response[0]);
 
             return response[0].Sauces;
         }
@@ -182,13 +179,13 @@ namespace API.Controllers
         [HttpGet("sauce/get")]
         public async Task<ActionResult<List<string>>> GetSauces()
         {
-            var response = (await _firebaseDataContext.GetData<Sauce>("Sauce"));
+            var response = (await _firebaseServices.GetData<Sauce>("Sauce"));
 
             return response.Count != 0 ? response[0].Sauces : new List<string>();
         }
         public async Task<int> GetId(string branchId)
         {
-            List<MenuItem> items = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
+            Menu items = (Menu)await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
 
             if (items.Count != 0)
             {
@@ -220,7 +217,7 @@ namespace API.Controllers
         {
             string branchId = id;
 
-            var menuItems = await _firebaseDataContext.GetData<MenuItem>("Menu/" + branchId);
+            var menuItems = await _firebaseServices.GetData<MenuItem>("Menu/" + branchId);
             MenuItem oldMenuItem = null;
 
             foreach (var item in menuItems)
@@ -257,7 +254,7 @@ namespace API.Controllers
             if (oldMenuItem.Weight != "0" && !oldMenuItem.Name.Contains("grams"))
                 oldMenuItem.Name = String.IsNullOrEmpty(oldMenuItem.Weight) ? oldMenuItem.Name : oldMenuItem.Name + " (" + oldMenuItem.Weight + " grams)";
 
-            List<Subcategory> subCategories = await _firebaseDataContext.GetData<Subcategory>("SubCategories");
+            List<Subcategory> subCategories = await _firebaseServices.GetData<Subcategory>("SubCategories");
 
             //You need to comment on why you have this block/logic here, cause it was cool when you showed Mr Billy but ahhh, I couldn't understand why it exists
             if (oldMenuItem.Category == "Meat")
@@ -267,7 +264,7 @@ namespace API.Controllers
                     List<string> subs = new List<string>();
                     subs.Add(menuItemDto.SubCategory);
 
-                    _firebaseDataContext.StoreData("SubCategories/" + 0, new Subcategory()
+                    _firebaseServices.StoreData("SubCategories/" + 0, new Subcategory()
                     {
                         SubCategories = subs
                     });
@@ -277,7 +274,7 @@ namespace API.Controllers
                     if (!subCategories[0].SubCategories.Contains(menuItemDto.SubCategory))
                     {
                         subCategories[0].SubCategories.Add(menuItemDto.SubCategory);
-                        _firebaseDataContext.StoreData("SubCategories/" + 0, subCategories[0]);
+                        _firebaseServices.StoreData("SubCategories/" + 0, subCategories[0]);
                     }
                 }
             }
@@ -307,9 +304,7 @@ namespace API.Controllers
                     }
                 }
 
-            //Update firebase
-
-            _firebaseDataContext.EditData("Menu/" + branchId + "/" + oldMenuItem.Id, oldMenuItem);
+            _firebaseServices.StoreData("Menu/" + branchId + "/" + oldMenuItem.Id, oldMenuItem);
 
             return menuItemDto;
         }
@@ -322,7 +317,7 @@ namespace API.Controllers
             await _photoService.DeletePhotoAsync(menuItemDto.publicId);
 
             //Delete Item from Firebase
-            _firebaseDataContext.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
+            _firebaseServices.DeleteData("Menu/" + branchId + "/" + menuItemDto.Id);
 
             return menuItemDto;
         }

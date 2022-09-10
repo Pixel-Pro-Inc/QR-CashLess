@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace API.Entities
 {
-    public class Branch
+    public class Branch:BaseEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,7 @@ namespace API.Entities
         public string PublicId { get; set; }
         public DateTime LastActive { get; set; }
         public List<int> PhoneNumbers { get; set; }
+        // REFACTOR: Consider having a dictionary here so that we can remove the ClosingTime class
         public List<DateTime> OpeningTimes { get; set; }
         public List<DateTime> ClosingTimes { get; set; }
     }

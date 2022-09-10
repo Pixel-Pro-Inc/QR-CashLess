@@ -279,6 +279,7 @@ export class DashboardComponent implements OnInit {
   exportToExcel(){    
     this.dashService.exportToExcel(this.referenceService.currentBranch());
   }
+  
 
   exportDetailReportToExcel(){
     this.dashService.exportDetailReportToExcel(this.model1);

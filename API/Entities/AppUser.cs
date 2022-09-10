@@ -6,7 +6,7 @@ using static API.Model.Enums;
 
 namespace API.Entities
 {
-    public class AppUser
+    public class AppUser:BaseEntity
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -23,5 +23,6 @@ namespace API.Entities
         public string Restuarant { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
+
     }
 }

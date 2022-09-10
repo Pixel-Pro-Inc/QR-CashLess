@@ -1,5 +1,8 @@
 ﻿using API.Data;
 using API.Entities;
+using API.Entities.Aggregates;
+using API.Extensions;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -15,23 +18,21 @@ namespace API.Controllers
     {
         private readonly string dir = "Order/";
 
-        public OrderController():base() { }
+        public OrderController(IFirebaseServices firebaseServices):base(firebaseServices) { }
 
         #region Create Order Item
 
         [HttpPost("createorder/{branchId}")]
-        public async Task<ActionResult<List<OrderItem>>> CreateOrder(List<OrderItem> orderItems, string branchId)
+        public async Task<ActionResult<Order>> CreateOrder(Order orderItems, string branchId)
         {
             int x = await GetOrderNum(branchId);
 
-            string d = DateTime.Now.Day.ToString("00") + "/" + DateTime.Now.Month.ToString("00") + "/"
-                    + DateTime.Now.Year.ToString("0000");
 
             for (int i = 0; i < orderItems.Count; i++)
             {
                 var orderItem = orderItems[i];
 
-                orderItem.OrderNumber = d + "_" + x;
+                orderItem.OrderNumber = DateTime.Now.ToPixelProForwardSlashFormat() + "_" + x;
                 orderItem.OrderNumber = orderItem.OrderNumber.Replace('/', '-');
 
                 orderItem.OrderDateTime = DateTime.UtcNow;
@@ -42,14 +43,14 @@ namespace API.Controllers
 
                 orderItem.Id = i;
 
-                _firebaseDataContext.StoreData(dir + branchId + "/" + orderItem.OrderNumber + "/" + orderItem.Id, orderItem);
+                _firebaseServices.StoreData(dir + branchId + "/" + orderItem.OrderNumber + "/" + orderItem.Id, orderItem);
             }
 
             return orderItems;
         }
         public async Task<int> GetOrderNum(string branchId)
         {
-            List<OrderNumber> ordersNumbersResult = await _firebaseDataContext.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
+            List<OrderNumber> ordersNumbersResult = await _firebaseServices.GetData<OrderNumber>("AssignedOrderNumbers/" + branchId);
 
             List<string> oNumbersAssigned = new List<string>();
 
@@ -82,7 +83,7 @@ namespace API.Controllers
 
             oNumbersAssigned.Add(d + "_" + candidateNumber);
 
-            _firebaseDataContext.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
+            _firebaseServices.StoreData("AssignedOrderNumbers/" + branchId + "/0", new OrderNumber() { OrderNumbers = oNumbersAssigned});
 
             return candidateNumber;
         }

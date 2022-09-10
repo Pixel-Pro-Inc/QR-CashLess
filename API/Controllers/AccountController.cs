@@ -1,20 +1,15 @@
-﻿using API.Data;
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using API.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
+using AutoMapper;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,19 +19,24 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
-        private string dir = "Account";
+        private readonly IAccountService _accountService;
+        private readonly IMapper _mapper;
         private readonly SMSController smsSender;
 
-        public AccountController(ITokenService tokenService)//, UserManager<AppUser> userManager) :base()
+
+        public AccountController(ITokenService tokenService, IFirebaseServices firebaseServices, IAccountService accountService, IMapper mapper) :base(firebaseServices)
         {
             _tokenService = tokenService;
-            smsSender = new SMSController();
+            _accountService = accountService;
+            _mapper = mapper;
+            // UPDATE: I removed all references to firebaseDatacontext and replaces it with _firebaseServices
+            smsSender = new SMSController(_firebaseServices);
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserTaken(registerDto.Username))
+            if (await _accountService.isUserTaken(registerDto.Username))
                 return BadRequest("Username is not available.");
 
             TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
@@ -58,9 +58,27 @@ namespace API.Controllers
                 NationalIdentityNumber = registerDto.NationalIdentityNumber
             };            
 
-            user.Id = await GetNum();
+            user.Id = await _accountService.CreateId();
 
-            _firebaseDataContext.StoreData(dir + "/" + user.Id.ToString(), user);
+            // Here I want to set the user to an AdminUser with the appropriate properties if admin=true
+            if (user.Admin)
+            {
+
+                AdminUser adminuser= _mapper.Map<AdminUser>(user);
+
+                //FIXME: Add these properties to the view
+                //Setting of the AdminUser properties
+                adminuser.Fullname = registerDto.Fullname;
+                adminuser.Email = registerDto.Email;
+                adminuser.Address = registerDto.Address;
+                // REFACTOR: Consider having this set to a specific period of time like, 8:00 in the morning
+                adminuser.DuePaymentDate = registerDto.DuePaymentDate;
+
+                // This is so the user is stored as an AdminUser with the properties it needs
+                user = adminuser;
+            }
+
+            _firebaseServices.StoreData("Account" + "/" + user.Id.ToString(), user);
 
             return new UserDto()
             {
@@ -72,10 +90,10 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            if ((await GetUser(loginDto.Username)) == null)
-                return Unauthorized("Username doesn't exist");
+            AppUser user = (await _accountService.GetUser(loginDto.Username));
 
-            AppUser user = (await GetUser(loginDto.Username));
+            if (user == null)
+                return Unauthorized("Username doesn't exist");
 
             using var hmac = new HMACSHA512(user.PasswordSalt);
             Byte[] computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
@@ -98,47 +116,10 @@ namespace API.Controllers
             };
         }
         
-        public async Task<bool> UserTaken(string username)
-        {
-            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
-
-            return items.Any(x => x.UserName == username.ToLower());
-        }
-        public async Task<AppUser> GetUser(string username)
-        {
-            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
-
-            AppUser user = null;
-
-            user = items.SingleOrDefault(x => x.UserName == username.ToLower());
-            return (user);
-        }
-        public async Task<AppUser> GetUserByNumber(string phoneNumber)
-        {
-            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
-
-            AppUser user = null;
-
-            user = items.SingleOrDefault(x => x.PhoneNumber == phoneNumber);
-            return (user);
-        }
-        public async Task<int> GetNum()
-        {
-            List<AppUser> items = await _firebaseDataContext.GetData<AppUser>(dir);
-
-            int ran = new Random().Next(10000, 99999);
-
-            while (items.Any(x => x.Id == ran))
-            {
-                ran = new Random().Next(10000, 99999);
-            }
-
-            return ran;
-        }
 
         //When you have set up the Identity roles thing then you can remove the below line to get access to the code
 
-        public async Task<string> GetResetToken()
+        public string GetResetToken()
         {
             string token = "R";
 
@@ -150,21 +131,22 @@ namespace API.Controllers
             return token;
         }
 
+        // REFACTOR: Below we have repeating code
         [HttpPost("forgotpassword/{accountID}")]
         public async Task<string> ForgotPassword(string accountID)
         {
-            string token = await GetResetToken();
+            string token =  GetResetToken();
 
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID): user = await GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _accountService.GetUserByNumber(accountID): user = await _accountService.GetUser(accountID);
 
             if (user == null)
                 return "failed";
 
             user.ResetToken = token;
 
-            _firebaseDataContext.EditData("Account/" + user.Id, user);
+            _firebaseServices.StoreData("Account/" + user.Id, user);
 
             //Send SMS
             await smsSender.SendResetPasswordSMS(user.PhoneNumber, token);
@@ -175,18 +157,18 @@ namespace API.Controllers
         [HttpPost("forgotpassword/desktop/{accountID}")]
         public async Task<ActionResult<string>> ForgotPasswordDesktop(string accountID)
         {
-            string token = await GetResetToken();
+            string token = GetResetToken();
 
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID) : user = await GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _accountService.GetUserByNumber(accountID) : user = await _accountService.GetUser(accountID);
 
             if (user == null)
                 return "failed";
 
             user.ResetToken = token;
 
-            _firebaseDataContext.EditData("Account/" + user.Id, user);
+            _firebaseServices.StoreData("Account/" + user.Id, user);
 
             //Send SMS
             await smsSender.SendResetPasswordSMS(user.PhoneNumber, token);
@@ -199,7 +181,7 @@ namespace API.Controllers
         {
             int result = 0;
 
-            AppUser user = Int32.TryParse(accountID, out result) ? await GetUserByNumber(accountID) : user = await GetUser(accountID);
+            AppUser user = Int32.TryParse(accountID, out result) ? await _accountService.GetUserByNumber(accountID) : await _accountService.GetUser(accountID);
 
             user.ResetToken = null;
 
@@ -209,10 +191,12 @@ namespace API.Controllers
 
             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
 
-            _firebaseDataContext.EditData("Account/" + user.Id, user);
+            _firebaseServices.StoreData("Account/" + user.Id, user);
 
             return "success";
         }
+        [HttpGet("getadminusers")]
+        public async Task<List<AdminUser>> GetAdminUsers() => await _accountService.GetAdminAccounts();
 
     }
 }

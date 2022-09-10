@@ -5,8 +5,18 @@
     width="300"
     class="mt-5"/>
 </div>
+<div class="pagetitle" style="margin-left: 100px; margin-right: 100px;">
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+      <li class="breadcrumb-item"><a routerLink="/accountmanagement" >Account Management</a></li>
+      <li class="breadcrumb-item active">Register</li>
+    </ol>
+  </nav>
+</div>
 
   <h3>Register</h3>
+ 
   <form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off" style="margin-right: 10%; margin-left: 10%;">
     <hr>
     <div class="form-group">
@@ -48,13 +58,29 @@
         </ng-container>     
       </select>
     </div>
-
-    <div *ngIf="isDeveloper && !model.superUser" class="form-group">
+    <!-- 
+      TODO: The isDeveloper is so a developer can register in Admin or superUsers or staff
+      and isSuperUser so the can register only admin and staff
+    -->
+      <hr class="mt-3">
+    <div *ngIf="isDeveloper || isSuperUser" class="form-group">
+      <h5> Only Admin get sent invoices:</h5><h6>Fill in the below to complete the invoice information</h6>
+      <ng-container *ngIf="model.admin">
+        <input type="text" class="form-control" name="Address"
+             [(ngModel)]="model.Address" placeholder="Address">
+        <label>First payment date</label>
+      <input  type="date" class="form-control" name="DuePaymentDate" [(ngModel)]="model.DuePaymentDate">
+      </ng-container>
+      
       <input type="checkbox" name="admin"
-             [(ngModel)]="model.admin">
-      <label class="ml-2">Admin Account</label>
+             [(ngModel)]="model.admin" >
+      <label class="ml-2">Admin Account</label> 
     </div>
-    <div *ngIf="isDeveloper && !model.admin" class="form-group">
+     <div class="form-group">
+       
+     </div>
+     <hr class="mt-3">
+    <div *ngIf="isDeveloper " class="form-group">
       <input type="checkbox" name="superUser"
              [(ngModel)]="model.superUser">
              <ng-container>{{resetBranches()}}</ng-container>

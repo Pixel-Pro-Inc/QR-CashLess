@@ -22,16 +22,23 @@ namespace API.Controllers
     public class BranchController : BaseApiController
     {
         private IPhotoService _photoService;
-        public BranchController(IPhotoService photoService):base()
+        public BranchController(IPhotoService photoService, IFirebaseServices firebaseServices):base(firebaseServices)
         {
             _photoService = photoService;
         }
+
+        /// <summary>
+        /// Takes in a <see cref="BranchDto"/> from the client so that the controller method have something to work with.
+        /// <para> Then creates a branch if it meets the criteria and stores it in the database</para>
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost("register")]
         public async Task<ActionResult<BranchDto>> CreateBranch(BranchDto dto)
         {
             List<Branch> branches = new List<Branch>();
-            branches = await GetBranches2();
+            branches = await _firebaseServices.GetData<Branch>("Branch");
 
             for (int i = 0; i < branches.Count; i++)
             {
@@ -67,7 +74,7 @@ namespace API.Controllers
                 branch.PublicId = result.PublicId;
             }        
 
-            _firebaseDataContext.StoreData("Branch/" + branch.Id, branch);
+            _firebaseServices.StoreData("Branch/" + dto.Id, branch);
 
             return dto;
         }
@@ -75,6 +82,7 @@ namespace API.Controllers
         List<int> GetPhoneNumbers_Int(List<string> numbers)
         {
             List<int> phoneNumbers = new List<int>();
+            if (numbers == null) return null;
             foreach (var number in numbers)
             {
                 phoneNumbers.Add(Int32.Parse(number));
@@ -85,6 +93,7 @@ namespace API.Controllers
         List<string> GetPhoneNumbers_String(List<int> numbers)
         {
             List<string> phoneNumbers = new List<string>();
+            if (numbers == null) return null;
             foreach (var number in numbers)
             {
                 phoneNumbers.Add(number.ToString());
@@ -127,7 +136,7 @@ namespace API.Controllers
         [HttpPost("setclosingtime")]
         public async Task<ActionResult<DateTime>> CreateClosingTime(CloseTimeDto closeTimeDto)
         {
-            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+            var response = (await _firebaseServices.GetData<ClosingTime>("ClosingTime"));
 
             if (response.Count == 0)
                 response.Add(new ClosingTime());
@@ -140,13 +149,13 @@ namespace API.Controllers
             response[0].EffectiveDate = DateTime.UtcNow.AddHours(2);
 
 
-            _firebaseDataContext.StoreData("ClosingTime/" + 0, response[0]);
+            _firebaseServices.StoreData("ClosingTime/" + 0, response[0]);
 
             return response[0].ClosingTimeToday;
         }
         public async Task<DateTime> GetClosingTime()
         {
-            var response = (await _firebaseDataContext.GetData<ClosingTime>("ClosingTime"));
+            var response = (await _firebaseServices.GetData<ClosingTime>("ClosingTime"));
 
             if (response.Count == 0)
                 return new DateTime();
@@ -157,18 +166,25 @@ namespace API.Controllers
             return response[0].ClosingTimeToday;
         }
 
+
+        /// <summary>
+        /// This is called from the client to get all the branches in the database
+        /// 
+        /// <para> The branches will come in as <see cref="BranchDto"/> instead of just the branch types</para>
+        /// <para> NOTE: The branchDtos are made within the method</para>
+        /// </summary>
+        /// <returns> IEnumerable <see cref="BranchDto"/></returns>
         [HttpGet("getbranches")]
         public async Task<ActionResult<IEnumerable<BranchDto>>> GetBranches()
         {
             List<BranchDto> branches = new List<BranchDto>();
 
-            var response = await _firebaseDataContext.GetData<Branch>("Branch");
+            var response = await _firebaseServices.GetData<Branch>("Branch");
 
             foreach (var item in response)
             {
                 Branch branch = item;
-
-                TimeSpan timeSpan = DateTime.UtcNow - branch.LastActive;
+                TimeSpan timeSpan = DateTime.UtcNow - item.LastActive;
 
                 float x = (float)(timeSpan.TotalMinutes);
 
@@ -176,8 +192,8 @@ namespace API.Controllers
 
                 BranchDto branchDto = new BranchDto()
                 {
-                    Id = branch.Id,
-                    Img = branch.ImgUrl,
+                    Id = item.Id,
+                    Img = item.ImgUrl,
                     LastActive = x,
                     Location = branch.Location,
                     Name = branch.Name,
@@ -199,10 +215,8 @@ namespace API.Controllers
 
             var publicHolidays = DateSystem.GetPublicHolidays(currentDateTime.Year, CountryCode.BW);
 
-            DateTime dateTime = new DateTime();
-
             //Get time for day of week
-            dateTime = dateTimes[GetDayOfWeek(currentDateTime.DayOfWeek)];
+            DateTime dateTime = dateTimes==null? new DateTime():dateTimes[GetDayOfWeek(currentDateTime.DayOfWeek)];
 
             //If is public holiday set to last item in array
             foreach (var item in publicHolidays)
@@ -232,6 +246,7 @@ namespace API.Controllers
 
             return jsonElement;
         }
+        // REFACTOR: This is too alike to GetJsonElement. Please coalesce the methods into one
         JsonElement? GetJsonElement_Tomorrow(List<DateTime> dateTimes)
         {
             //Get Todays Date And Opening/ Closing Time (Botswana)
@@ -239,10 +254,8 @@ namespace API.Controllers
 
             var publicHolidays = DateSystem.GetPublicHolidays(tomorrowDateTime.Year, CountryCode.BW);
 
-            DateTime dateTime = new DateTime();
-
             //Get time for day of week
-            dateTime = dateTimes[GetDayOfWeek(tomorrowDateTime.DayOfWeek)];
+            DateTime dateTime = dateTimes==null? new DateTime(): dateTimes[GetDayOfWeek(tomorrowDateTime.DayOfWeek)];
 
             //If is public holiday set to last item in array
             foreach (var item in publicHolidays)
@@ -287,11 +300,6 @@ namespace API.Controllers
 
             return 0;
         }
-        public async Task<List<Branch>> GetBranches2()
-        {
-            var result = await _firebaseDataContext.GetData<Branch>("Branch");
 
-            return result;
-        }
     }
 }
