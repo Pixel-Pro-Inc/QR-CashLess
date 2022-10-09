@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Application.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities;
-using RodizioSmartKernel.Entities.Aggregates;
-using RodizioSmartKernel.Interfaces.BaseInterfaces;
+using RodizioSmartKernel.Core.Entities;
+using RodizioSmartKernel.Core.Entities.Aggregates;
+using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 
 namespace API.Application.Interfaces
 {

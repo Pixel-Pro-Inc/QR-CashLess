@@ -6,8 +6,8 @@ using API.Application.Interfaces;
 using API.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities;
-using RodizioSmartKernel.Entities.Aggregates;
+using RodizioSmartKernel.Core.Entities;
+using RodizioSmartKernel.Core.Entities.Aggregates;
 
 namespace API.Infrastructure.Controllers
 {

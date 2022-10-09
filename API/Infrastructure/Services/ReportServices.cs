@@ -1,17 +1,15 @@
 ﻿using API.Application.DTOs;
 using API.Application.Exceptions;
 using API.Application.Extensions;
-using API.Application.Helpers;
 using API.Application.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities;
-using RodizioSmartKernel.Entities.Aggregates;
-using RodizioSmartKernel.Interfaces;
+using RodizioSmartKernel.Core.Entities;
+using RodizioSmartKernel.Core.Entities.Aggregates;
+using RodizioSmartKernel.Application.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Infrastructure.Services

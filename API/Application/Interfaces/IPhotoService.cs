@@ -1,5 +1,5 @@
 ﻿using CloudinaryDotNet.Actions;
-using RodizioSmartKernel.Interfaces.BaseInterfaces;
+using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 using System.Threading.Tasks;
 
 namespace API.Application.Interfaces

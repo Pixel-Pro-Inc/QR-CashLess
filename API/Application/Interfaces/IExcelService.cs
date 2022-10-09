@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities.Aggregates;
-using RodizioSmartKernel.Interfaces.BaseInterfaces;
+using RodizioSmartKernel.Core.Entities.Aggregates;
+using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

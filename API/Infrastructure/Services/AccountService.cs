@@ -1,6 +1,6 @@
 ﻿using API.Application.Interfaces;
 using AutoMapper;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

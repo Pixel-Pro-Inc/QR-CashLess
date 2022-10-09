@@ -1,4 +1,4 @@
-﻿using RodizioSmartKernel.Entities;
+﻿using RodizioSmartKernel.Core.Entities;
 using System;
 
 namespace API.Application.DTOs

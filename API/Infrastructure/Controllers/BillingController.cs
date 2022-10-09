@@ -2,7 +2,7 @@
 using API.Application.Exceptions;
 using API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using System.Threading.Tasks;
 
 namespace API.Infrastructure.Controllers

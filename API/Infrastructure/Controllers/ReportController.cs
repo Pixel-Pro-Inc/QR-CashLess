@@ -5,11 +5,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RodizioSmartKernel.Entities.Aggregates;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities.Aggregates;
+using RodizioSmartKernel.Core.Entities;
 using API.Application.Interfaces;
 using API.Application.DTOs;
-using API.Application.Helpers;
 using API.Application.Extensions;
 
 namespace API.Infrastructure.Controllers

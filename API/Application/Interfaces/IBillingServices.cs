@@ -2,8 +2,8 @@
 using API.Application.DTOs;
 using System;
 using System.Collections.Generic;
-using RodizioSmartKernel.Entities;
-using RodizioSmartKernel.Interfaces.BaseInterfaces;
+using RodizioSmartKernel.Core.Entities;
+using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 
 namespace API.Application.Interfaces
 {

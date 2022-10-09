@@ -1,5 +1,5 @@
-﻿using RodizioSmartKernel.Entities;
-using RodizioSmartKernel.Interfaces.BaseInterfaces;
+﻿using RodizioSmartKernel.Core.Entities;
+using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

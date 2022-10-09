@@ -4,7 +4,7 @@ using API.Application.Extensions;
 using API.Application.Interfaces;
 using API.Infrastructure.Controllers;
 using AutoMapper;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,7 +1,7 @@
 ﻿using API.Application.Data;
 using API.Application.Extensions;
 using API.Application.Interfaces;
-using RodizioSmartKernel.Entities.Aggregates;
+using RodizioSmartKernel.Core.Entities.Aggregates;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

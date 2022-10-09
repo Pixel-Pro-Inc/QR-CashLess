@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 
 namespace API.Application.Helpers
 {

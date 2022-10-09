@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using API.Application.Interfaces;
 
 namespace API.Infrastructure.Controllers

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using RodizioSmartKernel.Entities.Aggregates;
+using RodizioSmartKernel.Core.Entities.Aggregates;
 using API.Application.Interfaces;
 using API.Application.Extensions;
 

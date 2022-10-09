@@ -4,7 +4,7 @@ using API.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nager.Date;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;

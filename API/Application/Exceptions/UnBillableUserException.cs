@@ -1,5 +1,5 @@
 ﻿using System;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using API.Infrastructure.Services;
 
 namespace API.Application.Exceptions

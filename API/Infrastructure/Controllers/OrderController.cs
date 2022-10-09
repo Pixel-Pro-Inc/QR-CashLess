@@ -2,7 +2,7 @@
 using API.Application.Interfaces;
 using API.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
-using RodizioSmartKernel.Entities.Aggregates;
+using RodizioSmartKernel.Core.Entities.Aggregates;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

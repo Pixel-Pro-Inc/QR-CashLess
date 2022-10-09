@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using RodizioSmartKernel.Entities;
+using RodizioSmartKernel.Core.Entities;
 using API.Application.Interfaces;
 using API.Application.DTOs;
 
