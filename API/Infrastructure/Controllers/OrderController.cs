@@ -21,7 +21,7 @@ namespace API.Infrastructure.Controllers
         [HttpPost("createorder/{branchId}")]
         public async Task<ActionResult<Order>> CreateOrder(Order orderItems, string branchId)
         {
-            return new OrderFactory(branchId,_firebaseServices,notification).AddPhoneNumber(orderItems[0].PhoneNumber);
+            return (await new OrderFactory(branchId,_firebaseServices,notification).MakeOrder(orderItems,"Online")).AddPhoneNumber(orderItems[0].PhoneNumber);
         }
         public async Task<int> GetOrderNum(string branchId)
         {
