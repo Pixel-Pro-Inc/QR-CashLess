@@ -34,8 +34,8 @@ namespace API.Application.Data
         }
 
         // UPDATE: I change the code cause it kept making new clients, I don't know why it needed to do that
-        public async void DeleteData(string path)=>await client.DeleteAsync(path);
-        public async void StoreData(string path, object data)=>await client.SetAsync(path, data);
+        public async Task DeleteData(string path)=>await client.DeleteAsync(path);
+        public async Task StoreData(string path, object data)=>await client.SetAsync(path, data);
         // NOTE: You don't need to refactor this to work with the JsonConvertExtension. But you could clean up with Yewo after discussing it
         public async Task<List<object>> GetData(string path)
         {
@@ -70,7 +70,7 @@ namespace API.Application.Data
 
             return objects;
         }
-        public async void EditData(string path, object data)=> await client.UpdateAsync(path, data);
+        public async Task EditData(string path, object data)=> await client.UpdateAsync(path, data);
 
     }
 }

@@ -4,7 +4,7 @@ using API.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
-using RodizioSmartKernel.Services;
+using RodizioSmartKernel.Infrastructure.Services;
 
 namespace API.Application.Extensions
 {

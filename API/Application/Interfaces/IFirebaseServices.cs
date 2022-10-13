@@ -2,6 +2,7 @@
 using RodizioSmartKernel.Application.Interfaces.BaseInterfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using RodizioSmartKernel.Application.Interfaces;
 
 namespace API.Application.Interfaces
 {
@@ -12,7 +13,7 @@ namespace API.Application.Interfaces
     /// <remarks>
     /// Any and all requests  from the Firebasedatabase should be found in this partial class
     /// </remarks>
-    public interface IFirebaseServices: IBaseService
+    public interface IFirebaseServices: IBaseService, IDataService
     {
 
         /// <summary>
@@ -21,13 +22,15 @@ namespace API.Application.Interfaces
         /// <para> NOTE: This doubles for both storing and editing data in the database cause both overwrite whatever is in the database</para>
         /// </summary>
         /// <returns></returns>
-        public void StoreData(string path, object thing);
+        public Task StoreData(string path, object thing);
+
         /// <summary>
         /// This is to remove anything that is within the <paramref name="fullpath"/> in the database including subfolders
         /// <para>I'm assuming it does it by overwriting anything in there with null</para>
         /// </summary>
-        /// <param name="path"></param>
-        public void DeleteData(string fullpath);
+        /// <param name="fullpath"></param>
+        /// <returns></returns>
+        public Task DeleteData(string fullpath);
         // FIXME: We need to remove the clases that don't inherit from baseEntity. If any object can pass through here, then aggregates can mistakenly be put here
         /// <summary>
         /// This takes in the path of the node in the database and coughs up the a list of the type

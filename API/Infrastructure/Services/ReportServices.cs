@@ -6,7 +6,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Core.Entities;
 using RodizioSmartKernel.Core.Entities.Aggregates;
-using RodizioSmartKernel.Application.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace API.Infrastructure.Services
 {
-    public class ReportServices : IReportServices
+    public class ReportServices : BaseService,IReportServices
     {
         private readonly IFirebaseServices _firebaseServices;
         private readonly IMapper _mapper;
@@ -361,7 +360,6 @@ namespace API.Infrastructure.Services
             throw new NotImplementedException("SendBillToUser() not done");
 
         }
-        public INotification Notification { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     }
 }

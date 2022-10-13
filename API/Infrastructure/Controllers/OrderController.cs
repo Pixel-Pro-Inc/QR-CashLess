@@ -3,6 +3,7 @@ using API.Application.Interfaces;
 using API.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 using RodizioSmartKernel.Core.Entities.Aggregates;
+using RodizioSmartKernel.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,28 +21,7 @@ namespace API.Infrastructure.Controllers
         [HttpPost("createorder/{branchId}")]
         public async Task<ActionResult<Order>> CreateOrder(Order orderItems, string branchId)
         {
-            int x = await GetOrderNum(branchId);
-
-
-            for (int i = 0; i < orderItems.Count; i++)
-            {
-                var orderItem = orderItems[i];
-
-                orderItem.OrderNumber = DateTime.Now.ToPixelProForwardSlashFormat() + "_" + x;
-                orderItem.OrderNumber = orderItem.OrderNumber.Replace('/', '-');
-
-                orderItem.OrderDateTime = DateTime.UtcNow;
-
-                orderItem.Price = orderItem.Price;
-
-                string z = orderItem.PhoneNumber;
-
-                orderItem.Id = i;
-
-                _firebaseServices.StoreData(dir + branchId + "/" + orderItem.OrderNumber + "/" + orderItem.Id, orderItem);
-            }
-
-            return orderItems;
+            return new OrderFactory(branchId,_firebaseServices,notification).AddPhoneNumber(orderItems[0].PhoneNumber);
         }
         public async Task<int> GetOrderNum(string branchId)
         {

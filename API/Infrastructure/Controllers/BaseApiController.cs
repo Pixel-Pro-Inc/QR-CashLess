@@ -1,4 +1,5 @@
 ﻿
+using API.Application.Helpers;
 using API.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ namespace API.Infrastructure.Controllers
         //protected readonly FirebaseDataContext _firebaseDataContext;
 
         protected readonly IFirebaseServices _firebaseServices;
+        protected Notification notification;
         static string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
         protected static readonly IConfiguration Configuration = new ConfigurationBuilder().AddJsonFile($"appsettings.{env}.json", optional: false, reloadOnChange: true).Build();
         protected static readonly HttpClient client = new HttpClient();
